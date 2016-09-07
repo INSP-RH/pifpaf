@@ -1,0 +1,201 @@
+\documentclass{article}
+
+%Paquetes
+%------------------------------------------------------------
+
+    %Paquete para símbolos del español
+    \usepackage[utf8]{inputenc}
+    
+    %Paquete para los colores
+    \usepackage{xcolor}
+    
+    %Paquete para url de Internet
+    \usepackage{url}
+
+    %Comments
+    \usepackage{verbatim}
+    
+    %Frame package
+    \usepackage{framed}
+    
+    %Paquetes matemáticos
+    \usepackage{amsmath}
+    \usepackage{amssymb}
+    
+    %Vertical spacing
+    \usepackage{parskip}
+    
+    %Images
+    \usepackage{graphicx}
+    
+    %Tables
+    \usepackage{multirow}
+    
+%------------------------------------------------------------
+
+
+
+
+%Título del documento
+%------------------------------------------------------------
+    \title{Examples of PIFs}
+    \author{Dalia \& Rodrigo}
+    \date{}
+
+%------------------------------------------------------------
+
+%Documento
+%------------------------------------------------------------
+\begin{document}
+
+\maketitle
+
+\section{Degenerated}
+Let $P(X = k) = 1$ for some $k > 0$. Let $R(x;\theta) \geq 1$ y $f(x) > 0$ arbitrary . The Population Impact Fraction is:
+\begin{equation}
+    \textrm{PIF} = 1 - \frac{E\left[ R\left( f(x); \theta \right) \right]}{E\left[ R(x; \theta ) \right]} = 1 -\frac{ R\left( f(k); \theta \right)}{R\left( k; \theta \right)} 
+\end{equation}
+
+\section{Multivariate normal}
+Let $X \sim N_{k}(\mu, \Sigma)$ normal multivariate of dimension $k$. Let $R(X;\theta) = e^{\theta^T X}$ and $f(X) = A X + b$. The Population Impact Fraction is: 
+\begin{equation}
+    \textrm{PIF} = 1 - \frac{E\left[ R\left( f(x); \theta \right) \right]}{E\left[ x; \theta \right]} = 1 - \frac{\overbrace{\frac{1}{{(2 \pi)}^{k} \sqrt{| \Sigma |}} \int\limits_{\mathcal{X}} R\left( f(x); \theta \right) e^{-\frac{(x - \mu)^T \Sigma^{-1} (x - \mu)}{2}}dx}^{\textrm{N}}} {\underbrace{\frac{1}{{(2 \pi)}^{k} \sqrt{| \Sigma |}} \int\limits_{\mathcal{X}} R\left( x; \theta \right) e^{-\frac{(x - \mu)^T\Sigma^{-1} (x - \mu)}{2}}dx}_{\textrm{D}}} \label{PIFNormal1}
+\end{equation}
+
+where 
+\begin{equation}
+    \begin{aligned}
+    D = \frac{1}{{(2 \pi)}^{k} \sqrt{| \Sigma |}} \int\limits_{\mathcal{X}} R\left( x; \theta \right) e^{-\frac{(x - \mu)^T\Sigma^{-1} (x - \mu)}{2}}dx  = e^{\mu^{T} \theta + \frac{1}{2} \theta^T \Sigma \theta}
+    \end{aligned}
+\end{equation}
+
+on the other hand:
+\begin{equation}
+    \begin{aligned}
+    N & = \frac{1}{{(2 \pi)}^{k} \sqrt{| \Sigma |}} \int\limits_{\mathcal{X}} e^{\theta^T f(x)} e^{-\frac{(x - \mu)^T \Sigma^{-1} (x - \mu)}{2}}dx  \\
+    & = \frac{ e^{\theta^T b}}{{(2 \pi)}^{k} \sqrt{| \Sigma |}} \int\limits_{\mathcal{X}} e^{\theta^T A X + b} e^{-\frac{(x - \mu)^T \Sigma^{-1} (x - \mu)}{2}}dx \\
+    & = e^{ (A \mu)^T \theta  + \frac{1}{2} \theta^T A \Sigma A^T \theta   +  \theta^T b}
+    \end{aligned}
+\end{equation}
+
+Substituting in \eqref{PIFNormal1} we obtain: 
+\begin{equation}
+    PIF = 1 - \frac{e^{\mu^{T} \theta + \frac{1}{2} \theta^T \Sigma \theta}}{e^{ (A \mu)^T \theta  + \frac{1}{2} \theta^T A \Sigma A^T \theta   +  \theta^T b}}
+\end{equation}
+
+\section{Exponencial}
+Let $X \sim \textrm{Exp}(\lambda)$ y $R(X;\theta) = 1 + \sum\limits_{i = 1}^{n} \theta_1 x^{i}$. Let $f(x) = k_1 x + b$. The $\textrm{PIF}$ is:
+\begin{equation} 
+    \begin{aligned} \label{PIFEXP}
+    \textrm{PIF} & = 1 - \frac{\int\limits_{0}^{\infty} \frac{1}{\lambda} e^{-x/\lambda} \left[ 1 + \sum\limits_{i = 1}^{n} \theta_i f(x)^{i} \right] dx}{\int\limits_{0}^{\infty} \frac{1}{\lambda} e^{-x/\lambda} \left[ 1 + \sum\limits_{i = 1}^{n} \theta_i x^{i} \right] dx} \\
+    & = 1 - \frac{1 + \int\limits_{0}^{\infty}  e^{-x/\lambda} \left[  \sum\limits_{i = 1}^{n} \theta_1 f(x)^{i} \right] dx}{1 + \int\limits_{0}^{\infty}  e^{-x/\lambda} \left[ \sum\limits_{i = 1}^{n} \theta_i x^{i} \right] dx} \\
+    & = 1 - \frac{1 +   \sum\limits_{i = 1}^{n} \theta_i \int\limits_{0}^{\infty}  \left[  e^{-x/\lambda}  f(x)^{i} \right] dx}{1 +   \sum\limits_{i = 1}^{n} \theta_i \int\limits_{0}^{\infty}  \left[  e^{-x/\lambda}  x^{i} \right] dx}  
+    \end{aligned}
+\end{equation} 
+
+where: 
+\begin{equation}
+    \begin{aligned}
+    \left. \int\limits_{0}^{\infty}  \left[  e^{-x/\lambda}  x^{i} \right] dx = (-\lambda)^{i + 1} \Gamma(i + 1, \frac{1}{\lambda} x) \right|^{x \to \infty}_{x = 0} = (-\lambda)^{i + 1} \Gamma(i + 1)
+    \end{aligned}
+\end{equation}
+
+on the other hand: 
+\begin{equation}
+    \begin{aligned}
+    \int\limits_{0}^{\infty}  \left[  e^{-x/\lambda}  f(x)^{i} \right] dx  & = \int\limits_{0}^{\infty}  \underbrace{\left[  e^{-x/\lambda}  (k_1 x + b)^{i} \right]}_{ (k_1 x + b)^{i} = \sum\limits_{j = 0}^{i} {i \choose j} (k_1 x)^{i - j} b^{i}} dx \\
+    & = \sum\limits_{j = 0}^{i} \left[ {i \choose j} b^{i} k_1 ^{i - j} \int\limits_{0}^{\infty} \Big( x^{i - j}  e^{-x/\lambda} \Big) dx \right] \\ 
+    & = \left. \sum\limits_{j = 0}^{i} \left[ {i \choose j} b^{i} k_1 ^{i - j}  (-\lambda)^{i - j + 1} \Gamma(i - j + 1, \frac{1}{\lambda} x) \right] \right|^{x \to \infty}_{x = 0} \\
+    & = \sum\limits_{j = 0}^{i} \left[ {i \choose j} b^{i} k_1 ^{i - j}  (-\lambda)^{i - j + 1} \Gamma(i - j + 1) \right] 
+    \end{aligned}
+\end{equation}
+
+Substituting in \eqref{PIFEXP} we obtain: 
+\begin{equation}
+\begin{aligned}
+    \textrm{PIF} & = 1 - \frac{ 1 + \sum\limits_{i = 1}^{n} (-\lambda)^{i + 1} \Gamma(i + 1) }{  1 + \sum\limits_{i=1}^{n} \sum\limits_{j = 0}^{i} \left[ {i \choose j} b^{i} k_1 ^{i - j}  (-\lambda)^{i + 1 -j } \Gamma(i + 1 - j ) \right] } 
+\end{aligned}
+\end{equation}
+
+\section{Lognormal}
+
+Let $X \sim \textrm{Lognormal}(\mu,\sigma)$. Let $f(x) = k_1 x + k_2$ with $k_1 \geq 1$ y sea $R(x;\theta) = e^{\theta x}$. Then:
+
+
+\begin{equation}
+    \begin{aligned}
+    \textrm{PIF} & = 1 - \frac{\overbrace{E[e^{\theta k_1 x + k_2}]}^{ = \infty}}{\underbrace{E[e^{\theta x}]}_{= \infty}} = 1 - e^{k_2} \frac{ \int\limits_{0}^{\infty} e^{k_1 x} \frac{1}{x} e^{-\frac{(\textrm{ln} x - \mu)^2}{2\sigma^2}} dx}{ \int\limits_{0}^{\infty} e^{ x} \frac{1}{x} e^{-\frac{(\textrm{ln} x - \mu)^2}{2\sigma^2}} dx} \\ & = 1 - e^{k_2} \lim_{t \to 0} \frac{  \overbrace{ \int\limits_{0}^{\frac{1}{t}} e^{k_1 x} \frac{1}{x} e^{-\frac{(\textrm{ln} x - \mu)^2}{2\sigma^2}} dx}^{f(t)}  }{ \underbrace{ \int\limits_{0}^{\frac{1}{t}} e^{ x} \frac{1}{x} e^{-\frac{(\textrm{ln} x - \mu)^2}{2\sigma^2}} dx}_{g(t)} }  \overbrace{=}^{\textrm{l'Hôpital}}  1 - e^{k_2} \lim_{t \to 0} \frac{f'(t)}{g'(t)}  \\ 
+    & = 1 - e^{k_2} \lim_{t \to 0} \frac{\left(\frac{1}{t^2}\right) e^{k_1 \frac{1}{t}} t e^{-\frac{\left(log(1/t) - \mu\right)^2}{2\sigma^2}}}{\left(\frac{1}{t^2}\right) e^{ \frac{1}{t}} t e^{-\frac{\left(log(1/t) - \mu\right)^2}{2\sigma^2}}} \\ & = 1 - \lim_{t \to 0}  e^{(k_1 - 1)/t} = 
+    \begin{cases}
+    1 - e^{k_2} & \textrm{if } k_1 = 1, \\
+    -\infty     & \textrm{if } k_1 > 1, \\
+    1           & \textrm{if } k_1 < 1.
+    \end{cases}
+    \end{aligned}
+\end{equation}
+
+\section{Discrete finite}
+
+Let $X$ random variable that takes values in the set $\left \{ x_1, x_2, \dots, x_n \right \}$  with respective probabilities $p_1, p_2, \dots, p_n$ such that $\sum_{i} p_i = 1$. Let $f(x)$ arbitrary and let $R(x) = \sum\limits_{j = 0}^{l} \theta_j x^j$ with $\theta_0 = 1$. The PIF is:
+
+\begin{equation}
+\begin{aligned}
+    \textrm{PIF} & = 1 - \frac{E\left[ R\left( f(x); \theta \right) \right]}{E\left[ R(x; \theta) \right]} = 1 -\frac{ \sum\limits_{k = 1}^{n} p_k R\left( f(x_k); \theta \right) }{\sum\limits_{k = 1}^{n} p_k R\left( x_k; \theta \right) }  = 1 - \frac{ \sum\limits_{k = 1}^{n} \sum\limits_{j = 0}^{l} p_k \theta_j f(x_k)^j }{\sum\limits_{k = 1}^{n}  \sum\limits_{j = 0}^{l} p_k \theta_j x_k^j } \\
+\end{aligned}
+\end{equation}
+
+\section{Poisson}
+
+Let $X \sim \textrm{Poisson}(\lambda)$ assume $R(X;\theta) = \sum\limits_{i = 0}^{n} \theta_i x^i$ with $\theta_0 = 1$. Sea $f(x) = ax + b$ arbitrary. Then: 
+
+\begin{equation}
+\begin{aligned}
+ \textrm{PIF} & = 1 - \frac{E\left[ R\left( f(x); \theta \right) \right]}{E\left[ R(x; \theta) \right]} = 1 - \frac{E \left[ \sum\limits_{i = 0}^{n} \theta_i f(x)^i \right] }{E \left[ \sum\limits_{i = 0}^{n} \theta_i x^i \right]} \\
+ & = 1 - \frac{ \sum\limits_{i = 0}^{n} \theta_i  E \left[ (ax + b)^i \right] }{\sum\limits_{i = 0}^{n} \theta_i E \left[   x^i \right]} \\
+ & = 1 - \frac{ \sum\limits_{i = 0}^{n} \theta_i  E \left[ \sum\limits_{k = 0}^{i} {i \choose k} (ax)^{i - k} b^k \right] }{\sum\limits_{i = 0}^{n} \theta_i E \left[   x^i \right]} \\
+ & = 1 - \frac{ \sum\limits_{i = 0}^{n}  \sum\limits_{k = 0}^{i}  \overbrace{ \theta_i  {i \choose k} a^{i-k} b^k}^{\pi_{i,k}} E \left[ x^{i - k}  \right] }{\sum\limits_{i = 0}^{n} \theta_i E \left[   x^i \right]}
+ \\ 
+ & = 1 - \frac{ \sum\limits_{i = 0}^{n}  \sum\limits_{k = 0}^{i}  \pi_{i,k} h^{(i - k)} (0)  }{\sum\limits_{i = 0}^{n} \theta_i  h^{(i )} (0) }
+\end{aligned}
+\end{equation}
+
+where $h(t) = e^{\lambda(e^{t} - 1)}$ y $h^{(m)}$ denotes the $m$-th derivative of $h$. 
+
+\begin{comment}
+
+
+
+\section{Approximate PAF}
+
+Let $X \sim F$ univariate with finite moment generating function $M(t) = E \left[ e^{tX} \right]$. Let $R(X; \theta)$ the risk function. By Taylor (as function of $X$ around $x_0$): 
+\begin{equation}
+R(X;\theta) \approx \sum\limits_{k = 0}^{n} (x- x_0)^k \frac{R^{(k)}(x_0)}{k!}
+\end{equation}
+
+Then: 
+\begin{equation}
+\begin{aligned}
+E[R(x;\theta)] & \approx E\left[\sum\limits_{k = 0}^{n} (x- x_0)^k \frac{R^{(k)}(x_0; \theta)}{k!}\right] \\ 
+& = \sum\limits_{k = 0}^{n} \frac{R^{(k)}(x_0; \theta)}{k!} E \left[ (x- x_0)^k \right] \\
+& = \sum\limits_{k = 0}^{n} \frac{R^{(k)}(x_0; \theta)}{k!} E \left[ \sum\limits_{j = 0}^{k} {k \choose j}x^{j} x_0^{k-j} \right] \\
+& = \sum\limits_{k = 0}^{n} \sum\limits_{j = 0}^{k} {k \choose j} \frac{R^{(k)}(x_0; \theta)}{k!} x_0^{k-j} E \left[ x^{j} \right] \\
+& = \sum\limits_{k = 0}^{n} \sum\limits_{j = 0}^{k} {k \choose j} \frac{R^{(k)}(x_0; \theta)}{k!} x_0^{k-j} M^{(j)}(0)
+\end{aligned}
+\end{equation}
+
+On the other hand $f \in \mathcal{C}^{n}$: 
+\begin{equation}
+\begin{aligned}
+E[R(f(x);\theta)] & \approx E\left[\sum\limits_{k = 0}^{n} (x- x_0)^k \frac{R^{(k)}\big(f(x_0); \theta\big)}{k!} \Big( \prod\limits_{i = 1}^{k} f^{(i)}(x_0) \Big) \right] \\ 
+& = \sum\limits_{k = 0}^{n} \frac{R^{(k)}\big(f(x_0); \theta\big)}{k!} \Big( \prod\limits_{i = 1}^{k} f^{(i)}(x_0) \Big) E \left[ (x- x_0)^k \right] \\
+& = \sum\limits_{k = 0}^{n} \frac{R^{(k)}\big(f(x_0); \theta\big)}{k!} \Big( \prod\limits_{i = 1}^{k} f^{(i)}(x_0) \Big) E \left[ \sum\limits_{j = 0}^{k} {k \choose j}x^{j} x_0^{k-j} \right] \\
+& = \sum\limits_{k = 0}^{n} \sum\limits_{j = 0}^{k} \Big( \prod\limits_{i = 1}^{k} f^{(i)}(x_0) \Big) {k \choose j} \frac{R^{(k)}\big(f(x_0); \theta\big)}{k!} x_0^{k-j} E \left[ x^{j} \right] \\
+& = \sum\limits_{k = 0}^{n} \sum\limits_{j = 0}^{k} \Big( \prod\limits_{i = 1}^{k} f^{(i)}(x_0) \Big) {k \choose j} \frac{R^{(k)}\big(f(x_0); \theta\big)}{k!} x_0^{k-j} M^{(j)}(0)
+\end{aligned}
+\end{equation}
+
+\url{http://stats.stackexchange.com/questions/70490/taking-the-expectation-of-taylor-series-especially-the-remainder}
+
+\end{comment}
+
+\end{document}
