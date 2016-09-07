@@ -1,0 +1,21 @@
+Package: pif
+Title: Potential Impact Fraction and Population Attributable Fraction
+Version: 0.0.0.9000
+Authors@R: c(person("Rodrigo", "Zepeda", email = "rzepeda17@gmail.com", role = c("aut","cre")), person("Dalia", "Camacho", email = "daliaf172@gmail.com", role = c("aut")), person("Frederick","Cudhea", role = c("aut")), person("Tonatiuh","Barrientos", role = c("ctb")))
+Description: pif is a package for estimating the Potential Impact Fraction and
+    the Population Attributable Fraction via an empirical method
+Depends:
+    R (>= 3.2.3)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Type: Package
+Suggests:
+    testthat
+LazyLoad: yes
+stringsAsFactors: FALSE
+LinkingTo: Rcpp
+Imports:
+    ggplot2,
+    matrixStats
+RoxygenNote: 5.0.1
