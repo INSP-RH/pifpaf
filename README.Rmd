@@ -24,12 +24,14 @@ devtools::install_github("INSP-RH/pif")
 
 ### **Population Attributable Fraction**
 
-Consider that exposure to a certain phenomena is modeled by a random variable $X$ which is normally distributed with mean $\mu$ and variance $\sigma^2$.  In addition, consider the relative risk function associated to the exposure to be: 
+Consider that exposure to a certain phenomena is modeled by a random variable $X$ which is normally distributed with mean $µ$ and variance $σ^2$.  In addition, consider the relative risk function associated to the exposure to be: 
+
 <center>
 <img alt = "Formula for RR" src = "README_files/formulaRR.png" style="height:25px;">
 </center>
 
-where $X$ denotes the exposure and $\theta$ the length (in time) exposed. 
+where $X$ denotes the exposure and $ø$ the length (in time) exposed. 
+
 This function can be coded as:
 
 ```{r}
@@ -42,14 +44,14 @@ The **Population Attributable Fraction** is given by [the equation](https://gith
 <img alt = "Formula for PAF" src = "README_files/pafnormal.png" style="height:55px;">
 </center>
 
-In particular, if we let $\theta = 1/9$, $\mu = 9$ and $\sigma = 3$:
+In particular, if we let $ø = 1/9$, $µ = 9$ and $σ = 3$:
 
 <center>
 <img alt = "Evaluation for PAF" src = "README_files/pafnumeric.png" style="height:35px;">
 </center>
 
 #### Using the package
-Let $\theta$ be estimated by $\theta_{est} = 0.11$. Consider a random sample of the $X's$:
+Let $ø$ be estimated by $ø_{est} = 0.11$. Consider a random sample of the $X's$:
 
 ```{r}
 set.seed(242)
@@ -97,7 +99,7 @@ pif(X, 0.11, rr, cft)
 ### Sensitivity analysis
 
 #### Plots
-The command ``plotpif`` allows us to analyze how the potential impact fraction varies as the values of $\theta$ change:
+The command ``plotpif`` allows us to analyze how the potential impact fraction varies as the values of $ø$ change:
 
 ```{r}
 plotpif(X, 0, 0.3, rr, cft)
