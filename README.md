@@ -23,9 +23,12 @@ Examples
 
 Consider that exposure to a certain phenomena is modeled by a random variable \(X\) which is normally distributed with mean \(µ\) and variance \(σ^2\). In addition, consider the relative risk function associated to the exposure to be:
 
+<div>
 <center>
 <img alt = "Formula for RR" src = "README_files/formulaRR.png" style="height:25px;">
 </center>
+</div>
+
 where \(X\) denotes the exposure and \(ø\) the length (in time) exposed.
 
 This function can be coded as:
