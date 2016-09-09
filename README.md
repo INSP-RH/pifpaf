@@ -23,7 +23,7 @@ Examples
 
 Consider that exposure to a certain phenomena is modeled by a random variable \(X\) which is normally distributed with mean \(\mu\) and variance \(\sigma^2\). In addition, consider the relative risk function associated to the exposure to be:
 <center>
-<img alt = "Formula for RR" src = "ReadmeImages/formulaRR.png" style="height:25px;">
+<img alt = "Formula for RR" src = "README_files/formulaRR.png" style="height:25px;">
 </center>
 where \(X\) denotes the exposure and \(\theta\) the length (in time) exposed. This function can be coded as:
 
@@ -34,12 +34,12 @@ rr <- function(x, theta){exp(theta*x)}
 The **Population Attributable Fraction** is given by [the equation](https://github.com/INSP-RH/pif/blob/master/Theoretical/Worked_formulas.pdf):
 
 <center>
-<img alt = "Formula for PAF" src = "ReadmeImages/pafnormal.png" style="height:55px;">
+<img alt = "Formula for PAF" src = "README_files/pafnormal.png" style="height:55px;">
 </center>
 In particular, if we let \(\theta = 1/9\), \(\mu = 9\) and \(\sigma = 3\):
 
 <center>
-<img alt = "Evaluation for PAF" src = "ReadmeImages/pafnumeric.png" style="height:35px;">
+<img alt = "Evaluation for PAF" src = "README_files/pafnumeric.png" style="height:35px;">
 </center>
 #### Using the package
 
@@ -66,12 +66,12 @@ Consider the same problem as before. We are now interested in estimating the eff
 In this case, the **Potential Impact Fraction** is given by [the equation](https://github.com/INSP-RH/pif/blob/master/Theoretical/Worked_formulas.pdf):
 
 <center>
-<img alt = "Formula for PIF" src = "ReadmeImages/pifnormal.png" style="height:75px;">
+<img alt = "Formula for PIF" src = "README_files/pifnormal.png" style="height:75px;">
 </center>
 Assuming the same values as above and considering \(a = 1/2\) and \(b = -1\) we have:
 
 <center>
-<img alt = "Evaluation for PIF" src = "ReadmeImages/pifnumeric.png" style="height:35px;">
+<img alt = "Evaluation for PIF" src = "README_files/pifnumeric.png" style="height:35px;">
 </center>
 #### Using the package
 
