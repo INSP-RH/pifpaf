@@ -36,6 +36,7 @@ The **Population Attributable Fraction** is given by [the equation](https://gith
 <center>
 <img alt = "Formula for PAF" src = "README_files/pafnormal.png" style="height:55px;">
 </center>
+
 In particular, if we let \(\theta = 1/9\), \(\mu = 9\) and \(\sigma = 3\):
 
 <center>
