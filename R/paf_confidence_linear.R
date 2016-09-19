@@ -36,8 +36,6 @@
 #' paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 #' 
 #' 
-#' @import matrixStats
-#' 
 #' @export
 
 
