@@ -31,14 +31,14 @@ set.seed(18427)
 X <- rnorm(100)
 thetahat <- 0.12
 thetavar <- 0.1
-paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+paf.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 
 #With larger sample the variance reduces
 set.seed(18427)
 X <- rnorm(10000)
 thetahat <- 0.12
 thetavar <- 0.1
-paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+paf.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 
 }
 \author{
