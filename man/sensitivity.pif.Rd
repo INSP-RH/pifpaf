@@ -42,7 +42,7 @@ set.seed(18427)
 X <- rgamma(1000, 1,1) #Careful as PIF might not exist for all Gammas
 thetahat <- 0.12
 sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
-                m = 100,  filename = "test.pdf", title = "My Sensitivity Analysis")
+                m = 100,  title = "My Sensitivity Analysis")
 
 }
 \author{

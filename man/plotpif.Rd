@@ -35,7 +35,7 @@ set.seed(18427)
 X <- rlnorm(100)
 plotpif(X, 0, 2, function(X, theta){exp(theta*X)})
 
-#Example with weird counterfactual
+#Example with square root counterfactual
 plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)})
 
 }
