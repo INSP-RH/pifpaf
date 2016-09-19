@@ -26,7 +26,7 @@
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' 
-#' @import matrixStats
+#' @import matrixStats ggplot2
 #' 
 #' @examples 
 #' 
@@ -35,9 +35,7 @@
 #' X <- rgamma(1000, 1,1) #Careful as PIF might not exist for all Gammas
 #' thetahat <- 0.12
 #' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
-#'                 m = 100,  filename = "test.pdf", title = "My Sensitivity Analysis")
-#' 
-#' @import ggplot2
+#'                 m = 100,  title = "My Sensitivity Analysis")
 #' 
 #' @export
 #' 
@@ -50,67 +48,67 @@ sensitivity.pif <- function(X, thetahat, rr,
                             title = "Sensitivity Analysis for Potential Impact Fraction (PIF)"){
   
   #Set X as matrix
-  X       <- as.matrix(X)
+  .X       <- as.matrix(X)
   
   #Limit m values
-  m       <- min(ceiling(m), nrow(X))
+  .m       <- min(ceiling(m), nrow(X))
   
   #Check that n is integer
-  n       <- min(ceiling(n), nrow(X))
+  .n       <- min(ceiling(n), nrow(X))
   
   #Create matrix for saving values
-  pifdata <- matrix(data = NA, nrow = n, ncol = m)
+  .pifdata <- matrix(data = NA, nrow = n, ncol = m)
   
   #Create matrix for saving values 
-  sumdata <- matrix(data = NA, nrow = m, ncol = 7)
+  .sumdata <- matrix(data = NA, nrow = m, ncol = 7)
   
   #Get colnames
-  colnames(sumdata) <- c("Simulation","Min","First","Median","Mean","Third","Max")
+  colnames(.sumdata) <- c("Simulation","Min","First","Median","Mean","Third","Max")
   
   #Loop reducing i values from the sample and estimating the pif
-  for( j in 1:m){
+  for( .j in 1:.m){
     
     #Loop through samples
-    for (i in 1:n){
+    for (.i in 1:.n){
       
       #Update X
-      if (j == 1){
+      if (.j == 1){
         
-        newX <- X
-        newW <- weights
+        .newX <- .X
+        .newW <- weights
         
       } else {
         
         #Sample
-        todelete <- sample(1:nrow(X), j-1, replace = FALSE)
+        .todelete <- sample(1:nrow(.X), .j-1, replace = FALSE)
         
         #Remove this sample 
-        newX <- X[-todelete,]  
-        newW <- weights[-todelete]
+        .newX <- .X[-.todelete,]  
+        .newW <- weights[-.todelete]
       }
       
       
       #Estimate pif and save it in pifdata
-      pifdata[i,j] <- pif(newX, thetahat, rr, cft, weights = newW, eval.cvx = F)
+      .pifdata[.i,.j] <- pif(.newX, thetahat, rr, cft, weights = .newW, eval.cvx = F)
       
     }
     
     #Get minimum and maximum
-    sumdata[j,] <- c(j-1,summary(pifdata[,j]))
+    .sumdata[.j,] <- c(100 - (.j-1),summary(.pifdata[,.j]))
     
   }
   
   #Create plot
-  plot <- ggplot(as.data.frame(sumdata),aes(x = m - sumdata[,"Simulation"])) +
-    geom_errorbar(aes(ymin = sumdata[,"First"], ymax = sumdata[,"Third"], color = "75% cases")) +
-    geom_line(aes(y = sumdata[,"Max"], color = "Maximum"), linetype = 3) +
-    geom_line(aes(y = sumdata[,"Min"], color = "Minimum"), linetype = 3) +
-    geom_point(aes(y = sumdata[,"Mean"], color = "Mean")) +
-    geom_line(aes(y = sumdata[,"Median"], color = "Median")) +
+  .plot <- ggplot(as.data.frame(.sumdata),aes(x = .m - .sumdata[,"Simulation"])) +
+    geom_errorbar(aes(ymin = .sumdata[,"First"], ymax = .sumdata[,"Third"], color = "75% cases")) +
+    geom_line(aes(y =  .sumdata[,"Max"],    color = "Maximum"), linetype = 3) +
+    geom_line(aes(y =  .sumdata[,"Min"],    color = "Minimum"), linetype = 3) +
+    geom_point(aes(y = .sumdata[,"Mean"],   color = "Mean")) +
+    geom_line(aes(y =  .sumdata[,"Median"], color = "Median")) +
     theme_minimal() +
     ggtitle(title) +
     ylab("PIF") +
-    xlab("Sample size") + 
+    xlab("Number of randomly deleted observations for X") + 
     scale_color_manual("Analysis", 
                        values = c("Mean" = "red","Median" = "blue",
                                   "Maximum" = "gray75", "Minimum" = "gray75",
@@ -118,10 +116,11 @@ sensitivity.pif <- function(X, thetahat, rr,
   
   if(!is.na(filename)){
     
-    ggsave(filename, plot)
+    ggsave(filename, .plot)
     
   }
-  return(plot)
+  
+  return(.plot)
   
 }
   

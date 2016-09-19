@@ -29,7 +29,7 @@
 #' X <- rlnorm(100)
 #' plotpif(X, 0, 2, function(X, theta){exp(theta*X)})
 #' 
-#' #Example with weird counterfactual
+#' #Example with square root counterfactual
 #' plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)})
 #' 
 #' @export
@@ -42,31 +42,32 @@ plotpif <- function(X, thetamin, thetamax, rr,
   if (thetamin < thetamax){
     
     #Create sequence from thetamin to thetamax
-    theta <- seq(thetamin,thetamax, length.out = ceiling(npoints))
+    .theta <- seq(thetamin, thetamax, length.out = ceiling(npoints))
     
     #Create data frame for saving values of theta
-    dat   <- matrix(NA, nrow = npoints, ncol = 2)
-    colnames(dat) <- c("Theta","PIF")
+    .dat   <- matrix(NA, nrow = npoints, ncol = 2)
+    colnames(.dat) <- c("Theta","PIF")
     
     #Loop through values of theta for plot
     for (i in 1:npoints){
       
       #Save theta value
-      dat[i,"Theta"] <- theta[i]
+      .dat[i,"Theta"] <- .theta[i]
       
       #Calculate PIF
-      dat[i,"PIF"]   <- pif(X, theta[i], rr, cft, weights,  eval.cvx = FALSE) 
+      .dat[i,"PIF"]   <- pif(X, .theta[i], rr, cft, weights,  eval.cvx = FALSE) 
       
     }
     
     #Create plot
-    ggplot(as.data.frame(dat)) + 
-      geom_path(aes(x = dat[,"Theta"], y = dat[,"PIF"]), color = "darkslategrey") +
+    return(
+      ggplot(as.data.frame(.dat)) + 
+      geom_path(aes(x = .dat[,"Theta"], y = .dat[,"PIF"]), color = "darkslategrey") +
       xlab("Theta") +
       theme_bw() + 
       ylab("PIF") +
       ggtitle("Potential Impact Fraction (PIF) under different values of theta")
-    
+    )
     
   } else {
     
@@ -74,9 +75,5 @@ plotpif <- function(X, thetamin, thetamax, rr,
     return(NA)
     
   }
-  
-  #For each of 
-  
-  
-  
+
 }

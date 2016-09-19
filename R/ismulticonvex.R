@@ -58,47 +58,47 @@ ismulticonvex <- function(f, xmin, xmax, tmin, tmax, maxval = 1000, tol = 1.e-8)
   } else {
     
     #Initial conditions for loop
-    n     <- 1       # number of loop
-    cvx   <- TRUE    # convexity conclusion
+    .n     <- 1       # number of loop
+    .cvx   <- TRUE    # convexity conclusion
     
     #Check maxval is integer
-    maxval <- ceiling(maxval)
+    .maxval <- ceiling(maxval)
     
     #Get n alphas < 1 for checking convexity
-    alpha  <- runif(maxval)
+    .alpha  <- runif(.maxval)
     
     #Get length of theta and length of x
-    xlen   <- length(xmin)
-    tlen   <- length(tmin)
+    .xlen   <- length(xmin)
+    .tlen   <- length(tmin)
     
     #Create the vectors
-    xval   <- vector("numeric", length = xlen)
-    theta1 <- vector("numeric", length = tlen)
-    theta2 <- vector("numeric", length = tlen)
+    .xval   <- vector("numeric", length = .xlen)
+    .theta1 <- vector("numeric", length = .tlen)
+    .theta2 <- vector("numeric", length = .tlen)
     
     #Loop through each value of maxval looking for a counterexample
-    while( n <= maxval & cvx){
+    while( .n <= .maxval & .cvx){
       
       #Simulate random x and t vectors
-      for (i in 1:xlen){
-        xval[i] <- runif(1, xmin[i], xmax[i])
+      for (i in 1:.xlen){
+        .xval[i] <- runif(1, xmin[i], xmax[i])
       }
       
-      for (i in 1:tlen){
-        theta1[i] <- runif(1, tmin[i], tmax[i])
-        theta2[i] <- runif(1, tmin[i], tmax[i])
+      for (i in 1:.tlen){
+        .theta1[i] <- runif(1, tmin[i], tmax[i])
+        .theta2[i] <- runif(1, tmin[i], tmax[i])
       }
       
       #Check convexity condition
-      cvx <- (alpha[n] * f(xval, theta1) + (1-alpha[n]) * f(xval, theta2) - 
-                f(xval, alpha[n] * theta1 + (1-alpha[n]) * theta2 )) > - tol
+      .cvx <- (.alpha[.n] * f(.xval, .theta1) + (1-.alpha[.n]) * f(.xval, .theta2) - 
+                f(.xval, .alpha[.n] * .theta1 + (1-.alpha[.n]) * .theta2 )) > - tol
       
       #Update n
-      n   <- n + 1
+      .n   <- .n + 1
 
     } #Close while
     
-    return(cvx)
+    return(.cvx)
     
   } #Close else
 } #Close function
