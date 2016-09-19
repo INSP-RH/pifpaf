@@ -1,6 +1,6 @@
 #' @title Approximate Confidence Intervals for the Potential Impact Fraction
 #' 
-#' @description Function that calculates confidence intervals to the potential impact fraction
+#' @description Function that calculates approximate variance to the potential impact fraction
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
@@ -14,6 +14,8 @@
 #' **Optional**
 #' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
+#' 
+#' @param nsim      Number of simulations
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí 
@@ -34,6 +36,16 @@
 #' thetavar <- 0.1
 #' paf.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 #' 
+#' #Example with theta and X multivariate
+#' set.seed(18427)
+#' X1 <- rnorm(1000)
+#' X2 <- rnorm(1000)
+#' X  <- as.matrix(cbind(X1,X2))
+#' thetahat <- c(0.12, 0.03)
+#' thetasd <- matrix(c(0.1, 0, 0, 0.4), byrow = T, nrow = 2)
+#' paf.variance.linear(X, thetahat, thetasd, function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}) 
+#' 
+#' @import MASS
 #' @export
 
 
@@ -63,10 +75,10 @@ paf.variance.linear <- function(X, thetahat, thetasd, rr, weights =  rep(1/nrow(
   #Get expected value and variance of that
   .meanvec   <- rep(NA, .nsim)
   .varvec    <- rep(NA, .nsim)
-  .thetasim  <- rnorm(.nsim, thetahat, thetasd)
+  .thetasim  <- mvrnorm(.nsim, thetahat, thetasd)
   for (i in 1:.nsim){
-    .meanvec[i]  <- .pafexp(.thetasim[i])
-    .varvec[i]   <- .pafvar(.thetasim[i])
+    .meanvec[i]  <- .pafexp(.thetasim[i,])
+    .varvec[i]   <- .pafvar(.thetasim[i,])
   }
   
   #Get variance of that
