@@ -115,7 +115,7 @@ pif <- function(X, thetahat, rr,
     
     #Estimate weighted sums
     .mux   <- weighted.mean(rr(X,thetahat), weights)
-    .mucft <- weighted.mean(weights*rr(cft(X),thetahat), weights)
+    .mucft <- weighted.mean(rr(cft(X),thetahat), weights)
     
     #Calculate PIF
     .pif   <- 1 - .mucft/.mux
