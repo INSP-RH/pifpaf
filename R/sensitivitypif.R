@@ -89,7 +89,7 @@ sensitivity.pif <- function(X, thetahat, rr,
       
       
       #Estimate pif and save it in pifdata
-      .pifdata[.i,.j] <- pif(.newX, thetahat, rr, cft, weights = .newW, eval.cvx = F)
+      .pifdata[.i,.j] <- pif(.newX, thetahat, rr, cft, weights = .newW)
       
     }
     

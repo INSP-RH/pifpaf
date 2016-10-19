@@ -55,7 +55,7 @@ plotpif <- function(X, thetamin, thetamax, rr,
       .dat[i,"Theta"] <- .theta[i]
       
       #Calculate PIF
-      .dat[i,"PIF"]   <- pif(X, .theta[i], rr, cft, weights,  eval.cvx = FALSE) 
+      .dat[i,"PIF"]   <- pif(X, .theta[i], rr, cft, weights) 
       
     }
     

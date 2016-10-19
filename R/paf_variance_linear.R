@@ -1,4 +1,4 @@
-#' @title Approximate Confidence Intervals for the Potential Impact Fraction
+#' @title Approximate Variance for the Potential Impact Fraction
 #' 
 #' @description Function that calculates approximate variance to the potential impact fraction
 #' 
@@ -42,10 +42,10 @@
 #' X2 <- rnorm(1000)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.12, 0.03)
-#' thetasd <- matrix(c(0.1, 0, 0, 0.4), byrow = T, nrow = 2)
+#' thetasd <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 #' paf.variance.linear(X, thetahat, thetasd, function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}) 
 #' 
-#' @import MASS
+#' @import MASS stats
 #' @export
 
 
@@ -56,20 +56,20 @@ paf.variance.linear <- function(X, thetahat, thetasd, rr, weights =  rep(1/nrow(
   
   #Set a minimum for nsim
   .nsim        <- max(nsim,10)
-  .ROthetahat  <- weighted.mean(rr(.X,thetahat), weights)
   
-  #Calculate the conditional expected value as a function of theta
-  .pafexp <- function(.theta){
-    return(1 - 1/weighted.mean(rr(.X,.theta), weights))
+  #Get the expected paf
+  .pafexp <- function(theta){
+    R0 <- weighted.mean(rr(.X, theta), weights)
+    return(1-1/R0)
   }
   
-  #Calculate the conditional variance as a function of theta
-  s  <- sum(weights)
-  s2 <- sum(weights^2)
-  .pafvar <- function(.theta){
-    .RO  <- weighted.mean(rr(.X,.theta), weights)
-    .var <- (1/.RO^4)*( s / (s^2 - s2) ) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
-    return(.var)
+  #Get the variance of PAF
+  .pafvar <- function(theta){
+    s2  <- sum(weights^2)
+    s   <- sum(weights)
+    R0  <- weighted.mean(rr(.X, theta), weights)
+    vr  <- (1/R0^4)*(s/(s^2-s2))*weighted.mean((rr(.X, theta) - R0)^2, weights)
+    return(vr)
   }
   
   #Get expected value and variance of that
