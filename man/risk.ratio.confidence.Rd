@@ -6,7 +6,7 @@
 \usage{
 risk.ratio.confidence(X, thetahat, thetasd, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
-  confidence = 95)
+  confidence = 95, force.min = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -25,6 +25,9 @@ risk.ratio.confidence(X, thetahat, thetasd, rr,
 \item{nsim}{Number of simulations}
 
 \item{confidence}{Confidence level \% (default: 95)}
+
+\item{force.min}{Boolean indicating whether to force the RR to have a 
+minimum value of 1 instead of 0 (not recommended).}
 }
 \description{
 Function that calculates confidence interval for the integral ∫RR(X;theta)f(x)dx
@@ -44,6 +47,9 @@ X <- rnorm(10000)
 thetahat <- 0.12
 thetavar <- 0.1
 risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+
+#We can force RR's CI to be >= 1
+risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, force.min = TRUE)
 
 #Example with theta and X multivariate
 set.seed(18427)

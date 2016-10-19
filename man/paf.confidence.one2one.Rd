@@ -5,7 +5,8 @@
 \title{Approximate Confidence Intervals for the Population Attributable Fraction with one to one RR function}
 \usage{
 paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr,
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95)
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
+  check_thetas = TRUE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -24,6 +25,8 @@ paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr,
 \item{weights}{Survey \code{weights} for the random sample \code{X}}
 
 \item{confidence}{Confidence level \% (default: 95)}
+
+\item{check_thetas}{Check that thetas are correctly specified}
 }
 \description{
 Function that calculates approximate confidence intervals of the Population Attributable Fraction

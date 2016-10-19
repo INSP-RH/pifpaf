@@ -4,16 +4,16 @@
 \alias{paf.confidence.loglinear}
 \title{Approximate Variance for the Population Attributable Fraction}
 \usage{
-paf.confidence.loglinear(X, thetahat, thetasd, rr,
+paf.confidence.loglinear(X, thetahat, thetavar, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
-  confidence = 95)
+  confidence = 95, check_thetas = TRUE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
 
-\item{thetasd}{Estimator of standard deviation of thetahat (usually standard error)}
+\item{thetavar}{Estimator of standard deviation of thetahat (usually standard error)}
 
 \item{rr}{Function for relative risk
 
@@ -25,6 +25,8 @@ paf.confidence.loglinear(X, thetahat, thetasd, rr,
 \item{nsim}{Number of simulations}
 
 \item{confidence}{Confidence level \% (default 95)}
+
+\item{check_thetas}{Check that theta parameters are correctly inputed}
 }
 \description{
 Function that calculates approximate variance to the population attributable fraction
@@ -51,9 +53,9 @@ X1       <- rnorm(1000)
 X2       <- rnorm(1000)
 X        <- as.matrix(cbind(X1,X2))
 thetahat <- c(0.12, 0.03)
-thetasd  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
+thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-paf.confidence.loglinear(X, thetahat, thetasd, rr) 
+paf.confidence.loglinear(X, thetahat, thetavar, rr) 
 
 }
 \author{

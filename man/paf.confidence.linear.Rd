@@ -4,16 +4,16 @@
 \alias{paf.confidence.linear}
 \title{Approximate Confidence Intervals for the Potential Impact Fraction}
 \usage{
-paf.confidence.linear(X, thetahat, thetase, rr,
+paf.confidence.linear(X, thetahat, thetavar, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
-  nsim = 1000)
+  nsim = 1000, check_thetas = TRUE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
 
-\item{thetase}{Estimator of standard error of thetahat (usually standard error)}
+\item{thetavar}{Estimator of standard error of thetahat (usually standard error)}
 
 \item{rr}{Function for relative risk
 
@@ -25,6 +25,8 @@ paf.confidence.linear(X, thetahat, thetase, rr,
 \item{confidence}{Confidence level \% (default 95)}
 
 \item{nsim}{Number of simulations for estimation of variance}
+
+\item{check_thetas}{Checks that theta parameters are correctly inputed}
 }
 \description{
 Function that calculates approximate confidence intervals to the potential impact fraction
