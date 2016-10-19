@@ -1,0 +1,57 @@
+body{
+  background-color:  #e6e6e6;
+    color:   #1a1a1a;
+    font-family: "Times New Roman", Times, serif;
+
+}
+
+
+h1 {
+  text-align: center;
+  background-color: #336699;
+  color: #ffffff;
+}
+
+.nav{
+  background-color: #f2f2f2;
+}
+
+
+.row{
+    background-color:  #e6e6e6;
+    color:   #1a1a1a;
+    display:table;
+  
+}
+
+.col-sm-8{
+  background-color:  #ffffff;
+}
+
+
+[class*="col-"] {
+  float: none;
+  display: table-cell;
+  vertical-align: top;
+}
+
+
+
+.text{
+  color: #1a1a1a ;
+}
+
+.shiny-bound-input{
+  color: #1a1a1a;
+}
+
+.shiny-input-radiogroup{
+  color:  #1a1a1a;
+    
+}
+
+#PAFandPIFout{
+font-size: large;
+}
+
+
