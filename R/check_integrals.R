@@ -35,6 +35,12 @@ check.integrals <- function(meanrr, meancft){
     stop("Expected value of counterfactual relative risk is < 0!")
   }
   
+  #Check that counterfactual is reducing the risk on average
+  if (meanrr < meancft){
+    bool <- FALSE
+    warning("Counterfactual is increasing the Risk. Are you sure you are specifying it correctly?")
+  }
+  
   return(bool)
   
 }
