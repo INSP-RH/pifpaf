@@ -6,9 +6,9 @@
 \usage{
 pif(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
   ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), eval.cvx = TRUE,
-  xmin = NA, xmax = NA, tmin = NA, tmax = NA, maxval = 1000,
-  tol = 1e-08)
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
+  method = c("empirical", "kernel"), ktype = "epanechnikov", bw = "nrd0",
+  adjust = 1, npoints = 1000)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -20,27 +20,21 @@ pif(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
 
 **Optional**}
 
-\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for \code{PAF} where counterfactual is 0 exposure}
+\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
+the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure}
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}}
 
-\item{eval.cvx}{Boolean for checking if relative risk function passes convexity or concavity test.}
+\item{method}{Either \code{empirical} (default) or \code{kernel}.}
 
-\item{xmin}{Minimum plaussible value of each entry of \code{X} can be found. That is: 
-\code{xmin[i]} <= \code{X[i]} <= \code{xmax[i]}}
+\item{ktype}{\code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
+\code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}}
 
-\item{xmax}{Maximum plaussible value of each entry of \code{X} can be found. That is: 
-\code{xmin[i]} <= \code{X[i]} <= \code{xmax[i]}}
+\item{bw}{Smoothing bandwith parameter from density}
 
-\item{tmin}{Minimum plaussible value of \code{theta} can be found. That is: 
-\code{tmin[i]} <= \code{theta[i]} <= \code{tmax[i]}}
+\item{adjust}{Adjust bandwith parameter from density}
 
-\item{tmax}{Maximum plaussible value of \code{theta} can be found. That is: 
-\code{tmin[i]} <= \code{theta[i]} <= \code{tmax[i]}}
-
-\item{maxval}{Number of values to sample to discard a function as not being convex.}
-
-\item{tol}{Tolerance of the method (\code{var} assumed \code{0} if \code{var < tol})}
+\item{npoints}{Number of points}
 }
 \description{
 Function that calculates the potential impact fraction via the empirical method
@@ -49,25 +43,33 @@ Function that calculates the potential impact fraction via the empirical method
 
 #Example with risk given by HR
 set.seed(18427)
-X <- rlnorm(100)
+X <- rnorm(100)
 thetahat <- 0.12
 pif(X, thetahat, function(X, theta){exp(theta*X)})
 
+#Same example with kernel method
+pif(X, thetahat, function(X, theta){exp(theta*X)}, method = "kernel")
+
 #Same example considering counterfactual of halfing exposure
-pif(X, thetahat, function(X, theta){exp(theta*X)}, cft = function(X){ 0.5*X })
+pif(X, thetahat, function(X, theta){exp(theta*X)}, cft = function(X){ 0.5*X }, method = "empirical")
 
-#Example with  function of risk that is not convex nor concave
-set.seed(523)
-X <- rgamma(100, shape = 1)
-thetahat <- 1.4
-pif(X, thetahat, function(X, theta){X*(theta-1.82)^3},  eval.cvx = TRUE)
+#Example with linear relative risk
+pif(X, thetahat, function(X, theta){theta*X + 1}, cft = function(X){ 0.5*X })
 
-#Notice that deactivating the convexity checker returns results but they might be incorrect
-pif(X, thetahat, function(X, theta){X*(theta-1.82)^3}, eval.cvx = FALSE)
+#Multivariate example
+set.seed(18427)
+X1 <- rnorm(1000)
+X2 <- rnorm(1000)
+X  <- as.matrix(cbind(X1,X2))
+thetahat <- c(0.12, 0.03)
+rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+pif(X, thetahat, rr) 
 
-#Notice that specifying theta's domain limits the revision of convexity to the area
-#where the function actually is convex
-pif(X, thetahat, function(X, theta){X*(theta-1.82)^3}, eval.cvx = TRUE, tmin = 1, tmax =1.819)
+\dontrun{
+#Multivariate cases cannot be evaluated with kernel method
+pif(X, thetahat, rr, method = "kernel") 
+}
+
 
 }
 \author{
