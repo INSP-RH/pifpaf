@@ -20,6 +20,8 @@
 #' 
 #' @param confidence Confidence level \% (default: 95)
 #' 
+#' @param check_thetas Check that thetas are correctly specified
+#' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí 
 #' 
@@ -50,15 +52,18 @@
 
 paf.confidence.one2one <- function(X, thetahat, thetalow, thetaup, rr, 
                                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                                   confidence = 95){
+                                   confidence = 95, check_thetas = TRUE){
   
-  #Get thetasd as matrix
-  thetasd <- matrix(0, ncol = length(thetahat), nrow = length(thetahat))
+  #Check that thetas apply
+  if(check_thetas){ check.thetas(NA, thetahat, thetalow, thetaup, "one2one") }
+  
+  #Get thetavar as matrix
+  thetavar <- matrix(0, ncol = length(thetahat), nrow = length(thetahat))
   
   #Calculate the PIF with confidence intervals
-  .upper <- paf.confidence.inverse(X, thetaup,  thetasd = thetasd, rr = rr, 
+  .upper <- paf.confidence.inverse(X, thetaup,  thetavar = thetavar, rr = rr, 
                                    weights = weights, confidence = confidence, nsim = 0)
-  .lower <- paf.confidence.inverse(X, thetalow, thetasd = thetasd, rr = rr, 
+  .lower <- paf.confidence.inverse(X, thetalow, thetavar = thetavar, rr = rr, 
                                    weights = weights, confidence = confidence, nsim = 0)
   .point <- pif(X, thetahat, rr = rr, weights = weights)
   
