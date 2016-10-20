@@ -170,7 +170,7 @@ shinyServer(function(input,output){
               return(Warnings1(Error))
             }else{
               if (input$w==0) {
-                PAF <- pif(X=X, thetahat = theta, rr = RR, eval.cvx = FALSE)
+                PAF <- pif(X=X, thetahat = theta, rr = RR)
                 
                 if(input$PIForPAF == 1){
                   return(sprintf("PAF = %3f",PAF))
@@ -178,7 +178,7 @@ shinyServer(function(input,output){
                 if(input$PIForPAF > 1){
                   if(input$Cft == 1){
                     Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                     
                     if(input$PIForPAF == 2){
                       return(sprintf("PIF = %3f",PIF))
@@ -208,7 +208,7 @@ shinyServer(function(input,output){
                               return(Warnings1(Error))
                             }else{
                               Cft <- Counterfactual
-                              PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                              PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                               if(input$PIForPAF == 2){
                                 return(sprintf("PIF = %3f",PIF))
                               }else{
@@ -239,14 +239,14 @@ shinyServer(function(input,output){
                     if(length(Weight)!=length(X)){
                       return(sprintf("Warning: The amount of exposure values and weight values are different, there are %d exposure values, %d weight values." , length(X), length(Weight)))
                     }else{
-                      PAF <- pif(X=X, thetahat = theta, rr = RR, eval.cvx = FALSE, weights = Weight)
+                      PAF <- pif(X=X, thetahat = theta, rr = RR, weights = Weight)
                       if(input$PIForPAF==1){
                         return(sprintf("PAF = %3f",PAF))
                       }
                       if(input$PIForPAF > 1){
                         if(input$Cft == 1){
                           Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                          PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight, eval.cvx = FALSE)
+                          PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight)
                           
                           if(input$PIForPAF == 2){
                             return(sprintf("PIF = %3f",PIF))
@@ -278,7 +278,7 @@ shinyServer(function(input,output){
                                     return(Warnings1(Error)) 
                                   }else{
                                     Cft <- Counterfactual
-                                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight, eval.cvx = FALSE)
+                                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight)
                                     if(input$PIForPAF == 2){
                                       return(sprintf("PIF = %3f",PIF))
                                     }else{
@@ -334,14 +334,14 @@ shinyServer(function(input,output){
                           }else{
                             RR <- RRfunction
                             if (input$w==0) {
-                              PAF <- pif(X=X, thetahat = theta, rr = RR, eval.cvx = FALSE)
+                              PAF <- pif(X=X, thetahat = theta, rr = RR)
                               if(input$PIForPAF == 1){
                                 return(sprintf("PAF = %3f",PAF))
                               }
                               if(input$PIForPAF > 1){
                                 if(input$Cft == 1){
                                   Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                                  PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                                  PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                                   if(input$PIForPAF == 2){
                                     return(sprintf("PIF = %3f",PIF))
                                   }else{
@@ -371,7 +371,7 @@ shinyServer(function(input,output){
                                             return(Warnings1(Error))
                                           }else{
                                             Cft <- Counterfactual
-                                            PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                                            PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                                             if(input$PIForPAF == 2){
                                               return(sprintf("PIF = %3f",PIF))
                                             }else{
@@ -401,7 +401,7 @@ shinyServer(function(input,output){
                                   if(length(Weight)!=length(X)){
                                     return(sprintf("Warning: The amount of exposure values and weight values are different, there are %d exposure values, %d weight values." , length(X), length(Weight)))
                                   }else{
-                                    PAF <- pif(X=X, thetahat = theta, rr = RR, eval.cvx = FALSE, weights = Weight)
+                                    PAF <- pif(X=X, thetahat = theta, rr = RR, weights = Weight)
                                     if(input$PIForPAF==1){
                                       return(sprintf("PAF = %3f",PAF))
                                       
@@ -409,7 +409,7 @@ shinyServer(function(input,output){
                                     if(input$PIForPAF > 1){
                                       if(input$Cft == 1){
                                         Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                                        PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight, eval.cvx = FALSE)
+                                        PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight)
                                         if(input$PIForPAF == 2){
                                           return(sprintf("PIF = %3f",PIF))
                                         }else{
@@ -440,7 +440,7 @@ shinyServer(function(input,output){
                                                   return(Warnings1(Error))
                                                 }else{
                                                   Cft <- Counterfactual
-                                                  PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight, eval.cvx = FALSE)
+                                                  PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight)
                                                   if(input$PIForPAF == 2){
                                                     return(sprintf("PIF = %3f",PIF))
                                                   }else{
@@ -490,14 +490,14 @@ shinyServer(function(input,output){
               }else{
                 if (input$w==0) {
                   
-                  PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})},eval.cvx = FALSE)
+                  PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})})
                   if(input$PIForPAF == 1){
                     return(sprintf("PAF = %3f",PAF))
                   }
                   if(input$PIForPAF > 1){
                     if(input$Cft == 1){
                       Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                      PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                      PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                       if(input$PIForPAF == 2){
                         return(sprintf("PIF = %3f",PIF))
                       }else{
@@ -527,7 +527,7 @@ shinyServer(function(input,output){
                                 return(Warnings1(Error))
                               }else{
                                 Cft <- Counterfactual
-                                PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                                PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                                 if(input$PIForPAF == 2){
                                   return(sprintf("PIF = %3f",PIF))
                                 }else{
@@ -554,14 +554,14 @@ shinyServer(function(input,output){
                       if(length(Weight)!=length(X)){
                         return(sprintf("Warning: The amount of exposure values and weight values are different, there are %d exposure values, %d weight values." , length(X), length(Weight)))
                       }else{
-                        PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})},eval.cvx = FALSE, weights = Weight)
+                        PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})}, weights = Weight)
                         if(input$PIForPAF==1){
                           return(sprintf("PAF = %3f",PAF))
                         }
                         if(input$PIForPAF > 1){
                           if(input$Cft == 1){
                             Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                            PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight, eval.cvx = FALSE)
+                            PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight)
                             
                             if(input$PIForPAF == 2){
                               return(sprintf("PIF = %3f",PIF))
@@ -592,7 +592,7 @@ shinyServer(function(input,output){
                                       return(Warnings1(Error))
                                     }else{
                                       Cft <- Counterfactual
-                                      PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight, eval.cvx = FALSE)
+                                      PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight)
                                       if(input$PIForPAF == 2){
                                         return(sprintf("PIF = %3f",PIF))
                                       }else{
@@ -649,7 +649,7 @@ shinyServer(function(input,output){
                               RR <- RRfunction
                               if (input$w==0) {
                                 
-                                PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})},eval.cvx = FALSE)
+                                PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})})
                                 if(input$PIForPAF == 1){
                                   return(sprintf("PAF = %3f",PAF))
                                   
@@ -657,7 +657,7 @@ shinyServer(function(input,output){
                                 if(input$PIForPAF > 1){
                                   if(input$Cft == 1){
                                     Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                                     
                                     if(input$PIForPAF == 2){
                                       return(sprintf("PIF = %3f",PIF))
@@ -688,7 +688,7 @@ shinyServer(function(input,output){
                                               return(Warnings1(Error))
                                             }else{
                                               Cft <- Counterfactual
-                                              PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft,eval.cvx = FALSE)
+                                              PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft)
                                               if(input$PIForPAF == 2){
                                                 return(sprintf("PIF = %3f",PIF))
                                               }else{
@@ -718,14 +718,14 @@ shinyServer(function(input,output){
                                     if(length(Weight)!=length(X)){
                                       return(sprintf("Warning: The amount of exposure values and weight values are different, there are %d exposure values, %d weight values." , length(X), length(Weight)))
                                     }else{
-                                      PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})},eval.cvx = FALSE, weights = Weight)
+                                      PAF <- pif(X=X, thetahat = theta, rr = RR, cft = function(X){sapply(X,function(x){xmin})}, weights = Weight)
                                       if(input$PIForPAF==1){
                                         return(sprintf("PAF = %3f",PAF))
                                       }
                                       if(input$PIForPAF > 1){
                                         if(input$Cft == 1){
                                           Cft <- function(X){as.numeric(input$a)*X+as.numeric(input$b)}
-                                          PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight, eval.cvx = FALSE)
+                                          PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights =  Weight)
                                           if(input$PIForPAF == 2){
                                             return(sprintf("PIF = %3f",PIF))
                                           }else{
@@ -755,7 +755,7 @@ shinyServer(function(input,output){
                                                     return(Warnings1(Error))
                                                   }else{
                                                     Cft <- Counterfactual
-                                                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight, eval.cvx = FALSE)
+                                                    PIF <- pif(X=X, thetahat = theta, rr = RR, cft = Cft, weights = Weight)
                                                     if(input$PIForPAF == 2){
                                                       return(sprintf("PIF = %3f",PIF))
                                                     }else{
