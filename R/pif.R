@@ -113,8 +113,8 @@ pif <- function(X, thetahat, rr,
          },
          
          approximate = {
+           Xmean <- colMeans(.X)
            if(length(X)[1] > 1){
-             Xmean <- colMeans(.X)
              Xmean <- matrix(Xmean, ncol = length(Xmean))
            }
            .pif <- pif.approximate(Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, cft)
