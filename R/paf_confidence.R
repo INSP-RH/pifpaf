@@ -22,9 +22,9 @@
 #' @param method     Method of estimation of confidence intervals "inverse", "log", "linear", "one2one"
 #'                   (default: inverse)
 #'                   
-#' @param thetamin   Minimum value of theta (needed if \code{method} = one2one)
+#' @param thetalow   Minimum value of theta (needed if \code{method} = one2one)
 #' 
-#' @param thetamax   Maximum value of theta (needed if \code{method} = one2one)
+#' @param thetaup   Maximum value of theta (needed if \code{method} = one2one)
 #' 
 #' @param force.min Boolean indicating whether to force the PAF to have a 
 #'                  minimum value of 0 instead of allowing negative values (not recommended).
@@ -67,35 +67,41 @@
 #' @export
 
 paf.confidence <- function(X, thetahat, thetavar = NA, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                           thetamin = NA, thetamax = NA, nsim = 1000, confidence = 95, 
+                           thetalow = NA, thetaup = NA, nsim = 1000, confidence = 95, 
                            method = c("inverse", "log", "linear", "one2one"), 
                                    force.min = FALSE){
   
   #Get method from vector
-  .method <- as.vector(method)[1]
+  .method   <- as.vector(method)[1]
   
   #Change variance to matrix
   .thetavar <- as.matrix(thetavar)
   
   #Check that thetas are as they should
-  check.thetas(.thetavar, thetahat, thetamin, thetamax, .method)
+  check.thetas(.thetavar, thetahat, thetalow, thetaup, .method)
   
   switch(.method,
          
          inverse = {
-           .cipaf <- paf.confidence.inverse(X, thetahat, .thetavar, rr, weights, nsim, confidence, force.min)
+           .cipaf <- paf.confidence.inverse(X, thetahat, .thetavar, rr, weights, nsim, confidence, force.min,
+                                            check_thetas = FALSE)
          }, 
          
          log = {
-           .cipaf <- paf.confidence.loglinear(X, thetahat, .thetavar, rr, weights, nsim, confidence)
+           .cipaf <- paf.confidence.loglinear(X, thetahat, .thetavar, rr, weights, nsim, confidence,
+                                              check_thetas = FALSE)
          },
          
          linear = {
-           .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, nsim, confidence)
+           .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, nsim, confidence,
+                                           check_thetas = FALSE)
          },
          
          one2one = {
-           .cipaf <- paf.confidence.one2one(X, thetahat, thetamin, thetamax, rr, weights, nsim, confidence)
+           .cipaf <- paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr, weights, confidence,
+                                            check_thetas = FALSE)
+           print(.cipaf)
+           flush.console()
          },
          
          {
