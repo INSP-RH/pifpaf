@@ -93,15 +93,13 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr, weights =  rep(1/nrow
          },
          
          linear = {
-           .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, nsim, confidence,
+           .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, confidence, nsim,
                                            check_thetas = FALSE)
          },
          
          one2one = {
            .cipaf <- paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr, weights, confidence,
                                             check_thetas = FALSE)
-           print(.cipaf)
-           flush.console()
          },
          
          {
