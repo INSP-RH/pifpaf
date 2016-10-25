@@ -130,7 +130,7 @@ shinyServer(function(input,output){
   
   output$sdtheta <- renderUI({withMathJax(
     if(input$rr <= 2 && input$xmin0 == 1){
-      textInputRow("SDtheta", label = h6("$$\\text{Standard deviation of } \\theta =$$ "),value = 1)
+      textInputRow("SDtheta", label = h6("$$\\text{Standard deviation of } \\theta =$$ "),value = 0.001)
     })
   })
   
