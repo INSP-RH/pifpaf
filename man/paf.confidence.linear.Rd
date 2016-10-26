@@ -2,18 +2,17 @@
 % Please edit documentation in R/paf_confidence_linear.R
 \name{paf.confidence.linear}
 \alias{paf.confidence.linear}
-\title{Approximate Confidence Intervals for the Population Impact Fraction}
+\title{Approximate Confidence Intervals for the Potential Impact Fraction}
 \usage{
-paf.confidence.linear(X, thetahat, thetavar, rr,
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
-  nsim = 1000, check_thetas = TRUE)
+paf.confidence.linear(X, thetahat, thetasd, rr,
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
 
-\item{thetavar}{Estimator of standard error of thetahat (usually standard error)}
+\item{thetasd}{Estimator of standard deviation of thetahat (usually standard error)}
 
 \item{rr}{Function for relative risk
 
@@ -21,41 +20,26 @@ paf.confidence.linear(X, thetahat, thetavar, rr,
 **Optional**}
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}}
-
-\item{confidence}{Confidence level \% (default 95)}
-
-\item{nsim}{Number of simulations for estimation of variance}
-
-\item{check_thetas}{Checks that theta parameters are correctly inputed}
 }
 \description{
-Function that calculates approximate confidence intervals to the population attributable fraction.
+Function that calculates confidence intervals to the potential impact fraction
 }
 \examples{
 
 #Example with risk given by HR
 set.seed(18427)
-X <- rnorm(100,3,.5)
+X <- rnorm(100)
 thetahat <- 0.12
 thetavar <- 0.1
 paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 
 #With larger sample the confidence interval reduces
 set.seed(18427)
-X <- rnorm(10000,3,.5)
+X <- rnorm(10000)
 thetahat <- 0.12
 thetavar <- 0.1
 paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 
-#Example with theta and X multivariate
-set.seed(18427)
-X1 <- rnorm(2000, 3,.5)
-X2 <- rnorm(2000,3,.5)
-X  <- as.matrix(cbind(X1,X2))
-thetahat <- c(0.1, 0.03)
-thetasd <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
-rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-paf.confidence.linear(X, thetahat, thetasd, rr) 
 
 }
 \author{
