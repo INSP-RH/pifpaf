@@ -1,6 +1,6 @@
-#' @title Approximate Variance for the Potential Impact Fraction
+#' @title Approximate Variance for the Population Attributable Fraction
 #' 
-#' @description Function that calculates approximate variance to the potential impact fraction
+#' @description Function that calculates approximate variance to the population attributable fraction
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
