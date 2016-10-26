@@ -40,6 +40,7 @@
 #' 
 #' #Example with risk given by HR
 #' set.seed(18427)
+#' library(ggplot2)
 #' X <- rlnorm(100)
 #' plotpif(X, 0, 2, function(X, theta){exp(theta*X)})+ ggtitle("PAF under different values of theta \n Empirical method")
 #' 
