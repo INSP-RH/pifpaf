@@ -51,8 +51,8 @@
 pif.approximate <- function(Xmean, Xvar, thetahat, rr, 
                             cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}){
   
-  .Xmean <- as.matrix(Xmean)
-  .Xvar  <- as.matrix(Xvar)
+  .Xmean  <- matrix(Xmean, ncol = length(Xmean))
+  .Xvar   <- matrix(Xvar, ncol = sqrt(length(Xvar)))
   
   if(is.positive.definite(.Xvar) == FALSE){
     stop("Variance matrix must be positive definite.")
