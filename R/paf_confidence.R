@@ -133,7 +133,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
            },
            
            one2one = {
-             .cipaf <- paf.confidence.one2one(X, thetahat, thetamin, thetamax, rr, weights,confidence = confidence, nsim = nsim,
+             .cipaf <- paf.confidence.one2one(X, thetahat, thetamin, thetamax, rr, weights,confidence = confidence,
                                               check_thetas = FALSE)
            },
            
