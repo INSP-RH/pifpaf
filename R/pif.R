@@ -89,7 +89,7 @@
 pif <- function(X, thetahat, rr, 
                 cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), method = c("empirical", "kernel", "approximate"),
-                Xvar = 1,
+                Xvar = var(X),
                 ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000){
   
   #Get method from vector
