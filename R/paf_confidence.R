@@ -128,7 +128,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
            },
            
            linear = {
-             .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, nsim, confidence,
+             .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights,  confidence, nsim,
                                              check_thetas = FALSE)
            },
            
