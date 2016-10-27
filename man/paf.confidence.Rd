@@ -101,6 +101,20 @@ rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 paf.confidence(X = X, thetahat = theta, thetavar = thetasd, rr = rr)
 paf.confidence(X = Xmean, thetahat = theta, thetavar = thetasd, rr = rr, Xvar = Xvar, est.method = "approximate")
 
+#Examples with approximate methods
+rr      <- function(X,theta){exp(X*theta)}
+X       <- rnorm(100,3.2,1)
+Xmean   <- 3.2
+Xvar    <- 1
+theta   <- 0.4
+thetasd <- 0.001
+.Xmean  <- as.matrix(Xmean)
+.Xvar   <- as.matrix(Xvar)
+paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "linear")
+paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "log")
+paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "inverse")
+paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, rr = rr, est.method = "approximate", method = "one2one",  Xvar = Xvar)
+
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}

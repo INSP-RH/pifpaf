@@ -2,14 +2,15 @@
 % Please edit documentation in R/paf_confidence_inverse.R
 \name{paf.confidence.inverse}
 \alias{paf.confidence.inverse}
-\title{Approximate Confidence Intervals for the Population Attributable Fraction}
+\title{Confidence intervals for the Population Attributable Fraction, using the inverse method}
 \usage{
 paf.confidence.inverse(X, thetahat, thetavar, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
-  confidence = 95, force.min = FALSE, check_thetas = TRUE)
+  confidence = 95, force.min = FALSE, check_thetas = TRUE,
+  method = c("empirical", "approximate"), Xvar = var(X))
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
 
@@ -30,9 +31,13 @@ paf.confidence.inverse(X, thetahat, thetavar, rr,
 minimum value of 0 instead of allowing negative values (not recommended).}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
+
+\item{method}{Either \code{empirical} (default) or \code{approximate}.}
+
+\item{Xvar}{Variance of exposure levels.}
 }
 \description{
-Function that calculates approximate confidence intervals of the Population Attributable Fraction
+Confidence intervals for the Population Attributable Fraction for relative risk inyective functions, the PAF is inyective, and intervals can be calculated for the relative risk, and then transformed to PAF CI. This function works for both the empirical method and the approximate method.
 }
 \examples{
 
@@ -62,6 +67,32 @@ thetahat <- c(0.12, 0.03)
 thetavar <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 paf.confidence.inverse(X, thetahat, thetavar, rr) 
+#Example: Approximate method
+ set.seed(46987)
+ rr      <- function(X,theta){exp(X*theta)}
+ X       <- rnorm(100,3.2,1)
+ Xmean   <- 3.2
+ Xvar    <- 1
+ theta   <- 0.4
+ thetasd <- 0.001
+ 
+ Xmean  <- as.matrix(Xmean)
+ .Xvar   <- as.matrix(Xvar)
+ paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
+ paf.confidence.inverse(X, thetahat = theta, thetavar = thetasd, rr=rr, method = "empirical", Xvar = Xvar)
+
+#Example: Multidimensional example using approximate method
+X1       <- rnorm(1000,3,.5)
+X2       <- rnorm(1000,4,1)
+X        <- as.matrix(cbind(X1,X2))
+Xmean    <- colMeans(X)
+Xvar     <- cov(X)
+.Xmean   <- matrix(Xmean, ncol = length(Xmean))
+.Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
+theta    <- c(0.12, 0.17)
+thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
 
 }
 \author{

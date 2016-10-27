@@ -2,14 +2,15 @@
 % Please edit documentation in R/paf_confidence_one_to_one.R
 \name{paf.confidence.one2one}
 \alias{paf.confidence.one2one}
-\title{Approximate Confidence Intervals for the Population Attributable Fraction with one to one RR function}
+\title{Approximate Confidence Intervals for the Population Attributable Fraction with one to one RR function, only for unidimensional theta values}
 \usage{
 paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
-  check_thetas = TRUE)
+  check_thetas = TRUE, method = c("empirical", "approximate"),
+  Xvar = var(X))
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
 
@@ -27,10 +28,14 @@ paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr,
 \item{confidence}{Confidence level \% (default: 95)}
 
 \item{check_thetas}{Check that thetas are correctly specified}
+
+\item{method}{Either \code{empirical} (default) or \code{approximate}.}
+
+\item{Xvar}{Variance of exposure levels.}
 }
 \description{
 Function that calculates approximate confidence intervals of the Population Attributable Fraction
-considering a one to one Relative Risk
+considering a one to one Relative Risk with unidimensional theta values.
 }
 \examples{
 
@@ -54,6 +59,17 @@ thetaup  <- c(0.25, 0.06)
 rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr) 
 
+#Example with approximate method
+set.seed(46987)
+rr      <- function(X,theta){exp(X*theta)}
+X       <- rnorm(100,3.2,1)
+Xmean   <- 3.2
+Xvar    <- 1
+theta   <- 0.4
+thetasd <- 0.001
+.Xmean  <- as.matrix(Xmean)
+.Xvar   <- as.matrix(Xvar)
+paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3, thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}

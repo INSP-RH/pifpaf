@@ -2,7 +2,7 @@
 % Please edit documentation in R/paf_confidence_loglinear.R
 \name{paf.confidence.loglinear}
 \alias{paf.confidence.loglinear}
-\title{Approximate Variance for the Population Attributable Fraction}
+\title{Confidence intervals for the Population Attributable Fraction, using the loglinear method}
 \usage{
 paf.confidence.loglinear(X, thetahat, thetavar, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
@@ -29,7 +29,7 @@ paf.confidence.loglinear(X, thetahat, thetavar, rr,
 \item{check_thetas}{Check that theta parameters are correctly inputed}
 }
 \description{
-Function that calculates approximate variance to the population attributable fraction
+Confidence intervals for the Population Attributable Fraction for relative risk inyective functions, the PAF is inyective, and intervals can be calculated for log(PAF), and then transformed to PAF CI.
 }
 \examples{
 

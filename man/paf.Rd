@@ -5,8 +5,8 @@
 \title{Population Attributable Fraction}
 \usage{
 paf(X, thetahat, rr, weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
-  method = c("empirical", "kernel"), ktype = "epanechnikov", bw = "nrd0",
-  adjust = 1, npoints = 1000)
+  method = c("empirical", "kernel", "approximate"), Xvar = var(X),
+  ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -20,7 +20,9 @@ paf(X, thetahat, rr, weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}}
 
-\item{method}{Either \code{empirical} (default) or \code{kernel}.}
+\item{method}{Either \code{empirical} (default), \code{kernel} or \code{approximate}.}
+
+\item{Xvar}{Variance of exposure levels.}
 
 \item{ktype}{\code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
 \code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}}
