@@ -148,22 +148,22 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
     switch(.method,
            
            inverse = {
-             .cipaf <- paf.confidence.inverse(X, thetahat, .thetavar, rr, weights, confidence,  nsim, force.min,
+             .cipaf <- paf.confidence.inverse(X, thetahat, .thetavar, rr, weights, confidence = confidence, nsim = nsim, force.min = force.min,
                                               check_thetas = FALSE)
            }, 
            
            log = {
-             .cipaf <- paf.confidence.loglinear(X, thetahat, .thetavar, rr, weights, nsim, confidence,
+             .cipaf <- paf.confidence.loglinear(X, thetahat, .thetavar, rr, weights, confidence = confidence, nsim = nsim,
                                                 check_thetas = FALSE)
            },
            
            linear = {
-             .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, nsim, confidence,
+             .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, confidence = confidence, nsim = nsim,
                                              check_thetas = FALSE)
            },
            
            one2one = {
-             .cipaf <- paf.confidence.one2one(X, thetahat, thetamin, thetamax, rr, weights,confidence = confidence,
+             .cipaf <- paf.confidence.one2one(X, thetahat, thetamin, thetamax, rr, weights, confidence = confidence,
                                               check_thetas = FALSE)
            },
            
