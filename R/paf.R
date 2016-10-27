@@ -13,7 +13,9 @@
 #' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
 #' 
-#' @param method    Either \code{empirical} (default) or \code{kernel}. 
+#' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}. 
+#' 
+#' @param Xvar      Variance of exposure levels.
 #' 
 #' @param ktype    \code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
 #'                  \code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}
@@ -61,12 +63,15 @@
 #' @export
 
 paf <- function(X, thetahat, rr, 
-                weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), method = c("empirical", "kernel"),
+                weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
+                method = c("empirical", "kernel", "approximate"),
+                Xvar = var(X),
                 ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000){
   
   
   .paf <- pif(X = X, thetahat = thetahat, rr = rr, 
               weights = weights, method = method, 
+              Xvar = Xvar,
               ktype = ktype, bw = bw, adjust = adjust, 
               npoints = npoints)
   

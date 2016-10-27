@@ -1,8 +1,8 @@
-#' @title Approximate Confidence Intervals for the Population Attributable Fraction
+#' @title Confidence intervals for the Population Attributable Fraction, using the inverse method
 #' 
-#' @description Function that calculates approximate confidence intervals of the Population Attributable Fraction
+#' @description Confidence intervals for the Population Attributable Fraction for relative risk inyective functions, the PAF is inyective, and intervals can be calculated for the relative risk, and then transformed to PAF CI. This function works for both the empirical method and the approximate method.
 #' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
+#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
@@ -14,6 +14,10 @@
 #' **Optional**
 #' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
+#' 
+#' @param method    Either \code{empirical} (default) or \code{approximate}. 
+#' 
+#' @param Xvar      Variance of exposure levels.
 #' 
 #' @param nsim      Number of simulations
 #' 
@@ -55,13 +59,41 @@
 #' thetavar <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' paf.confidence.inverse(X, thetahat, thetavar, rr) 
+#' #Example: Approximate method
+#'  set.seed(46987)
+#'  rr      <- function(X,theta){exp(X*theta)}
+#'  X       <- rnorm(100,3.2,1)
+#'  Xmean   <- 3.2
+#'  Xvar    <- 1
+#'  theta   <- 0.4
+#'  thetasd <- 0.001
+#'  
+#'  Xmean  <- as.matrix(Xmean)
+#'  .Xvar   <- as.matrix(Xvar)
+#'  paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
+#'  paf.confidence.inverse(X, thetahat = theta, thetavar = thetasd, rr=rr, method = "empirical", Xvar = Xvar)
+#'
+#'#Example: Multidimensional example using approximate method
+#'X1       <- rnorm(1000,3,.5)
+#'X2       <- rnorm(1000,4,1)
+#'X        <- as.matrix(cbind(X1,X2))
+#'Xmean    <- colMeans(X)
+#'Xvar     <- cov(X)
+#'.Xmean   <- matrix(Xmean, ncol = length(Xmean))
+#'.Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
+#'theta    <- c(0.12, 0.17)
+#'thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+#'paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
 #' 
 #' @import MASS
 #' @export
 
 paf.confidence.inverse <- function(X, thetahat, thetavar, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                                     nsim = 1000, confidence = 95, force.min = FALSE, check_thetas = TRUE){
+                                   nsim = 1000, confidence = 95, force.min = FALSE, check_thetas = TRUE, method = c("empirical", "approximate"), Xvar = var(X)){
   
+  #Get method from vector
+  .method <- as.vector(method)[1]
   
   #Change variance to matrix
   .thetavar <- as.matrix(thetavar)
@@ -69,13 +101,23 @@ paf.confidence.inverse <- function(X, thetahat, thetavar, rr, weights =  rep(1/n
   #Function for checking that thetas are correctly inputed
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "inverse") }
   
-  #Compute the PAF intervals
-  .cipaf         <- 1-1/risk.ratio.confidence(X = X, thetahat = thetahat, 
+ rr.CI<- switch (.method,
+          empirical = risk.ratio.confidence(X = X, thetahat = thetahat, 
                                               thetasd = .thetavar, rr = rr, 
                                               weights =  weights, nsim = nsim, 
-                                              confidence = confidence, force.min = force.min)
-  
-  #Return variance
-  return(.cipaf)
+                                              confidence = confidence, force.min = force.min),
+          approximate = risk.ratio.approximate.confidence(Xmean = X, Xvar = Xvar, thetahat = thetahat, 
+                                                thetasd = .thetavar, rr = rr, nsim = nsim, 
+                                                confidence = confidence, force.min = force.min),
+          risk.ratio.confidence(X = X, thetahat = thetahat, 
+                                thetasd = .thetavar, rr = rr, 
+                                weights =  weights, nsim = nsim, 
+                                confidence = confidence, force.min = force.min)
+  )
+  #Compute the PAF intervals
+  .cipaf         <- 1-1/rr.CI
+    
+    #Return variance
+    return(.cipaf)
   
 }

@@ -1,6 +1,6 @@
 #' @title Approximate Confidence Intervals for the Population Attributable Fraction
 #' 
-#' @description Function that calculates approximate confidence intervals to the population attributable fraction
+#' @description Function that calculates approximate confidence intervals to the population attributable fraction.
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 

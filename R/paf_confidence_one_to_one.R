@@ -1,9 +1,9 @@
-#' @title Approximate Confidence Intervals for the Population Attributable Fraction with one to one RR function
+#' @title Approximate Confidence Intervals for the Population Attributable Fraction with one to one RR function, only for unidimensional theta values
 #' 
 #' @description Function that calculates approximate confidence intervals of the Population Attributable Fraction
-#' considering a one to one Relative Risk
+#' considering a one to one Relative Risk with unidimensional theta values.
 #' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
+#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
@@ -17,6 +17,10 @@
 #' **Optional**
 #' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
+#' 
+#' @param method    Either \code{empirical} (default) or \code{approximate}. 
+#' 
+#' @param Xvar      Variance of exposure levels.
 #' 
 #' @param confidence Confidence level \% (default: 95)
 #' 
@@ -47,12 +51,28 @@
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr) 
 #' 
+#' #Example with approximate method
+#' set.seed(46987)
+#' rr      <- function(X,theta){exp(X*theta)}
+#' X       <- rnorm(100,3.2,1)
+#' Xmean   <- 3.2
+#' Xvar    <- 1
+#' theta   <- 0.4
+#' thetasd <- 0.001
+#' .Xmean  <- as.matrix(Xmean)
+#' .Xvar   <- as.matrix(Xvar)
+#' paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3, thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
+
 #' @import MASS
 #' @export
 
 paf.confidence.one2one <- function(X, thetahat, thetalow, thetaup, rr, 
                                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                                   confidence = 95, check_thetas = TRUE){
+                                   confidence = 95, check_thetas = TRUE,
+                                   method = c("empirical","approximate"), Xvar = var(X)){
+  
+  #Get method from vector
+  .method <- as.vector(method)[1]
   
   #Check that thetas apply
   if(check_thetas){ check.thetas(NA, thetahat, thetalow, thetaup, "one2one") }
@@ -61,11 +81,26 @@ paf.confidence.one2one <- function(X, thetahat, thetalow, thetaup, rr,
   thetavar <- matrix(0, ncol = length(thetahat), nrow = length(thetahat))
   
   #Calculate the PIF with confidence intervals
-  .upper <- paf.confidence.inverse(X, thetaup,  thetavar = thetavar, rr = rr, 
-                                   weights = weights, confidence = confidence, nsim = 0)
-  .lower <- paf.confidence.inverse(X, thetalow, thetavar = thetavar, rr = rr, 
-                                   weights = weights, confidence = confidence, nsim = 0)
-  .point <- pif(X, thetahat, rr = rr, weights = weights)
+  switch (.method,
+    empirical = {
+    .upper <- paf.confidence.inverse(X, thetaup,  thetavar = thetavar, rr = rr, method = "empirical",
+                                                  weights = weights, confidence = confidence, nsim = 0)
+    .lower <- paf.confidence.inverse(X, thetalow, thetavar = thetavar, rr = rr, method = "empirical",
+                                     weights = weights, confidence = confidence, nsim = 0)
+    .point <- pif(X, thetahat, rr = rr, weights = weights)
+    },
+    approximate ={
+      .upper <- paf.confidence.inverse(X, thetahat = thetaup, thetavar = thetavar, rr = rr, nsim = 0, 
+                                       confidence = confidence, 
+                                       method = "approximate", Xvar = Xvar)
+      
+      .lower <- paf.confidence.inverse(X, thetahat = thetalow, thetavar = thetavar, rr = rr, nsim = 0, 
+                                       confidence = confidence, 
+                                       method = "approximate", Xvar = Xvar)
+      .point <- pif(X, thetahat, rr = rr, method = "approximate", Xvar = Xvar)
+    }
+  )
+  
   
   #Return
   .confint <- c("Lower" = .lower["Lower"], "Point" = .point, "Upper" = .upper["Upper"])

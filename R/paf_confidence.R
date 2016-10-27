@@ -92,6 +92,20 @@
 #' paf.confidence(X = X, thetahat = theta, thetavar = thetasd, rr = rr)
 #' paf.confidence(X = Xmean, thetahat = theta, thetavar = thetasd, rr = rr, Xvar = Xvar, est.method = "approximate")
 #' 
+#' #Examples with approximate methods
+#' rr      <- function(X,theta){exp(X*theta)}
+#' X       <- rnorm(100,3.2,1)
+#' Xmean   <- 3.2
+#' Xvar    <- 1
+#' theta   <- 0.4
+#' thetasd <- 0.001
+#' .Xmean  <- as.matrix(Xmean)
+#' .Xvar   <- as.matrix(Xvar)
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "linear")
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "log")
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "inverse")
+#' paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, rr = rr, est.method = "approximate", method = "one2one",  Xvar = Xvar)
+#' 
 #' @import MASS
 #' @export
 
@@ -99,7 +113,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
                            thetamin = NA, thetamax = NA, nsim = 1000, confidence = 95, 
                            method = c("inverse", "log", "linear", "one2one"),
                            est.method = c("empirical", "kernel", "approximate"),
-                                   force.min = FALSE){
+                           force.min = FALSE){
   
   #Get method from vector
   .method     <- as.vector(method)[1]
@@ -112,13 +126,29 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
   check.thetas(.thetavar, thetahat, thetamin, thetamax, .method)
   
   if(est.method[1] == "approximate"){
-    .cipaf <- paf.confidence.approximate(X, Xvar = Xvar, thetahat, .thetavar, rr, confidence, nsim,
-                                         check_thetas = FALSE)
+    switch (.method,
+            inverse = {.cipaf <-  paf.confidence.inverse(X, thetahat = thetahat, thetavar = .thetavar,
+                                                         rr = rr, confidence = confidence, nsim = nsim,
+                                                         Xvar = Xvar, method = "approximate")},
+            log = {.cipaf <- paf.confidence.approximate.loglinear(Xmean = X, Xvar = Xvar, thetahat = thetahat,
+                                                                  thetavar = thetavar, rr=rr, nsim = nsim,
+                                                                  confidence = 95, check_thetas = FALSE)},
+            linear = {.cipaf <-  paf.confidence.approximate(X, Xvar = Xvar, thetahat, .thetavar, rr, confidence, nsim,
+                                                            check_thetas = FALSE)},
+            one2one = {.cipaf <- paf.confidence.one2one(X, thetahat = thetahat, thetalow = thetamin, thetaup = thetamax,
+                                                        rr= rr,confidence = confidence, check_thetas = FALSE,
+                                                        method = "approximate", Xvar = Xvar)},
+            
+            {.cipaf <-  paf.confidence.inverse(X, thetahat = thetahat, thetavar = .thetavar,
+                                               rr = rr, confidence = confidence, nsim = nsim,
+                                               Xvar = Xvar, method = "approximate")}
+    )
+    
   }else{
     switch(.method,
            
            inverse = {
-             .cipaf <- paf.confidence.inverse(X, thetahat, .thetavar, rr, weights, nsim, confidence, force.min,
+             .cipaf <- paf.confidence.inverse(X, thetahat, .thetavar, rr, weights, confidence,  nsim, force.min,
                                               check_thetas = FALSE)
            }, 
            
@@ -128,7 +158,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
            },
            
            linear = {
-             .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights,  confidence, nsim,
+             .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, nsim, confidence,
                                              check_thetas = FALSE)
            },
            
@@ -143,7 +173,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
            }
     )
   }
- 
+  
   
   
   #Return variance
