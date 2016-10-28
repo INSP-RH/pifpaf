@@ -88,7 +88,7 @@ paf.variance.approximate <- function(Xmean, Xvar, thetahat, thetasd, rr, nsim = 
     
     dR0 <- as.matrix(grad(rr.fun.x, .Xmean))
     R0  <- rr(.Xmean, theta)
-    vr  <- t(1/R0^2*dR0)%*%.Xvar%*%(1/R0^2*dR0)
+    vr  <- t(dR0/(R0^2))%*%.Xvar%*%(dR0/(R0^2))
     return(vr)
   }
   
