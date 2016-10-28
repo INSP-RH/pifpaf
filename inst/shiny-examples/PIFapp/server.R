@@ -129,8 +129,8 @@ shinyServer(function(input,output){
   #Reactive sd levels
   
   output$sdtheta <- renderUI({withMathJax(
-    if(input$rr <= 2 && input$xmin0 == 1){
-      textInputRow("SDtheta", label = h6("$$\\text{Standard deviation of } \\theta =$$ "),value = 0.001)
+    if(input$rr <= 2 && input$xmin0 == 0.001){
+      textInputRow("SDtheta", label = h6("$$\\text{Standard deviation of } \\theta =$$ "),value = 1)
     })
   })
   
@@ -1860,7 +1860,7 @@ shinyServer(function(input,output){
                 }else{
                   if (input$w==0) {
                     
-                    PAF.interval <- paf.confidence(X=X, thetahat = theta, thetavar = SD, rr = RR, confidence = conf)
+                    PAF.interval <- paf.confidence(X=X, thetahat = theta, thetavar = SD, rr = RR, confidence = conf, method = "one2one")
                     
                     return(sprintf("Confidence interval PAF :  (%f, %f) <br/> Point Estimate :  %f ", PAF.interval[1], PAF.interval[3], PAF.interval[2]))
                     

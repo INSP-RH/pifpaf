@@ -1,7 +1,6 @@
-#' @title Approximate Variance for the Population Attributable Fraction
+#' @title Confidence intervals for the Population Attributable Fraction, using the loglinear method
 #' 
-#' @description Function that calculates approximate variance to the population attributable fraction
-#' 
+#' @description Confidence intervals for the Population Attributable Fraction for relative risk inyective functions, the PAF is inyective, and intervals can be calculated for log(PAF), and then transformed to PAF CI.
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function

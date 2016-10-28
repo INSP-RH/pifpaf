@@ -16,7 +16,7 @@
 #' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
 #' 
-#' @param method    Either \code{empirical} (default), \code{kernel} or approximate. 
+#' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}. 
 #' 
 #' @param Xvar      Variance of exposure levels.
 #' 

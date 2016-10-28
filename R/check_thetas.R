@@ -30,16 +30,36 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
            if (is.na(thetalow) || is.na(thetaup)){
              stop("You have not correctly specified the bounds of the interval of confidence of theta")
            }
+          .thetalow <- as.matrix(thetalow)
+          .thetaup  <- as.matrix(thetaup)
+          .thetahat <- as.matrix(thetahat)
            
+          if((dim(.thetahat)!=dim(.thetalow) || dim(.thetahat)!=dim(.thetaup))){
+            stop("Dimensions of thetahat, thetalow, and thetaup are not the same.")
+          }
            #Check that thetahat < thetaup
-           if (thetaup < thetahat){
-             stop("thetaup < thetahat Please check that you correctly specified the interval of confidence of theta")
-           }
+          correct <- TRUE
+          i       <- 1
+          while(correct && i <= length(.thetahat)){
+            if (.thetaup[i] < .thetahat[i]){
+              correct <- FALSE
+              stop("thetaup < thetahat Please check that you correctly specified the interval of confidence of theta")
+            }
+            i <- i+1
+            
+          }
            
-           #Check that thetalow < thetahat
-           if (thetahat < thetalow){
-             stop("thetahat < thetalow. Please check that you correctly specified the interval of confidence of theta")
-           }
+          correct <- TRUE
+          i       <- 1
+          while(correct && i <= length(.thetahat)){
+            if (.thetalow[i] > .thetahat[i]){
+              correct <- FALSE
+              stop("thetalow > thetahat Please check that you correctly specified the interval of confidence of theta")
+            }
+            i <- i+1
+            
+          }
+       
          },
          
          {
