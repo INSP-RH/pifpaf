@@ -56,6 +56,9 @@ pif.kernel <- function(X, thetahat, rr,
   #Check that rr = 1 when evaluated in 0
   check.rr(.X, thetahat, rr)
   
+  #Check counterfactual
+  check.cft(cft,X)
+  
   #Check that the number of points in integer > 0
   .npoints <- max(2, ceiling(npoints))
   if(npoints < 500){

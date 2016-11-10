@@ -6,7 +6,7 @@
 \usage{
 risk.ratio.confidence(X, thetahat, thetasd, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
-  confidence = 95, force.min = FALSE)
+  confidence = 95, check_thetas = TRUE, force.min = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -26,6 +26,8 @@ risk.ratio.confidence(X, thetahat, thetasd, rr,
 
 \item{confidence}{Confidence level \% (default: 95)}
 
+\item{check_thetas}{Checks that theta parameters are correctly inputed}
+
 \item{force.min}{Boolean indicating whether to force the RR to have a 
 minimum value of 1 instead of 0 (not recommended).}
 }
@@ -36,14 +38,14 @@ Function that calculates confidence interval for the integral ∫RR(X;theta)f(x)
 
 #Example with risk given by HR
 set.seed(18427)
-X <- rnorm(100,3,.7)
+X        <- rnorm(100,3,.7)
 thetahat <- 0.4
 thetavar <- 0.1
 risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 
 #With larger sample the variance reduces
 set.seed(18427)
-X <- rnorm(10000,4,1)
+X        <- rnorm(10000,4,1)
 thetahat <- 0.12
 thetavar <- 0.1
 risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
@@ -53,12 +55,12 @@ risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, f
 
 #Example with theta and X multivariate
 set.seed(18427)
-X1 <- rnorm(1000,4,1)
-X2 <- rnorm(1000,4,1)
-X  <- as.matrix(cbind(X1,X2))
+X1       <- rnorm(1000,4,1)
+X2       <- rnorm(1000,4,1)
+X        <- as.matrix(cbind(X1,X2))
 thetahat <- c(0.12, 0.03)
-thetasd <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
-rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+thetasd  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
+rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 risk.ratio.confidence(X, thetahat, thetasd, rr) 
 
 }

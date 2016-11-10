@@ -9,11 +9,8 @@ check.exposure(X)
 \arguments{
 \item{X}{Matrix of exposure that is evaluated in rr}
 }
-\value{
-TRUE if all exposure values are greater or equal to zero
-}
 \description{
-Function that verifies if all exposure values are greater or equal to zero (exposure values can not be negative)
+Function that verifies if all exposure values are greater or equal to zero.
 }
 \examples{
 #Example 1 

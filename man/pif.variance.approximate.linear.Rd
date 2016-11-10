@@ -6,7 +6,7 @@
 \usage{
 pif.variance.approximate.linear(Xmean, Xvar, thetahat, thetasd, rr,
   cft = function(Xmean) {     matrix(0, ncol = ncol(as.matrix(Xmean)), nrow =
-  nrow(as.matrix(Xmean))) }, nsim = 1000)
+  nrow(as.matrix(Xmean))) }, check_thetas = TRUE, nsim = 1000)
 }
 \arguments{
 \item{Xmean}{Mean value of exposure levels from a previous study.}
@@ -23,7 +23,9 @@ pif.variance.approximate.linear(Xmean, Xvar, thetahat, thetasd, rr,
 **Optional**}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure}
+the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure.}
+
+\item{check_thetas}{Checks that theta parameters are correctly inputed}
 
 \item{nsim}{Number of simulations}
 }
@@ -40,8 +42,6 @@ Xmean   <- 3
 Xvar    <- 1
 theta   <- 1.2
 thetasd <- 0.15
-.Xmean  <- as.matrix(Xmean)
-.Xvar   <- as.matrix(Xvar)
 pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr)
 pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft) 
 pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft = function(X){sqrt(X)}) 
@@ -53,8 +53,6 @@ X2       <- rnorm(1000,4,1)
 X        <- as.matrix(cbind(X1,X2))
 Xmean    <- colMeans(X)
 Xvar     <- cov(X)
-.Xmean   <- matrix(Xmean, ncol = length(Xmean))
-.Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
 theta    <- c(0.12, 0.17)
 thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}

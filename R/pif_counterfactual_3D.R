@@ -54,9 +54,18 @@
 
 pif.counterfactual.3D <-function(X, thetahat, rr, 
                                  weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                                 mina = 0, maxa = 1, minb = 0, maxb = mean(X), 
+                                 mina = 0, maxa = 1, minb = -1, maxb = 0, 
                                  title = "Potential Impact Fraction (PIF) with counterfactual \n f(X)= aX+b",
                                  xlab = "a", ylab = "b", zlab ="PIF"){
+  
+  #Check limits were correctly specified
+  if( mina >= maxa){
+    warning("The minimum value of a is greater or equal than the maximum value of a, verify the values are correct.")
+  }
+  
+  if( minb >= maxb){
+    warning("The minimum value of b is greater or equal than the maximum value of b, verify the values are correct.")
+  }
   
   #Create a mesh of all possible a and b values
   M <- mesh(seq(mina, maxa, length.out = 30), seq(minb, maxb, length.out = 30))

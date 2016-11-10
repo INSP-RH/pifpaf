@@ -46,13 +46,13 @@
 #'X        <- as.matrix(cbind(X1,X2))
 #'Xmean    <- colMeans(X)
 #'Xvar     <- cov(X)
-#'theta    <- c(0.12, 0.17)
+#'thetahat <- c(0.12, 0.17)
 #'thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #'
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr)
-#' paf.confidence.loglinear(X, theta, thetasd, rr)
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr, cft = function(X){0.8*X})
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetasd, rr)
+#' paf.confidence.loglinear(X, thetahat, thetasd, rr)
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetasd, rr, cft = function(X){0.8*X})
 #' 
 #' @import MASS numDeriv
 #' @export
@@ -62,6 +62,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
                                                  nsim = 1000, confidence = 95, check_thetas = TRUE){
   
   #Get confidence
+  check.confidence(confidence)
   .alpha <- max(0, 1 - confidence/100)
   .Z     <- qnorm(1-.alpha/2)
   
@@ -109,10 +110,10 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
       rr(Xcft.value,.theta)
     } 
     dR1    <- as.matrix(grad(rr.cft.fun, .Xmean))
-    R1     <- rr(cft(.Xmean), theta)
+    R1     <- rr(cft(.Xmean), .theta)
     
     dR0    <- as.matrix(grad(rr.fun.x, .Xmean))
-    R0     <- rr(.Xmean, theta)
+    R0     <- rr(.Xmean, .theta)
     
     .var1  <- t(1/R1*dR1)%*%.Xvar%*%(1/R1*dR1)
     .var0  <- t(1/R0*dR0)%*%.Xvar%*%(1/R0*dR0)

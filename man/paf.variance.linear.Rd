@@ -5,7 +5,8 @@
 \title{Approximate Variance for the Population Attributable Fraction}
 \usage{
 paf.variance.linear(X, thetahat, thetasd, rr,
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000)
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
+  check_thetas = TRUE, nsim = 1000)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -20,6 +21,8 @@ paf.variance.linear(X, thetahat, thetasd, rr,
 **Optional**}
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}}
+
+\item{check_thetas}{Checks that theta parameters are correctly inputed}
 
 \item{nsim}{Number of simulations}
 }

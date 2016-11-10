@@ -4,7 +4,8 @@
 \alias{paf.variance.approximate}
 \title{Approximate Variance for the Population Attributable Fraction using the approximate method}
 \usage{
-paf.variance.approximate(Xmean, Xvar, thetahat, thetasd, rr, nsim = 1000)
+paf.variance.approximate(Xmean, Xvar, thetahat, thetasd, rr,
+  check_thetas = TRUE, nsim = 1000)
 }
 \arguments{
 \item{Xmean}{Mean value of exposure levels from a previous study.}
@@ -19,6 +20,8 @@ paf.variance.approximate(Xmean, Xvar, thetahat, thetasd, rr, nsim = 1000)
 
 
 **Optional**}
+
+\item{check_thetas}{Checks that theta parameters are correctly inputed}
 
 \item{nsim}{Number of simulations}
 }

@@ -20,6 +20,8 @@
 #' 
 #' @param confidence Confidence level \% (default: 95)
 #' 
+#' @param check_thetas Checks that theta parameters are correctly inputed
+#' 
 #' @param force.min Boolean indicating whether to force the RR to have a 
 #'                  minimum value of 1 instead of 0 (not recommended).
 #' 
@@ -28,24 +30,28 @@
 #' 
 #' @examples 
 #' set.seed(46987)
-#' rr      <- function(X,theta){exp(X*theta)}
 #' X       <- rnorm(100,3.2,1)
 #' Xmean   <- 3.2
 #' Xvar    <- 1
 #' theta   <- 0.4
 #' thetasd <- 0.001
-#' .Xmean  <- as.matrix(Xmean)
-#' .Xvar   <- as.matrix(Xvar)
+#' rr      <- function(X,theta){exp(X*theta)}
 #' risk.ratio.approximate.confidence(Xmean, Xvar, thetahat = theta, thetasd = thetasd, rr = rr)
 #' @import MASS
 #' @export
 
 risk.ratio.approximate.confidence <- function(Xmean, Xvar, thetahat, thetasd, rr,
-                                  nsim = 1000, confidence = 95, force.min = FALSE){
+                                  nsim = 1000, confidence = 95, check_thetas = TRUE,
+                                  force.min = FALSE){
   
   #Get confidence
+  check.confidence(confidence)
   .alpha <- max(0, 1 - confidence/100)
   .Z     <- qnorm(1-.alpha/2)
+  
+  #Check 
+  .thetavar <- as.matrix(thetasd)
+  if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "risk.ratio") }
   
   #Get number of simulations
   .nsim  <- max(10, ceiling(nsim))
@@ -88,7 +94,7 @@ risk.ratio.approximate.confidence <- function(Xmean, Xvar, thetahat, thetasd, rr
   #Create the confidence intervals
   .squareroot <- .Z*sqrt(.inversevarpaf)
   .ciup       <- .Risk(thetahat) + .squareroot
-  .cilow      <- (.Risk(thetahat)^2)/.ciup
+  .cilow      <- (.Risk(thetahat)^2)/.ciup #?
   
   #If minimum is forced to 1 correct CI
   if (force.min){

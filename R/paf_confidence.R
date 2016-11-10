@@ -76,7 +76,8 @@
 #' thetasd <- 0.001
 #' .Xmean  <- as.matrix(Xmean)
 #' .Xvar   <- as.matrix(Xvar)
-#' paf.confidence(X = Xmean, Xvar = Xvar, thetahat = theta, thetavar = thetasd,rr = rr, est.method = "approximate")
+#' paf.confidence(X = Xmean, Xvar = Xvar, thetahat = theta,
+#'  thetavar = thetasd,rr = rr, est.method = "approximate")
 #' 
 #' #Compare approximate method with default method
 #' X1       <- rnorm(1000,3,.5)
@@ -90,7 +91,8 @@
 #' thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' paf.confidence(X = X, thetahat = theta, thetavar = thetasd, rr = rr)
-#' paf.confidence(X = Xmean, thetahat = theta, thetavar = thetasd, rr = rr, Xvar = Xvar, est.method = "approximate")
+#' paf.confidence(X = Xmean, thetahat = theta, thetavar = thetasd,
+#'  rr = rr, Xvar = Xvar, est.method = "approximate")
 #' 
 #' #Examples with approximate methods
 #' rr      <- function(X,theta){exp(X*theta)}
@@ -101,19 +103,29 @@
 #' thetasd <- 0.001
 #' .Xmean  <- as.matrix(Xmean)
 #' .Xvar   <- as.matrix(Xvar)
-#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "linear")
-#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "log")
-#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "inverse")
-#' paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, rr = rr, est.method = "approximate", method = "one2one",  Xvar = Xvar)
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd,
+#'  rr=rr, est.method = "approximate", Xvar = Xvar, method = "linear")
+#'  
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd,
+#'  rr=rr, est.method = "approximate", Xvar = Xvar, method = "log")
+#'  
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, 
+#' est.method = "approximate", Xvar = Xvar, method = "inverse")
+#' 
+#' paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, 
+#' rr = rr, est.method = "approximate", method = "one2one",  Xvar = Xvar)
 #' 
 #' @import MASS
 #' @export
 
-paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
+paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = NA, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
                            thetamin = NA, thetamax = NA, nsim = 1000, confidence = 95, 
                            method = c("inverse", "log", "linear", "one2one"),
                            est.method = c("empirical", "kernel", "approximate"),
                            force.min = FALSE){
+  
+  #Check confidence
+  check.confidence(confidence)
   
   #Get method from vector
   .method     <- as.vector(method)[1]
@@ -122,10 +134,14 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
   #Change variance to matrix
   .thetavar <- as.matrix(thetavar)
   
+
+  
   #Check that thetas are as they should
   check.thetas(.thetavar, thetahat, thetamin, thetamax, .method)
   
   if(est.method[1] == "approximate"){
+    #Check Xvar
+    Xvar <- check.xvar(Xvar)
     switch (.method,
             inverse = {.cipaf <-  paf.confidence.inverse(X, thetahat = thetahat, thetavar = .thetavar,
                                                          rr = rr, confidence = confidence, nsim = nsim,

@@ -70,8 +70,10 @@
 #'  
 #'  Xmean  <- as.matrix(Xmean)
 #'  .Xvar   <- as.matrix(Xvar)
-#'  paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
-#'  paf.confidence.inverse(X, thetahat = theta, thetavar = thetasd, rr=rr, method = "empirical", Xvar = Xvar)
+#'  paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd,
+#'   rr=rr, method = "approximate", Xvar = Xvar)
+#'  paf.confidence.inverse(X, thetahat = theta, thetavar = thetasd, 
+#'  rr=rr, method = "empirical", Xvar = Xvar)
 #'
 #'#Example: Multidimensional example using approximate method
 #'X1       <- rnorm(1000,3,.5)
@@ -84,13 +86,14 @@
 #'theta    <- c(0.12, 0.17)
 #'thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#'paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
+#'paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, 
+#'rr=rr, method = "approximate", Xvar = Xvar)
 #' 
 #' @import MASS
 #' @export
 
 paf.confidence.inverse <- function(X, thetahat, thetavar, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                                   nsim = 1000, confidence = 95, force.min = FALSE, check_thetas = TRUE, method = c("empirical", "approximate"), Xvar = var(X)){
+                                   nsim = 1000, confidence = 95, force.min = FALSE, check_thetas = TRUE, method = c("empirical", "approximate"), Xvar = NA){
   
   #Get method from vector
   .method <- as.vector(method)[1]
@@ -98,6 +101,8 @@ paf.confidence.inverse <- function(X, thetahat, thetavar, rr, weights =  rep(1/n
   #Change variance to matrix
   .thetavar <- as.matrix(thetavar)
   
+  #Function checking confidence is correctly specified
+  check.confidence(confidence)
   #Function for checking that thetas are correctly inputed
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "inverse") }
   
@@ -106,9 +111,12 @@ paf.confidence.inverse <- function(X, thetahat, thetavar, rr, weights =  rep(1/n
                                               thetasd = .thetavar, rr = rr, 
                                               weights =  weights, nsim = nsim, 
                                               confidence = confidence, force.min = force.min),
-          approximate = risk.ratio.approximate.confidence(Xmean = X, Xvar = Xvar, thetahat = thetahat, 
-                                                thetasd = .thetavar, rr = rr, nsim = nsim, 
-                                                confidence = confidence, force.min = force.min),
+          approximate = {
+            Xvar <- check.xvar(Xvar)
+            risk.ratio.approximate.confidence(Xmean = X, Xvar = Xvar, thetahat = thetahat, 
+                                                            thetasd = .thetavar, rr = rr, nsim = nsim, 
+                                                            confidence = confidence, force.min = force.min)
+          },
           risk.ratio.confidence(X = X, thetahat = thetahat, 
                                 thetasd = .thetavar, rr = rr, 
                                 weights =  weights, nsim = nsim, 

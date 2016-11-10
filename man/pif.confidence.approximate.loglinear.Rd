@@ -55,13 +55,13 @@ X2       <- rnorm(1000,4,1)
 X        <- as.matrix(cbind(X1,X2))
 Xmean    <- colMeans(X)
 Xvar     <- cov(X)
-theta    <- c(0.12, 0.17)
+thetahat <- c(0.12, 0.17)
 thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 
-pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr)
-paf.confidence.loglinear(X, theta, thetasd, rr)
-pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr, cft = function(X){0.8*X})
+pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetasd, rr)
+paf.confidence.loglinear(X, thetahat, thetasd, rr)
+pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetasd, rr, cft = function(X){0.8*X})
 
 }
 \author{

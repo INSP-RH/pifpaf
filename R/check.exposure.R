@@ -1,10 +1,9 @@
 #' @title Check Exposure values
 #' 
-#' @description Function that verifies if all exposure values are greater or equal to zero (exposure values can not be negative)
+#' @description Function that verifies if all exposure values are greater or equal to zero.
 #' 
 #' @param X     Matrix of exposure that is evaluated in rr
 #' 
-#' @return TRUE if all exposure values are greater or equal to zero
 #' 
 #' @examples 
 #' #Example 1 
@@ -33,10 +32,9 @@ check.exposure <- function(X){
         j <- j+1
       }else{
         bool <- FALSE
-        stop(paste("Some exposure values are less than zero, exposure can't be negative."))
+        warning(paste("Some exposure values are less than zero, verify this is correct."))
       }
     }
     i <- i+1
   }
-  return(bool)
 }

@@ -17,6 +17,8 @@
 #' 
 #' @param nsim      Number of simulations
 #' 
+#' @param check_thetas Checks that theta parameters are correctly inputed
+#' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí 
 #' 
@@ -52,7 +54,8 @@
 #' @export 
 
 
-paf.variance.approximate <- function(Xmean, Xvar, thetahat, thetasd, rr, nsim = 1000){
+paf.variance.approximate <- function(Xmean, Xvar, thetahat, thetasd, rr, 
+                                     check_thetas = TRUE, nsim = 1000){
   
   #Set X as matrix
   .Xmean  <- matrix(Xmean, ncol = length(Xmean))
@@ -60,15 +63,20 @@ paf.variance.approximate <- function(Xmean, Xvar, thetahat, thetasd, rr, nsim = 
   #Set a minimum for nsim
   .nsim        <- max(nsim,10)
   
-  if(is.positive.definite(.Xvar) == FALSE){
+  if(is.positive.semi.definite(.Xvar) == FALSE){
     stop("Variance matrix must be positive definite.")
   }
+  
+  #Function for checking that thetas are correctly inputed
+  if(check_thetas){ check.thetas(thetasd, thetahat, NA, NA, "approximate") }
   
   #Check exposure values are greater than zero
   check.exposure(Xmean)
   
   #Check that rr is 1 when X = 0
   check.rr(.Xmean, thetahat, rr)
+  
+  
   
   #Rewrite functions as functions of X only
   rr.fun.x <- function(X){

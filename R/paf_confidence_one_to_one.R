@@ -61,7 +61,8 @@
 #' thetasd <- 0.001
 #' .Xmean  <- as.matrix(Xmean)
 #' .Xvar   <- as.matrix(Xvar)
-#' paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3, thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
+#' paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3,
+#'  thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
 
 #' @import MASS
 #' @export
@@ -69,8 +70,12 @@
 paf.confidence.one2one <- function(X, thetahat, thetalow, thetaup, rr, 
                                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                                    confidence = 95, check_thetas = TRUE,
-                                   method = c("empirical","approximate"), Xvar = var(X)){
+                                   method = c("empirical","approximate"), Xvar = NA){
   
+  #Check Confidence
+  check.confidence(confidence)
+ 
+ 
   #Get method from vector
   .method <- as.vector(method)[1]
   
@@ -90,6 +95,9 @@ paf.confidence.one2one <- function(X, thetahat, thetalow, thetaup, rr,
     .point <- pif(X, thetahat, rr = rr, weights = weights)
     },
     approximate ={
+      
+      #Check Xvar 
+      Xvar <- check.xvar(Xvar)
       .upper <- paf.confidence.inverse(X, thetahat = thetaup, thetavar = thetavar, rr = rr, nsim = 0, 
                                        confidence = confidence, 
                                        method = "approximate", Xvar = Xvar)

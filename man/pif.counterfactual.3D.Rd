@@ -5,7 +5,7 @@
 \title{3D Sensitivity Analysis of PIF with affine counterfactual}
 \usage{
 pif.counterfactual.3D(X, thetahat, rr, weights = rep(1/nrow(as.matrix(X)),
-  nrow(as.matrix(X))), mina = 0, maxa = 1, minb = 0, maxb = mean(X),
+  nrow(as.matrix(X))), mina = 0, maxa = 1, minb = -1, maxb = 0,
   title = "Potential Impact Fraction (PIF) with counterfactual \\n f(X)= aX+b",
   xlab = "a", ylab = "b", zlab = "PIF")
 }

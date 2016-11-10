@@ -14,10 +14,12 @@
 #' **Optional**
 #' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
-#' 
+#'
 #' @param nsim      Number of simulations
 #' 
 #' @param confidence Confidence level \% (default: 95)
+#' 
+#' @param check_thetas Checks that theta parameters are correctly inputed
 #' 
 #' @param force.min Boolean indicating whether to force the RR to have a 
 #'                  minimum value of 1 instead of 0 (not recommended).
@@ -29,14 +31,14 @@
 #' 
 #' #Example with risk given by HR
 #' set.seed(18427)
-#' X <- rnorm(100,3,.7)
+#' X        <- rnorm(100,3,.7)
 #' thetahat <- 0.4
 #' thetavar <- 0.1
 #' risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 #' 
 #' #With larger sample the variance reduces
 #' set.seed(18427)
-#' X <- rnorm(10000,4,1)
+#' X        <- rnorm(10000,4,1)
 #' thetahat <- 0.12
 #' thetavar <- 0.1
 #' risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
@@ -46,23 +48,28 @@
 #' 
 #' #Example with theta and X multivariate
 #' set.seed(18427)
-#' X1 <- rnorm(1000,4,1)
-#' X2 <- rnorm(1000,4,1)
-#' X  <- as.matrix(cbind(X1,X2))
+#' X1       <- rnorm(1000,4,1)
+#' X2       <- rnorm(1000,4,1)
+#' X        <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.12, 0.03)
-#' thetasd <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
-#' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+#' thetasd  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
+#' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' risk.ratio.confidence(X, thetahat, thetasd, rr) 
 #' 
 #' @import MASS
 #' @export
 
 risk.ratio.confidence <- function(X, thetahat, thetasd, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                                  nsim = 1000, confidence = 95, force.min = FALSE){
+                                  nsim = 1000, confidence = 95, check_thetas = TRUE, force.min = FALSE){
   
   #Get confidence
+  check.confidence(confidence)
   .alpha <- max(0, 1 - confidence/100)
   .Z     <- qnorm(1-.alpha/2)
+  
+  #Check 
+  .thetasd <- as.matrix(thetasd)
+  if(check_thetas){ check.thetas(.thetasd, thetahat, NA, NA, "risk.ratio") }
   
   #Get number of simulations
   .nsim  <- max(10, ceiling(nsim))

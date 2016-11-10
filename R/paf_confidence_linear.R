@@ -56,6 +56,8 @@
 paf.confidence.linear <- function(X, thetahat, thetavar, rr, 
                                   weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                                   confidence = 95, nsim = 1000, check_thetas = TRUE){
+  #Check confidence
+  check.confidence(confidence)
   
   #Make thetavar matrix
   .thetavar <- as.matrix(thetavar)

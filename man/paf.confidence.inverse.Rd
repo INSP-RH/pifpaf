@@ -7,7 +7,7 @@
 paf.confidence.inverse(X, thetahat, thetavar, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
   confidence = 95, force.min = FALSE, check_thetas = TRUE,
-  method = c("empirical", "approximate"), Xvar = var(X))
+  method = c("empirical", "approximate"), Xvar = NA)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.}
@@ -78,8 +78,10 @@ paf.confidence.inverse(X, thetahat, thetavar, rr)
  
  Xmean  <- as.matrix(Xmean)
  .Xvar   <- as.matrix(Xvar)
- paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
- paf.confidence.inverse(X, thetahat = theta, thetavar = thetasd, rr=rr, method = "empirical", Xvar = Xvar)
+ paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd,
+  rr=rr, method = "approximate", Xvar = Xvar)
+ paf.confidence.inverse(X, thetahat = theta, thetavar = thetasd, 
+ rr=rr, method = "empirical", Xvar = Xvar)
 
 #Example: Multidimensional example using approximate method
 X1       <- rnorm(1000,3,.5)
@@ -92,7 +94,8 @@ Xvar     <- cov(X)
 theta    <- c(0.12, 0.17)
 thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, method = "approximate", Xvar = Xvar)
+paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, 
+rr=rr, method = "approximate", Xvar = Xvar)
 
 }
 \author{

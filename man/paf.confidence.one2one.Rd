@@ -6,8 +6,7 @@
 \usage{
 paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
-  check_thetas = TRUE, method = c("empirical", "approximate"),
-  Xvar = var(X))
+  check_thetas = TRUE, method = c("empirical", "approximate"), Xvar = NA)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.}
@@ -69,7 +68,8 @@ theta   <- 0.4
 thetasd <- 0.001
 .Xmean  <- as.matrix(Xmean)
 .Xvar   <- as.matrix(Xvar)
-paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3, thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
+paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3,
+ thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}

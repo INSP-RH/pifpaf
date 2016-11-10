@@ -22,6 +22,10 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
   #Boolean default true
   bool <- TRUE
   
+  if(is.na(thetahat[1])){
+    stop("Thetahat wasn't specified")
+  }
+  
   switch(method, 
          
          one2one = {
@@ -69,14 +73,27 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
              stop("Please specify variance of theta")
            }
            
-           #Check that is positive semidefinite
-           if (is.negative.definite(thetavar)){
-             stop("Variance is not positive semi-definite")
+           if(length(thetahat)^2 != length(thetavar)){
+             stop("Variance of theta must be of dimension nxn, where n is the length of thetahat")
            }
+           
+           #Check that is positive semidefinite
+           if (is.square.matrix(as.matrix(thetavar)) == FALSE){
+             stop("Variance and covariance matrix must be a square matrix")
+           }
+            
+           if (is.symmetric.matrix(as.matrix(thetavar)) == FALSE){
+             stop("Variance and covariance matrix must be symetric")
+           }
+           
+           if (is.positive.semi.definite(as.matrix(thetavar)) == FALSE){
+             stop("Variance is not positive definite")
+           }
+           
            
          }
          
   )
-  
+  return(bool)
   
 }

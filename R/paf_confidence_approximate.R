@@ -60,6 +60,9 @@ paf.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
   #Make thetavar matrix
   .thetavar <- as.matrix(thetavar)
   
+  #Function checking confidence is correctly specified
+  check.confidence(confidence)
+  
   #Function for checking that thetas are correctly inputed
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "approximate") }
   
@@ -70,7 +73,7 @@ paf.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
   Z <- qnorm(1 - ((100-confidence)/200))
   
   #Get the point estimate and variance
-  .ci["Point_Estimate"]     <- pif.approximate(X = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr)
+  .ci["Point_Estimate"]     <- pif.approximate(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr)
   .ci["Estimated_Variance"] <- paf.variance.approximate(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, thetasd = .thetavar, rr = rr, nsim = nsim)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
   .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])

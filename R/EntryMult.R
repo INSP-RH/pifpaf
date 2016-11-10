@@ -18,6 +18,8 @@
 #' @export
 
 EntryMult <- function(X,Y){
+  X <- as.matrix(X)
+  Y <- as.matrix(Y)
   if(dim(X)[1]==dim(Y)[1] && dim(X)[2]==dim(Y)[2]){
     m   <- dim(X)[1]
     n   <- dim(X)[2]

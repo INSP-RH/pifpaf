@@ -15,7 +15,9 @@
 #' 
 #' **Optional**
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'                  the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure
+#'                  the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure.
+#'                  
+#' @param check_thetas Checks that theta parameters are correctly inputed
 #' 
 #' @param nsim      Number of simulations
 #' 
@@ -32,8 +34,6 @@
 #' Xvar    <- 1
 #' theta   <- 1.2
 #' thetasd <- 0.15
-#' .Xmean  <- as.matrix(Xmean)
-#' .Xvar   <- as.matrix(Xvar)
 #' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr)
 #' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft) 
 #' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft = function(X){sqrt(X)}) 
@@ -45,8 +45,6 @@
 #' X        <- as.matrix(cbind(X1,X2))
 #' Xmean    <- colMeans(X)
 #' Xvar     <- cov(X)
-#' .Xmean   <- matrix(Xmean, ncol = length(Xmean))
-#' .Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
 #' theta    <- c(0.12, 0.17)
 #' thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
@@ -60,7 +58,11 @@
 
 pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetasd, rr,
                                      cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}, 
+                                     check_thetas = TRUE, 
                                      nsim = 1000){
+  
+  #Function for checking that thetas are correctly inputed
+  if(check_thetas){ check.thetas(thetasd, thetahat, NA, NA, "approximate") }
   
   #Set X as matrix
   .Xmean  <- matrix(Xmean, ncol = length(Xmean))
@@ -68,7 +70,7 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetasd, rr,
   #Set a minimum for nsim
   .nsim        <- max(nsim,10)
   
-  if(is.positive.definite(.Xvar) == FALSE){
+  if(is.positive.semi.definite(.Xvar) == FALSE){
     stop("Variance matrix must be positive definite.")
   }
   
@@ -89,13 +91,13 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetasd, rr,
     rr.fun.x <- function(X){
       rr(X,theta)
     }
-    rr.cft.fun <- function(X){
-      Xcft.value  <- cft(X)
-      rr(Xcft.value,thetahat)
-    } 
+    rr.fun.cft <- function(X){
+      cftX  <- cft(X)
+      rr(cftX, theta)
+    }
     
     dR0 <- as.matrix(grad(rr.fun.x, .Xmean))
-    dR1 <- as.matrix(grad(rr.cft.fun, .Xmean))
+    dR1 <- as.matrix(grad(rr.fun.cft, .Xmean))
     R0  <- rr(.Xmean, theta)
     R1  <- rr(cft(.Xmean), theta)
     aux <- ((dR1*R0 - dR0*R1)/(R0^2))

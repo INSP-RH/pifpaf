@@ -4,8 +4,8 @@
 \alias{plotpif}
 \title{Plot of Potential Impact Fraction under different values of theta (univariate)}
 \usage{
-plotpif(X, thetamin, thetamax, rr, cft = function(Varx) {     matrix(0, ncol =
-  ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
+plotpif(X, thetamin = 0, thetamax = 1, rr, cft = function(Varx) {    
+  matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), npoints = 100,
   method = c("empirical", "kernel", "approximate"), Xvar = 1,
   ktype = "epanechnikov", bw = "nrd0", adjust = 1, mpoints = 1000)
@@ -48,22 +48,29 @@ Function that plots the PIF under different values.
 #Example with risk given by HR
 set.seed(18427)
 library(ggplot2)
-X <- rlnorm(100)
-plotpif(X, 0, 2, function(X, theta){exp(theta*X)})+ ggtitle("PAF under different values of theta \\n Empirical method")
+X <- rnorm(100, 4.2, 1.3)
+plotpif(X, thetamin = 0, thetamax = 2, function(X, theta){exp(theta*X)}) +
+ ggtitle("PAF under different values of theta \\n Empirical method")
 
 #Example with kernel method
-plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel")+ ggtitle("PAF under different values of theta \\n Kernel method")
+plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel") +
+ ggtitle("PAF under different values of theta \\n Kernel method")
 
 #Example for approximate method
 Xmean <- mean(X)
 Xvar  <- var(X)
-plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, method = "approximate", Xvar = Xvar)+ ggtitle("PAF under different values of theta \\n Approximate method")
+plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, 
+method = "approximate", Xvar = Xvar) +
+ ggtitle("PAF under different values of theta \\n Approximate method")
 
 #Example with square root counterfactual
-plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)})+ ggtitle("PIF under different values of theta \\n square root counterfactual  \\n Empirical method")
+plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)}) + 
+ggtitle("PIF under different values of theta \\n square root counterfactual  \\n Empirical method")
 
 #Example for approximate method with square root counterfactual
-plotpif(X, 0, 2, function(X, theta){exp(theta*X)},  cft = function(X){sqrt(X)}, method = "approximate", Xvar = Xvar) + ggtitle("PIF under different values of theta \\n square root counterfactual  \\n Approximate method")
+plotpif(X, 0, 2, function(X, theta){exp(theta*X)},  cft = function(X){sqrt(X)},
+ method = "approximate", Xvar = Xvar) +
+ ggtitle("PIF under different values of theta \\n square root counterfactual  \\n Approximate method")
 
 }
 \author{

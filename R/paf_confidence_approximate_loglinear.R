@@ -54,6 +54,7 @@ paf.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
                                      nsim = 1000, confidence = 95, check_thetas = TRUE){
   
   #Get confidence
+  check.confidence(confidence)
   .alpha <- max(0, 1 - confidence/100)
   .Z     <- qnorm(1-.alpha/2)
   
@@ -67,6 +68,7 @@ paf.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   #Set X as matrix
   .Xmean  <- matrix(Xmean, ncol = length(Xmean))
   .Xvar   <- matrix(Xvar, ncol = sqrt(length(Xvar)))
+  check.exposure(Xmean)
   
   #Calculate the conditional expected value as a function of theta
   .logpafexp <- function(.theta){
@@ -87,7 +89,7 @@ paf.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
     }
     
     dR0   <- as.matrix(grad(rr.fun.x, .Xmean))
-    R0    <- rr(.Xmean, theta)
+    R0    <- rr(.Xmean, .theta)
     .var  <- t(1/R0*dR0)%*%.Xvar%*%(1/R0*dR0)
     return(.var)
   }

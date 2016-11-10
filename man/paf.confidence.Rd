@@ -4,7 +4,7 @@
 \alias{paf.confidence}
 \title{Confidence Intervals for the Population Attributable Fraction}
 \usage{
-paf.confidence(X, thetahat, thetavar = NA, rr, Xvar = var(X),
+paf.confidence(X, thetahat, thetavar = NA, rr, Xvar = NA,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), thetamin = NA,
   thetamax = NA, nsim = 1000, confidence = 95, method = c("inverse",
   "log", "linear", "one2one"), est.method = c("empirical", "kernel",
@@ -85,7 +85,8 @@ theta   <- 0.4
 thetasd <- 0.001
 .Xmean  <- as.matrix(Xmean)
 .Xvar   <- as.matrix(Xvar)
-paf.confidence(X = Xmean, Xvar = Xvar, thetahat = theta, thetavar = thetasd,rr = rr, est.method = "approximate")
+paf.confidence(X = Xmean, Xvar = Xvar, thetahat = theta,
+ thetavar = thetasd,rr = rr, est.method = "approximate")
 
 #Compare approximate method with default method
 X1       <- rnorm(1000,3,.5)
@@ -99,7 +100,8 @@ theta    <- c(0.12, 0.17)
 thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 paf.confidence(X = X, thetahat = theta, thetavar = thetasd, rr = rr)
-paf.confidence(X = Xmean, thetahat = theta, thetavar = thetasd, rr = rr, Xvar = Xvar, est.method = "approximate")
+paf.confidence(X = Xmean, thetahat = theta, thetavar = thetasd,
+ rr = rr, Xvar = Xvar, est.method = "approximate")
 
 #Examples with approximate methods
 rr      <- function(X,theta){exp(X*theta)}
@@ -110,10 +112,17 @@ theta   <- 0.4
 thetasd <- 0.001
 .Xmean  <- as.matrix(Xmean)
 .Xvar   <- as.matrix(Xvar)
-paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "linear")
-paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "log")
-paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, est.method = "approximate", Xvar = Xvar, method = "inverse")
-paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, rr = rr, est.method = "approximate", method = "one2one",  Xvar = Xvar)
+paf.confidence(Xmean, thetahat = theta, thetavar = thetasd,
+ rr=rr, est.method = "approximate", Xvar = Xvar, method = "linear")
+ 
+paf.confidence(Xmean, thetahat = theta, thetavar = thetasd,
+ rr=rr, est.method = "approximate", Xvar = Xvar, method = "log")
+ 
+paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, 
+est.method = "approximate", Xvar = Xvar, method = "inverse")
+
+paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, 
+rr = rr, est.method = "approximate", method = "one2one",  Xvar = Xvar)
 
 }
 \author{

@@ -32,10 +32,11 @@
 #' 
 #' #Example with risk given by HR
 #' set.seed(18427)
-#' X <- rgamma(1000, 1,1) #Careful as PIF might not exist for all Gammas
-#' thetahat <- 0.12
+#' X        <- rnorm(1000, 4,1) 
+#' thetahat <- 0.02
+#' cft      <- function(X){0.5*X}
 #' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
-#'                 m = 100,  title = "My Sensitivity Analysis")
+#'                 m = 100, n = 20,  title = "My Sensitivity Analysis")
 #' 
 #' @export
 #' 
@@ -44,11 +45,27 @@
 sensitivity.pif <- function(X, thetahat, rr, 
                             cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                             weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                            n = 100, m = 100, filename = NA, 
+                            n = 50, m = 100, filename = NA, 
                             title = "Sensitivity Analysis for Potential Impact Fraction (PIF)"){
-  
+
+  if(n <= 0){}
   #Set X as matrix
   .X       <- as.matrix(X)
+  
+  #Check m and n are correctly defined
+  if(m <= 0){
+    stop("m (maximum variables to remove) must be positive")
+  }
+  if(m >= dim(.X)[1]){
+    stop("m (maximum variables to remove) must be less than the amount of ")
+  }
+  
+  if(n <= 0){
+    stop("n (number of samples) must be positive")
+  }
+  if(n >= 500){
+    stop("n (number of samples) is too large")
+  }
   
   #Limit m values
   .m       <- min(ceiling(m), nrow(X))

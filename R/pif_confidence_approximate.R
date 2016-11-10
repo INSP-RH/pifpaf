@@ -64,6 +64,7 @@
 pif.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                        cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}, 
                                        confidence = 95, nsim = 1000, check_thetas = TRUE){
+  check.confidence(confidence)
   
   #Make thetavar matrix
   .thetavar <- as.matrix(thetavar)
@@ -78,7 +79,7 @@ pif.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
   Z <- qnorm(1 - ((100-confidence)/200))
   
   #Get the point estimate and variance
-  .ci["Point_Estimate"]     <- pif.approximate(X = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, cft = cft)
+  .ci["Point_Estimate"]     <- pif.approximate(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, cft = cft)
   .ci["Estimated_Variance"] <- pif.variance.approximate.linear(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, thetasd = .thetavar, rr = rr, nsim = nsim)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
   .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])

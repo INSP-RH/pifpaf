@@ -15,6 +15,8 @@
 #' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
 #' 
+#' @param check_thetas Checks that theta parameters are correctly inputed
+#' 
 #' @param nsim      Number of simulations
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -49,10 +51,15 @@
 #' @export
 
 
-paf.variance.linear <- function(X, thetahat, thetasd, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), nsim = 1000){
+paf.variance.linear <- function(X, thetahat, thetasd, rr, 
+                                weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
+                                check_thetas = TRUE, nsim = 1000){
   
   #Set X as matrix
   .X  <- as.matrix(X)
+  
+  #Function for checking that thetas are correctly inputed
+  if(check_thetas){ check.thetas(thetasd, thetahat, NA, NA, "linear") }
   
   #Set a minimum for nsim
   .nsim        <- max(nsim,10)

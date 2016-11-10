@@ -50,6 +50,9 @@ pif.empirical <- function(X, thetahat, rr,
   #Check that rr is 1 when X = 0
   check.rr(.X, thetahat, rr)
   
+  #Check counterfactual
+  check.cft(cft,X)
+  
   #Estimate weighted sums
   .mux   <- sum(rr(.X,thetahat) * weights)
   .mucft <- sum(rr(cft(.X),thetahat) * weights)

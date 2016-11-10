@@ -56,6 +56,7 @@ paf.confidence.loglinear <- function(X, thetahat, thetavar, rr, weights =  rep(1
                                      nsim = 1000, confidence = 95, check_thetas = TRUE){
   
   #Get confidence
+  check.confidence(confidence)
   .alpha <- max(0, 1 - confidence/100)
   .Z     <- qnorm(1-.alpha/2)
   
