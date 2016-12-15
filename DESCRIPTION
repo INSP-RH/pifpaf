@@ -25,5 +25,7 @@ Imports:
     gridExtra,
     latex2exp,
     shiny,
-    numDeriv
+    numDeriv,
+    moments,
+    partitions
 RoxygenNote: 5.0.1
