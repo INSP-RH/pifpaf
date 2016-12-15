@@ -164,7 +164,7 @@ sensitivity.pif(X, 0.11, rr, cft)
 We can also generate a 3D plot showing how distinct counterfactual assumptions result in different impact fractions
 
 ```{r, warning=F}
-pif.counterfactual.3D(X, 0.11, rr)
+pif.counterfactual.heatmap(X, 0.11, rr)
 ```
 
 ##Shiny App

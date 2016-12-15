@@ -169,7 +169,7 @@ sensitivity.pif(X, 0.11, rr, cft)
 We can also generate a 3D plot showing how distinct counterfactual assumptions result in different impact fractions
 
 ``` r
-pif.counterfactual.3D(X, 0.11, rr)
+pif.counterfactual.heatmap(X, 0.11, rr)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-20-1.png)
