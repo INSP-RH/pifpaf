@@ -177,7 +177,7 @@ PIFApp()
 
 This will open a new window with the App:
 
-<img alt = "ShinyApp" src = "ReadmeImages/shinyapp.png">
+<img alt = "ShinyApp" src = "README_files/shinyapp.png">
 
 ## What is missing?
 
