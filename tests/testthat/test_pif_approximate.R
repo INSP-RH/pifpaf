@@ -40,7 +40,7 @@ test_that("Checking pif.approximate function errors",{
     
   })
   
-  #Check that variance and covariance matrix is positive definite
+  #Check that variance and covariance matrix is positive semi-definite
   expect_error({
     
     X     <- runif(1000,0,3)
