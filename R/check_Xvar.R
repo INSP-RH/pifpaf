@@ -1,8 +1,8 @@
-#' @title Check Xvar was defined 
+#' @title Check covariance of exposure values was defined, if not a covariance matrix with entries equal to zero is assumed. 
 #' 
 #' @description Function that verifies Xvar was defined
 #' 
-#' @param Xvar     Input of variance of X
+#' @param Xvar     Input of covariance matrix of exposure values
 #' 
 #' @return Xvar
 #' 
@@ -19,7 +19,7 @@
 
 check.xvar <- function(Xvar){
   if(is.na(Xvar)){
-    warning("Xvar wasn't defined, default to zero")
+    warning("Covariance of exposure values Xvar wasn't defined, default to zero")
     n    <- dim(as.matrix(Xvar))[2]
     Xvar <- matrix(0, ncol = n, nrow = n)
   }
