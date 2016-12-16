@@ -74,20 +74,20 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
            }
            
            if(length(thetahat)^2 != length(thetavar)){
-             stop("Variance of theta must be of dimension nxn, where n is the length of thetahat")
+             stop("Covariance matrix dimensions must be nxn, where n is the length of thetahat")
            }
            
            #Check that is positive semidefinite
            if (is.square.matrix(as.matrix(thetavar)) == FALSE){
-             stop("Variance and covariance matrix must be a square matrix")
+             stop("Covariance matrix must be a square matrix")
            }
             
            if (is.symmetric.matrix(as.matrix(thetavar)) == FALSE){
-             stop("Variance and covariance matrix must be symetric")
+             stop("Covariance matrix must be symetric")
            }
            
            if (is.positive.semi.definite(as.matrix(thetavar)) == FALSE){
-             stop("Variance must be positive semi-definite")
+             stop("Covariance must be positive semi-definite")
            }
            
            
