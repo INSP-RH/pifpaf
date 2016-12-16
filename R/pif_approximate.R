@@ -55,7 +55,7 @@ pif.approximate <- function(Xmean, Xvar, thetahat, rr,
   .Xvar   <- matrix(Xvar, ncol = sqrt(length(Xvar)))
   
   if(is.positive.semi.definite(.Xvar) == FALSE){
-    stop("Variance matrix must be positive semi definite.")
+    stop("Covariance matrix must be positive semi-definite.")
   }
   
   #Check exposure values are greater than zero
