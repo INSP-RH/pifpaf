@@ -25,7 +25,7 @@ test_that("Checking paf.confidence.approximate",{
     paf.confidence.approximate(Xmean, Xvar, thetahat, thetavar, rr)
   })
   
-  #Check that there's an error when variance is not positive definite
+  #Check that there's an error when variance is not positive semi-definite
   expect_error({
     Xmean    <- 1
     Xvar     <- -0.2
@@ -35,7 +35,7 @@ test_that("Checking paf.confidence.approximate",{
     paf.confidence.approximate(Xmean, Xvar, thetahat, thetavar, rr)
   })
   
-  #Check that there's an error when variance is not positive definite
+  #Check that there's an error when variance is not positive semi-definite
   expect_error({
     Xmean    <- 1
     Xvar     <- 0.2
