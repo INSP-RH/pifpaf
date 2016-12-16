@@ -32,7 +32,7 @@ test_that("Checking paf_confidence_approximate_loglinear",{
   })
   
   #Check errors 
-  #Variance of theta not positive definite
+  #Covariance matrix of theta not positive semi-definite
   expect_error({
     Xmean   <- 1
     Xvar    <- .3
@@ -52,7 +52,7 @@ test_that("Checking paf_confidence_approximate_loglinear",{
     paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr)
   })
   
-  #Variance of exposure values not positive definite
+  #Covariance matrix of exposure values not positive semi-definite
   expect_error({
     Xmean   <- 1
     Xvar    <- - .3
