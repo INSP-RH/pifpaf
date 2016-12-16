@@ -71,7 +71,7 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetasd, rr,
   .nsim        <- max(nsim,10)
   
   if(is.positive.semi.definite(.Xvar) == FALSE){
-    stop("Variance matrix must be positive definite.")
+    stop("Cobariance matrix must be positive semi-definite.")
   }
   
   #Check exposure values are greater than zero
