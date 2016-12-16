@@ -12,7 +12,7 @@ test_that("Checking paf.confidence.linear",{
     paf.confidence.linear(X, thetahat, thetavar, rr, confidence = -1)
   })
   
-  #Expect error  when  variance is not positive definite
+  #Expect error  when  variance is not positive semi-definite
   
   expect_error({
     set.seed(347618)
