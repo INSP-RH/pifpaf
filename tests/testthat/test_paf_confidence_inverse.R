@@ -12,7 +12,7 @@ test_that("Checking paf.confidence.inverse",{
     paf.confidence.inverse(X, thetahat, thetavar, rr, confidence = -1, method = "empirical")
   })
   
-  #Expect error  when  variance is not positive definite
+  #Expect error  when  covariance matrix is not positive semi-definite
   
   expect_error({
     set.seed(347618)
