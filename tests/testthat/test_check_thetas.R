@@ -113,7 +113,7 @@ test_that("Checking check.thetas",{
     check.thetas(thetahat = thetahat, thetalow = thetalow, thetaup = thetaup, method = method)
   })
   
-  #Check matrix variance is positive definite
+  #Check matrix variance is positive semi-definite
   
   expect_error({
     thetahat <- 0.9
