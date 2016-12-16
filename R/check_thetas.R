@@ -87,7 +87,7 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
            }
            
            if (is.positive.semi.definite(as.matrix(thetavar)) == FALSE){
-             stop("Variance is not positive definite")
+             stop("Variance must be positive semi-definite")
            }
            
            
