@@ -5,7 +5,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetavar   Estimator of standard deviation of thetahat (usually standard error)
+#' @param thetavar   Estimator of variance of thetahat 
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -91,7 +91,7 @@ paf.confidence.loglinear <- function(X, thetahat, thetavar, rr, weights =  rep(1
   #Get expected value and variance of that
   .logmeanvec   <- rep(NA, .nsim)
   .logvarvec    <- rep(NA, .nsim)
-  .thetasim     <- mvrnorm(.nsim, thetahat, thetavar)
+  .thetasim     <- mvrnorm(.nsim, thetahat, thetavar, empirical = TRUE)
   for (i in 1:.nsim){
     .logmeanvec[i]  <- .logpafexp(.thetasim[i,])
     .logvarvec[i]   <- .logpafvar(.thetasim[i,])
@@ -105,7 +105,8 @@ paf.confidence.loglinear <- function(X, thetahat, thetavar, rr, weights =  rep(1
   .paf        <- pif(.X, thetahat, rr, weights = weights)
   
   #Compute the PAF intervals
-  .cipaf         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper" = .inverse*exp(-.zqrt) )
+  .cipaf         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, 
+                        "Upper" = .inverse*exp(-.zqrt) )
   
   #Return variance
   return(.cipaf)
