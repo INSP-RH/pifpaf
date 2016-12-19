@@ -8,7 +8,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetavar   Estimator of standard deviation of thetahat (usually standard error)
+#' @param thetavar   Estimator of variance of thetahat 
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -31,8 +31,8 @@
 #' Xmean   <- 3
 #' Xvar    <- 1
 #' theta   <- 0.4
-#' thetasd <- 0.001
-#' paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr)
+#' thetavar <- 0.001
+#' paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr)
 #'
 #'#Example 2: Compare paf.variance.approximate with paf.variance.loglinear
 #'X1       <- rnorm(1000,3,.5)
@@ -41,11 +41,11 @@
 #'Xmean    <- colMeans(X)
 #'Xvar     <- cov(X)
 #'theta    <- c(0.12, 0.17)
-#'thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#'thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #'
-#'paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr)
-#'paf.confidence.loglinear(X, theta, thetasd, rr)
+#'paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr)
+#'paf.confidence.loglinear(X, theta, thetavar, rr)
 #' 
 #' @import MASS numDeriv
 #' @export
@@ -97,7 +97,7 @@ paf.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   #Get expected value and variance of that
   .logmeanvec   <- rep(NA, .nsim)
   .logvarvec    <- rep(NA, .nsim)
-  .thetasim     <- mvrnorm(.nsim, thetahat, thetavar)
+  .thetasim     <- mvrnorm(.nsim, thetahat, thetavar, empirical = TRUE)
   for (i in 1:.nsim){
     .logmeanvec[i]  <- .logpafexp(.thetasim[i,])
     .logvarvec[i]   <- .logpafvar(.thetasim[i,])
