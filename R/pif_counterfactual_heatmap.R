@@ -11,25 +11,44 @@
 #' 
 #' **Optional**
 #' 
-#' @param weights   Survey \code{weights} for the random sample \code{X}
+#' @param weights       Survey \code{weights} for the random sample \code{X}
 #' 
-#' @param cft       Counterfactual function with parameters \code{a} and \code{b}. Default \code{aX + b}
+#' @param method        Either \code{empirical} (default), \code{kernel} or \code{approximate}.
 #' 
-#' @param mina      Minimum for \code{a} for the counterfactual 
+#' @param Xvar          Variance of exposure levels.
 #' 
-#' @param minb      Minimum for \code{b} for the counterfactual 
+#' @param ktype         \code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
+#'                      \code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}
 #' 
-#' @param maxa      Maximum for \code{a} for the counterfactual 
+#' @param bw            Smoothing bandwith parameter from density
 #' 
-#' @param maxb      Maximum for \code{b} for the counterfactual 
+#' @param adjust        Adjust bandwith parameter from density
 #' 
-#' @param nmesh     Number of points in mesh (default \code{30})
+#' @param npoints       Number of points
 #' 
-#' @param title     Title for the plot
+#' @return pif          Estimate of Potential Impact Fraction
 #' 
-#' @param xlab      Label for the X-axis of the plot (corresponding to "a")
+#' @param cft           Counterfactual function with parameters \code{a} and \code{b}. Default \code{aX + b}
 #' 
-#' @param ylab      Label for the Y-axis of the plot (corresponding to "b")
+#' @param legendtitle   Title for the legend
+#' 
+#' @param mina          Minimum for \code{a} for the counterfactual 
+#' 
+#' @param minb          Minimum for \code{b} for the counterfactual 
+#' 
+#' @param maxa          Maximum for \code{a} for the counterfactual 
+#' 
+#' @param maxb          Maximum for \code{b} for the counterfactual 
+#' 
+#' @param nmesh         Number of points in mesh (default \code{30})
+#' 
+#' @param title         Title for the plot
+#' 
+#' @param xlab          Label for the X-axis of the plot (corresponding to "a")
+#' 
+#' @param ylab          Label for the Y-axis of the plot (corresponding to "b")
+#' 
+#' @param palette       Colors of heatmap
 #' 
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -66,7 +85,9 @@
 
 pif.counterfactual.heatmap <-function(X, thetahat, rr, 
                                  weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                                 method = "empirical", legendtitle = "PIF",
+                                 method = "empirical", Xvar = var(X),
+                                 ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000,
+                                 legendtitle = "PIF",
                                  mina = 0.01, maxa = 0.99, minb = -1, maxb = 0, nmesh = 10,
                                  title = "Potential Impact Fraction (PIF) with counterfactual \n f(X)= aX+b",
                                  xlab = "a", ylab = "b", cft = function(X, a, b){a*X + b},
@@ -80,11 +101,25 @@ pif.counterfactual.heatmap <-function(X, thetahat, rr,
                    b   = seq(minb, maxb, length.out = nmesh),
                    pif = rep(NA, nmesh))
   
-  #Calculate the PIF for the specific counterfacvtual
-  for(i in 1:nrow(M)){
-     M[i,3] <- pif(X, thetahat = thetahat, rr = rr, weights = weights, 
-                     cft = function(X){cft(X, M$a[i], M$b[i])} )
+  #Calculate the PIF for the specific counterfactual
+  if(method == "empirical"){
+    for(i in 1:nrow(M)){
+      M[i,3] <- pif(X, thetahat = thetahat, rr = rr, weights = weights, 
+                    cft = function(X){cft(X, M$a[i], M$b[i])} )
+    }
+  }else if(method == "kernel"){
+    for(i in 1:nrow(M)){
+      M[i,3] <- pif(X, thetahat = thetahat, rr = rr, weights = weights, 
+                    cft = function(X){cft(X, M$a[i], M$b[i])}, method = method,
+                    ktype = ktype, bw = bw, adjust = adjust, npoints = npoints)
+    }
+  }else{
+    for(i in 1:nrow(M)){
+      M[i,3] <- pif(X, thetahat = thetahat, rr = rr, weights = weights, 
+                    cft = function(X){cft(X, M$a[i], M$b[i])}, Xvar=Xvar, method = method )
+    }
   }
+  
   
   #Create Heatmap
   plotobject <- ggplot(M, aes(x = a, y = b, fill = pif)) + geom_tile() + 

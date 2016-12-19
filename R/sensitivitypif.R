@@ -19,6 +19,17 @@
 #' @param n         Number of samples to include in order to conduct sensitivity analysis
 #' 
 #' @param m         Limit to number of variables to remove
+#'
+#' @param method    Either \code{empirical} (default) or \code{kernel}. Approximate method is not available for sensitivity Analysis.
+#' 
+#' @param ktype    \code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
+#'                  \code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}
+#' 
+#' @param bw        Smoothing bandwith parameter from density
+#' 
+#' @param adjust    Adjust bandwith parameter from density
+#' 
+#' @param npoints   Number of points
 #' 
 #' @param filename  Name of file for saving plot
 #' 
@@ -38,6 +49,11 @@
 #' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
 #'                 m = 100, n = 20,  title = "My Sensitivity Analysis")
 #' 
+#' #Same example with kernel
+#'  sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
+#'                 m = 100, n = 20, method = "kernel", title = "My Sensitivity Analysis")
+#'                 
+#'                 
 #' @export
 #' 
 
@@ -45,26 +61,26 @@
 sensitivity.pif <- function(X, thetahat, rr, 
                             cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                             weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                            n = 50, m = 100, filename = NA, 
+                            n = 50, m = 100, filename = NA,  method = c("empirical", "kernel", "approximate"),
+                            ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000,
                             title = "Sensitivity Analysis for Potential Impact Fraction (PIF)"){
 
-  if(n <= 0){}
   #Set X as matrix
   .X       <- as.matrix(X)
   
   #Check m and n are correctly defined
   if(m <= 0){
-    stop("m (maximum variables to remove) must be positive")
+    stop("m (maximum observations to remove) must be positive")
   }
   if(m >= dim(.X)[1]){
-    stop("m (maximum variables to remove) must be less than the amount of ")
+    stop("m (maximum observations to remove) must be less than the amount of observations")
   }
   
   if(n <= 0){
     stop("n (number of samples) must be positive")
   }
   if(n >= 500){
-    stop("n (number of samples) is too large")
+    stop("n (number of samples) is too big")
   }
   
   #Limit m values
@@ -102,11 +118,14 @@ sensitivity.pif <- function(X, thetahat, rr,
         #Remove this sample 
         .newX <- .X[-.todelete,]  
         .newW <- weights[-.todelete]
+        .newW <- .newW/sum(.newW)
       }
       
       
       #Estimate pif and save it in pifdata
-      .pifdata[.i,.j] <- pif(.newX, thetahat, rr, cft, weights = .newW)
+      .pifdata[.i,.j] <- pif(.newX, thetahat, rr, cft, weights = .newW, method = method,
+                             Xvar = Xvar,
+                             ktype = ktype, bw = bw , adjust = adjust, npoints = npoints)
       
     }
     

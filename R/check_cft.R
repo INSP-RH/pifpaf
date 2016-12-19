@@ -28,7 +28,7 @@ check.cft <- function(cft, X){
     j <- 1
     while(j <= m && bool){
       if(Cfti[j] > .X[i,j]){
-        warning("Counterfactual function increases exposure some exposure levels, verifiy it is correct.")
+        warning("Counterfactual function increases some exposure levels, verifiy it is correct.")
         bool <- FALSE
       }
       j <- j + 1
