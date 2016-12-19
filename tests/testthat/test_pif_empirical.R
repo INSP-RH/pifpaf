@@ -12,17 +12,15 @@ test_that("Checking pif.empirical function errors",{
   })
   
   #Check that exposure levels are positive
-  expect_error({
-    
+  expect_warning({
     X <- rnorm(100, -1)
     thetahat <- 1.4
-    pif.empirical(X, thetahat, function(X, theta){theta*X + 1})
+    pif.empirical(X, thetahat, function(X, theta){exp(theta*X)})
     
   })
   
   #Check that counterfactual relative risk > 0
   expect_error({
-    
     X <- rnorm(100, 4,1)
     thetahat <- 1.4
     pif.empirical(X, thetahat, rr = function(X, theta){X*theta + 1}, 

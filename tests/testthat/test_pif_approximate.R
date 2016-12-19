@@ -6,8 +6,7 @@ test_that("Checking pif.approximate function errors",{
   
   
   #Check that mean exposure values are greater than zero
-  expect_error({
-    
+  expect_warning({
     X     <- runif(1000, -1,0) 
     Xmean <- mean(X)
     Xvar  <- var(X)
