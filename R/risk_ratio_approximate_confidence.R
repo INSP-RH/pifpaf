@@ -8,7 +8,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetasd   Estimator of standard deviation of thetahat (usually standard error)
+#' @param thetavar   Estimator of variance of thetahat
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -34,13 +34,13 @@
 #' Xmean   <- 3.2
 #' Xvar    <- 1
 #' theta   <- 0.4
-#' thetasd <- 0.001
+#' thetavar <- 0.001
 #' rr      <- function(X,theta){exp(X*theta)}
-#' risk.ratio.approximate.confidence(Xmean, Xvar, thetahat = theta, thetasd = thetasd, rr = rr)
-#' @import MASS
+#' risk.ratio.approximate.confidence(Xmean, Xvar, thetahat = theta, thetavar = thetavar, rr = rr)
+#' @import MASS numDeriv
 #' @export
 
-risk.ratio.approximate.confidence <- function(Xmean, Xvar, thetahat, thetasd, rr,
+risk.ratio.approximate.confidence <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                   nsim = 1000, confidence = 95, check_thetas = TRUE,
                                   force.min = FALSE){
   
@@ -50,14 +50,13 @@ risk.ratio.approximate.confidence <- function(Xmean, Xvar, thetahat, thetasd, rr
   .Z     <- qnorm(1-.alpha/2)
   
   #Check 
-  .thetavar <- as.matrix(thetasd)
+  .thetavar <- as.matrix(thetavar)
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "risk.ratio") }
   
   #Get number of simulations
   .nsim  <- max(10, ceiling(nsim))
   
   #To matrix
-  #Set X as matrix
   .Xmean  <- matrix(Xmean, ncol = length(Xmean))
   .Xvar   <- matrix(Xvar, ncol = sqrt(length(Xvar)))
   
@@ -82,7 +81,7 @@ risk.ratio.approximate.confidence <- function(Xmean, Xvar, thetahat, thetasd, rr
   #Get expected value and variance of that
   .meanvec   <- rep(NA, .nsim)
   .varvec    <- rep(NA, .nsim)
-  .thetasim  <- mvrnorm(.nsim, thetahat, thetasd)
+  .thetasim  <- mvrnorm(.nsim, thetahat, thetavar, empirical = TRUE)
   for (i in 1:.nsim){
     .meanvec[i]  <- .Risk(.thetasim[i,])
     .varvec[i]   <- .Variance(.thetasim[i,])
