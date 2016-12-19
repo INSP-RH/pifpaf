@@ -41,9 +41,7 @@
 #' pif.approximate(Xmean, Xvar, thetahat, rr) 
 #' pif.approximate(Xmean, Xvar, thetahat, rr, Cft)
 #' 
-#' @import matrixStats
-#' 
-#' @import numDeriv
+#' @import matrixStats numDeriv
 #'  
 #' @export
 
@@ -59,13 +57,13 @@ pif.approximate <- function(Xmean, Xvar, thetahat, rr,
   }
   
   #Check exposure values are greater than zero
-  check.exposure(Xmean)
+  check.exposure(.Xmean)
   
   #Check that rr is 1 when X = 0
   check.rr(.Xmean, thetahat, rr)
   
   #Check counterfactual
-  check.cft(cft,Xmean)
+  check.cft(cft, .Xmean)
   
   #Rewrite functions as functions of X only
   rr.cft.fun <- function(X){
@@ -82,12 +80,11 @@ pif.approximate <- function(Xmean, Xvar, thetahat, rr,
   .mucft   <- rr.cft.fun(.Xmean) + 0.5*EntryMult(hessian(rr.cft.fun,.Xmean), .Xvar)
   .mux     <- rr.fun.x(.Xmean) + 0.5*EntryMult(hessian(rr.fun.x,.Xmean), .Xvar)
 
-  
   #Check that integrals make sense
   check.integrals(.mux, .mucft)
   
   #Calculate PIF
-  .pif   <- as.numeric( 1 - .mucft/.mux)
+  .pif   <- as.numeric(1 - .mucft/.mux)
   
   return(.pif)
   
