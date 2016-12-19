@@ -58,12 +58,8 @@
 #' Xmean   <- 3.2
 #' Xvar    <- 1
 #' theta   <- 0.4
-#' thetasd <- 0.001
-#' .Xmean  <- as.matrix(Xmean)
-#' .Xvar   <- as.matrix(Xvar)
 #' paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3,
 #'  thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
-
 #' @import MASS
 #' @export
 
