@@ -6,7 +6,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetasd   Estimator of standard deviation of thetahat (usually standard error)
+#' @param thetavar   Estimator of variance of thetahat
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -48,18 +48,18 @@
 #' 
 #' #Example with theta and X multivariate
 #' set.seed(18427)
-#' X1       <- rnorm(1000,4,1)
-#' X2       <- rnorm(1000,4,1)
-#' X        <- as.matrix(cbind(X1,X2))
-#' thetahat <- c(0.12, 0.03)
-#' thetasd  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
-#' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' risk.ratio.confidence(X, thetahat, thetasd, rr) 
+#' X1        <- rnorm(1000,4,1)
+#' X2        <- rnorm(1000,4,1)
+#' X         <- as.matrix(cbind(X1,X2))
+#' thetahat  <- c(0.12, 0.03)
+#' thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
+#' rr        <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+#' risk.ratio.confidence(X, thetahat, thetavar, rr) 
 #' 
 #' @import MASS
 #' @export
 
-risk.ratio.confidence <- function(X, thetahat, thetasd, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
+risk.ratio.confidence <- function(X, thetahat, thetavar, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
                                   nsim = 1000, confidence = 95, check_thetas = TRUE, force.min = FALSE){
   
   #Get confidence
@@ -68,8 +68,8 @@ risk.ratio.confidence <- function(X, thetahat, thetasd, rr, weights =  rep(1/nro
   .Z     <- qnorm(1-.alpha/2)
   
   #Check 
-  .thetasd <- as.matrix(thetasd)
-  if(check_thetas){ check.thetas(.thetasd, thetahat, NA, NA, "risk.ratio") }
+  .thetavar <- as.matrix(thetavar)
+  if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "risk.ratio") }
   
   #Get number of simulations
   .nsim  <- max(10, ceiling(nsim))
@@ -95,7 +95,7 @@ risk.ratio.confidence <- function(X, thetahat, thetasd, rr, weights =  rep(1/nro
   #Get expected value and variance of that
   .meanvec   <- rep(NA, .nsim)
   .varvec    <- rep(NA, .nsim)
-  .thetasim  <- mvrnorm(.nsim, thetahat, thetasd, empirical = TRUE)
+  .thetasim  <- mvrnorm(.nsim, thetahat, .thetavar, empirical = TRUE)
   for (i in 1:.nsim){
     .meanvec[i]  <- .Risk(.thetasim[i,])
     .varvec[i]   <- .Variance(.thetasim[i,])
