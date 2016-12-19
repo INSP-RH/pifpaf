@@ -6,7 +6,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetavar   Estimator of standard deviation of thetahat (usually standard error)
+#' @param thetavar   Estimator of variance of thetahat 
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -59,20 +59,18 @@
 #' thetavar <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' paf.confidence.inverse(X, thetahat, thetavar, rr) 
+#' 
 #' #Example: Approximate method
 #'  set.seed(46987)
 #'  rr      <- function(X,theta){exp(X*theta)}
 #'  X       <- rnorm(100,3.2,1)
-#'  Xmean   <- 3.2
-#'  Xvar    <- 1
+#'  Xmean   <- mean(X)
+#'  Xvar    <- var(X)
 #'  theta   <- 0.4
-#'  thetasd <- 0.001
-#'  
-#'  Xmean  <- as.matrix(Xmean)
-#'  .Xvar   <- as.matrix(Xvar)
-#'  paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd,
+#'  thetavar <- 0.001
+#'  paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetavar,
 #'   rr=rr, method = "approximate", Xvar = Xvar)
-#'  paf.confidence.inverse(X, thetahat = theta, thetavar = thetasd, 
+#'  paf.confidence.inverse(X, thetahat = theta, thetavar = thetavar, 
 #'  rr=rr, method = "empirical", Xvar = Xvar)
 #'
 #'#Example: Multidimensional example using approximate method
@@ -81,12 +79,10 @@
 #'X        <- as.matrix(cbind(X1,X2))
 #'Xmean    <- colMeans(X)
 #'Xvar     <- cov(X)
-#'.Xmean   <- matrix(Xmean, ncol = length(Xmean))
-#'.Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
 #'theta    <- c(0.12, 0.17)
-#'thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#'thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#'paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetasd, 
+#'paf.confidence.inverse(Xmean, thetahat = theta, thetavar = thetavar, 
 #'rr=rr, method = "approximate", Xvar = Xvar)
 #' 
 #' @import MASS
@@ -103,22 +99,25 @@ paf.confidence.inverse <- function(X, thetahat, thetavar, rr, weights =  rep(1/n
   
   #Function checking confidence is correctly specified
   check.confidence(confidence)
+  
   #Function for checking that thetas are correctly inputed
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "inverse") }
   
  rr.CI<- switch (.method,
-          empirical = risk.ratio.confidence(X = X, thetahat = thetahat, 
-                                              thetasd = .thetavar, rr = rr, 
+          empirical = {
+            risk.ratio.confidence(X = X, thetahat = thetahat, 
+                                              thetavar = .thetavar, rr = rr, 
                                               weights =  weights, nsim = nsim, 
-                                              confidence = confidence, force.min = force.min),
+                                              confidence = confidence, force.min = force.min)
+            },
           approximate = {
             Xvar <- check.xvar(Xvar)
             risk.ratio.approximate.confidence(Xmean = X, Xvar = Xvar, thetahat = thetahat, 
-                                                            thetasd = .thetavar, rr = rr, nsim = nsim, 
+                                                            thetavar = .thetavar, rr = rr, nsim = nsim, 
                                                             confidence = confidence, force.min = force.min)
           },
           risk.ratio.confidence(X = X, thetahat = thetahat, 
-                                thetasd = .thetavar, rr = rr, 
+                                thetavar = .thetavar, rr = rr, 
                                 weights =  weights, nsim = nsim, 
                                 confidence = confidence, force.min = force.min)
   )
