@@ -95,7 +95,7 @@ risk.ratio.confidence <- function(X, thetahat, thetasd, rr, weights =  rep(1/nro
   #Get expected value and variance of that
   .meanvec   <- rep(NA, .nsim)
   .varvec    <- rep(NA, .nsim)
-  .thetasim  <- mvrnorm(.nsim, thetahat, thetasd)
+  .thetasim  <- mvrnorm(.nsim, thetahat, thetasd, empirical = TRUE)
   for (i in 1:.nsim){
     .meanvec[i]  <- .Risk(.thetasim[i,])
     .varvec[i]   <- .Variance(.thetasim[i,])
