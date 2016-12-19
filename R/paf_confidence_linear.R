@@ -6,7 +6,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetavar   Estimator of standard error of thetahat (usually standard error) 
+#' @param thetavar   Estimator of variance of thetahat 
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -46,9 +46,9 @@
 #' X2 <- rnorm(2000,3,.5)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.1, 0.03)
-#' thetasd <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
+#' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' paf.confidence.linear(X, thetahat, thetasd, rr) 
+#' paf.confidence.linear(X, thetahat, thetavar, rr) 
 #' 
 #' @export
 
