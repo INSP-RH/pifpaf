@@ -63,6 +63,7 @@
 #' pif.counterfactual.heatmap(X, theta = theta, rr = rr)
 #' 
 #' #Example 2
+#' \dontrun{
 #' X     <- rbeta(100, 1, 0.2)
 #' theta <- c(0.12, 1)
 #' rr    <- function(X,theta){X*theta[1] + theta[2]}
@@ -70,6 +71,7 @@
 #' pif.counterfactual.heatmap(X, theta = theta, rr = rr, cft = cft, 
 #'      nmesh = 15, palette = rainbow(30), method = "kernel",
 #'      title = "PIF with counterfactual cft(X) = sin(a*X)*b")
+#' }
 #' 
 #' #You can also plot univariate counterfactuals
 #' X     <- rgamma(100, 1, 0.2)
@@ -77,7 +79,8 @@
 #' rr    <- function(X,theta){X*theta[1] + theta[2]}
 #' cft   <- function(X, a, b){sqrt(a*X)}   #Leave two variables in it
 #' pif.counterfactual.heatmap(X, theta = theta, rr = rr, 
-#' cft = cft, minb = 0, maxb = 0, title ="Univariate counterfactual", ylab = "")
+#'  cft = cft, mina = 0, maxa = 0.9, minb = 0, maxb = 0, 
+#'  title ="Univariate counterfactual", ylab = "")
 #' 
 #' @import ggplot2
 #' @importFrom grDevices heat.colors
@@ -95,7 +98,9 @@ pif.counterfactual.heatmap <-function(X, thetahat, rr,
                                  palette = heat.colors(nmesh)){
   
   #Check that mina < maxa and minb <= maxb
-  if (mina >= maxa || minb > maxb){stop("Error: min values of a or b larger than max values")}
+  if (mina >= maxa || minb > maxb){
+    stop("Error: min values of a or b larger than max values")
+  }
   
   #Create a mesh of all possible a and b values
   M <- expand.grid(a   = seq(mina, maxa, length.out = nmesh), 
@@ -103,35 +108,23 @@ pif.counterfactual.heatmap <-function(X, thetahat, rr,
                    pif = rep(NA, nmesh))
   
   #Calculate the PIF for the specific counterfactual
-  if(method == "empirical"){
-    for(i in 1:nrow(M)){
-      M[i,3] <- pif(X, thetahat = thetahat, rr = rr, weights = weights, 
-                    cft = function(X){cft(X, M$a[i], M$b[i])} )
-    }
-  }else if(method == "kernel"){
-    for(i in 1:nrow(M)){
+  for(i in 1:nrow(M)){
       M[i,3] <- pif(X, thetahat = thetahat, rr = rr, weights = weights, 
                     cft = function(X){cft(X, M$a[i], M$b[i])}, method = method,
-                    ktype = ktype, bw = bw, adjust = adjust, npoints = npoints)
-    }
-  }else{
-    for(i in 1:nrow(M)){
-      M[i,3] <- pif(X, thetahat = thetahat, rr = rr, weights = weights, 
-                    cft = function(X){cft(X, M$a[i], M$b[i])}, Xvar=Xvar, method = method )
-    }
+                    ktype = ktype, bw = bw, adjust = adjust, npoints = npoints,
+                    Xvar = Xvar, cft.check = FALSE)
   }
   
-  
   #Create Heatmap
-  plotobject <- ggplot(M, aes(x = a, y = b, fill = pif)) + geom_tile() + 
-    xlab(xlab) + ylab(ylab) + ggtitle(title) + theme_classic() + 
+  plotobject <- ggplot(M, aes(x = a, y = b, fill = pif)) + 
+    geom_tile() + xlab(xlab) + ylab(ylab) + ggtitle(title) + theme_classic() + 
     scale_fill_gradientn(legendtitle, colours = palette)
   
   #Check that minb == maxb to delete its axis
   if(minb == maxb){
-    plotobject <- plotobject + theme(axis.text.y = element_blank(), 
+    plotobject <- plotobject + theme(axis.text.y  = element_blank(), 
                                      axis.ticks.y = element_blank(),
-                                     axis.line.y = element_blank())
+                                     axis.line.y  = element_blank())
   }
   
   return(plotobject)
