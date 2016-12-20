@@ -40,7 +40,7 @@
 #' 
 #' @param maxb          Maximum for \code{b} for the counterfactual 
 #' 
-#' @param nmesh         Number of points in mesh (default \code{30})
+#' @param nmesh         Number of points in mesh (default \code{10})
 #' 
 #' @param title         Title for the plot
 #' 
@@ -79,7 +79,7 @@
 #' rr    <- function(X,theta){X*theta[1] + theta[2]}
 #' cft   <- function(X, a, b){sqrt(a*X)}   #Leave two variables in it
 #' pif.counterfactual.heatmap(X, theta = theta, rr = rr, 
-#'  cft = cft, mina = 0, maxa = 0.9, minb = 0, maxb = 0, 
+#'  cft = cft, mina = 0, maxa = 1, minb = 0, maxb = 0, 
 #'  title ="Univariate counterfactual", ylab = "")
 #' 
 #' @import ggplot2
@@ -92,7 +92,7 @@ pif.counterfactual.heatmap <-function(X, thetahat, rr,
                                  method = "empirical", Xvar = var(X),
                                  ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000,
                                  legendtitle = "PIF",
-                                 mina = 0.01, maxa = 0.99, minb = -1, maxb = 0, nmesh = 10,
+                                 mina = 0, maxa = 1, minb = -1, maxb = 1, nmesh = 10,
                                  title = "Potential Impact Fraction (PIF) with counterfactual \n f(X)= aX+b",
                                  xlab = "a", ylab = "b", cft = function(X, a, b){a*X + b},
                                  palette = heat.colors(nmesh)){
