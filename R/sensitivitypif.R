@@ -37,22 +37,28 @@
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' 
-#' @import matrixStats ggplot2
+#' @import  ggplot2
 #' 
 #' @examples 
 #' 
 #' #Example with risk given by HR
+#' 
 #' set.seed(18427)
 #' X        <- rnorm(1000, 4,1) 
 #' thetahat <- 0.02
 #' cft      <- function(X){0.5*X}
-#' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
-#'                 m = 100, n = 20,  title = "My Sensitivity Analysis")
 #' 
+#' \dontrun{
+#' #Using empirical method
+#' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
+#'                 m = 25, n = 20,  title = "My Sensitivity Analysis")
+
 #' #Same example with kernel
-#'  sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
-#'                 m = 100, n = 20, method = "kernel", title = "My Sensitivity Analysis")
+#' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
+#'                  m = 100, n = 25, method = "kernel", 
+#'                  title = "Sensitivity Analysis for kernel PAF")
 #'                 
+#' }                 
 #'                 
 #' @export
 #' 
@@ -60,8 +66,8 @@
 
 sensitivity.pif <- function(X, thetahat, rr, 
                             cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
-                            weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                            n = 50, m = 100, filename = NA,  method = c("empirical", "kernel", "approximate"),
+                            weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
+                            n = 50, m = 100, filename = NA,  method = c("empirical", "kernel"),
                             ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000,
                             title = "Sensitivity Analysis for Potential Impact Fraction (PIF)"){
 
@@ -124,13 +130,12 @@ sensitivity.pif <- function(X, thetahat, rr,
       
       #Estimate pif and save it in pifdata
       .pifdata[.i,.j] <- pif(.newX, thetahat, rr, cft, weights = .newW, method = method,
-                             Xvar = Xvar,
                              ktype = ktype, bw = bw , adjust = adjust, npoints = npoints)
       
     }
     
     #Get minimum and maximum
-    .sumdata[.j,] <- c(100 - (.j-1),summary(.pifdata[,.j]))
+    .sumdata[.j,] <- c(.m - (.j-1),summary(.pifdata[,.j]))
     
   }
   
