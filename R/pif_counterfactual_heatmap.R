@@ -1,4 +1,4 @@
-#' @title  Sensitivity Analysis of PIF with counterfactual
+#' @title  Graphical sensitivity analysis of PIF's counterfactual
 #' 
 #' @description Provides a graphic sensitivity analysis by varying the parameters of a bivariate counterfactual
 #' 
@@ -80,6 +80,7 @@
 #' cft = cft, minb = 0, maxb = 0, title ="Univariate counterfactual", ylab = "")
 #' 
 #' @import ggplot2
+#' @importFrom grDevices heat.colors
 #' @export
 
 
