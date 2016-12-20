@@ -29,6 +29,8 @@
 #' 
 #' @param npoints   Number of points
 #' 
+#' @param cft.check Boolean indicating to check if the counterfactual reduces the exposure \code{X} or does not.
+#' 
 #' @return pif      Estimate of Potential Impact Fraction
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -89,7 +91,7 @@
 pif <- function(X, thetahat, rr, 
                 cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), method = c("empirical", "kernel", "approximate"),
-                Xvar = var(X),
+                Xvar = var(X), cft.check = TRUE,
                 ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000){
   
   #Get method from vector
@@ -105,11 +107,12 @@ pif <- function(X, thetahat, rr,
   switch(.method,
          
          empirical = {
-           .pif <- pif.empirical(X, thetahat, rr, cft, weights)
+           .pif <- pif.empirical(X, thetahat, rr, cft, weights, cft.check = cft.check)
          }, 
          
          kernel    = {
-           .pif <- pif.kernel(X, thetahat, rr, cft, weights, ktype, bw, adjust, npoints)
+           .pif <- pif.kernel(X, thetahat, rr, cft, weights, ktype, bw, 
+                              adjust, npoints, cft.check = cft.check)
          },
          
          approximate = {
@@ -117,11 +120,13 @@ pif <- function(X, thetahat, rr,
            if(length(X)[1] > 1){
              Xmean <- matrix(Xmean, ncol = length(Xmean))
            }
-           .pif <- pif.approximate(Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, cft)
+           .pif <- pif.approximate(Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, 
+                                   cft, cft.check = cft.check)
          },
          
          {
-           warning("Please specify method as either empirical, kernel or approximate. Defaulting to empirical.")
+           warning(paste0("Please specify method as either empirical,", 
+                          "kernel or approximate. Defaulting to empirical."))
            .pif <- pif.empirical(X, thetahat, rr, cft, weights)
          }
          

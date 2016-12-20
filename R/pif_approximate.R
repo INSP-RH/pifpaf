@@ -10,10 +10,11 @@
 #' 
 #' @param rr        Function for relative risk.
 #' 
-#' 
 #' **Optional**
 #' 
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for \code{PAF} where counterfactual is 0 exposure.
+#' 
+#' @param cft.check Boolean indicating to check if the counterfactual reduces the exposure \code{X} or does not.
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí
@@ -47,7 +48,8 @@
 
 
 pif.approximate <- function(Xmean, Xvar, thetahat, rr, 
-                            cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}){
+                            cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))},
+                            cft.check = TRUE){
   
   .Xmean  <- matrix(Xmean, ncol = length(Xmean))
   .Xvar   <- matrix(Xvar, ncol = sqrt(length(Xvar)))
@@ -63,7 +65,7 @@ pif.approximate <- function(Xmean, Xvar, thetahat, rr,
   check.rr(.Xmean, thetahat, rr)
   
   #Check counterfactual
-  check.cft(cft, .Xmean)
+  if(cft.check){ check.cft(cft, .Xmean) }
   
   #Rewrite functions as functions of X only
   rr.cft.fun <- function(X){

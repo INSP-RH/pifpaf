@@ -13,6 +13,8 @@
 #' 
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for \code{PAF} where counterfactual is 0 exposure
 #' 
+#' @param cft.check Boolean indicating to check if the counterfactual reduces the exposure \code{X} or does not.
+#' 
 #' @param weights   Survey \code{weights} for the random sample \code{X}
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -39,7 +41,8 @@
 
 pif.empirical <- function(X, thetahat, rr, 
                           cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
-                          weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X)))){
+                          weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
+                          cft.check = TRUE){
   
   #Set X as matrix
   .X  <- as.matrix(X)
@@ -51,7 +54,7 @@ pif.empirical <- function(X, thetahat, rr,
   check.rr(.X, thetahat, rr)
   
   #Check counterfactual
-  check.cft(cft,X)
+  if(cft.check){ check.cft(cft, .X) }
   
   #Estimate weighted sums
   .mux   <- sum(rr(.X,thetahat) * weights)
