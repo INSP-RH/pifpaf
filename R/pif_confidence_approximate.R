@@ -36,26 +36,19 @@
 #' Xvar    <- 1
 #' theta   <- 0.4
 #' thetavar <- 0.001
-#' .Xmean  <- as.matrix(Xmean)
-#' .Xvar   <- as.matrix(Xvar)
-#' pif.confidence.approximate(Xmean,Xvar,theta,thetavar,rr)
-#' paf.confidence.approximate(Xmean,Xvar,theta,thetavar,rr)
 #' pif.confidence.approximate(Xmean,Xvar,theta,thetavar,rr, cft)
 #'
 #' #Example 2: Compare pif.variance.approximate with pif.variance.linear
-#' X1       <- rnorm(1000,3,.5)
-#' X2       <- rnorm(1000,4,1)
+#' X1       <- rnorm(100,3,.5)
+#' X2       <- rnorm(100,4,1)
 #' X        <- as.matrix(cbind(X1,X2))
 #' Xmean    <- colMeans(X)
 #' Xvar     <- cov(X)
 #' .Xmean   <- matrix(Xmean, ncol = length(Xmean))
 #' .Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
 #' theta    <- c(0.12, 0.17)
-#' thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#' thetavar <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr)
-#' paf.confidence.approximate(Xmean, Xvar, theta, thetavar, rr)
-#' pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr, cft = function(X){sqrt(X)})
 #' pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr, cft = function(X){0.5*X})
 #' 
 #' @export

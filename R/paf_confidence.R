@@ -48,7 +48,7 @@
 #' 
 #' #With larger sample the variance reduces
 #' set.seed(18427)
-#' X <- rnorm(10000,3,.7)
+#' X <- rnorm(1000,3,.7)
 #' thetahat <- 0.12
 #' thetavar <- 0.002
 #' paf.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
@@ -59,8 +59,8 @@
 #' 
 #' #Example with theta and X multivariate
 #' set.seed(18427)
-#' X1 <- rnorm(1000,3,.5)
-#' X2 <- rnorm(1000,3,.6)
+#' X1 <- rnorm(100,3,.5)
+#' X2 <- rnorm(100,3,.6)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.12, 0.03)
 #' thetasd <- matrix(c(0.001, 0, 0, 0.0024), byrow = TRUE, nrow = 2)
@@ -85,8 +85,6 @@
 #' X        <- as.matrix(cbind(X1,X2))
 #' Xmean    <- colMeans(X)
 #' Xvar     <- cov(X)
-#' .Xmean   <- matrix(Xmean, ncol = length(Xmean))
-#' .Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
 #' theta    <- c(0.12, 0.17)
 #' thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}

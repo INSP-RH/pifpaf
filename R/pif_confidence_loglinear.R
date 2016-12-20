@@ -33,12 +33,16 @@
 #' thetahat <- 0.4
 #' thetavar <- 0.1
 #' cft      <- function(X){sqrt(X)}
-#' pif.confidence.loglinear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft)
+#' \dontrun{
+#' pif.confidence.loglinear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft, nsim = 100)
+#' }
 #' 
 #' #Example with linear counterfactual
 #' a    <- 0.5
 #' cft  <- function(X){a*X}
+#' \dontrun{
 #' pif.confidence.loglinear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+#' }
 #' 
 #' #Example with theta and X multivariate
 #' set.seed(18427)
@@ -51,9 +55,9 @@
 #'            .X <- matrix(X, ncol = 2)
 #'            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
 #'            }
+#'\dontrun{
 #' pif.confidence.loglinear(X, thetahat, thetavar, rr) 
-#' paf.confidence.loglinear(X, thetahat, thetavar, rr)
-#' system.time(pif.confidence.loglinear(X, thetahat, thetavar, rr))
+#' }
 #' 
 #' @import MASS
 #' @export
