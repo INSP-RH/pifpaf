@@ -35,24 +35,20 @@
 #' Xvar    <- 1
 #' theta   <- 0.4
 #' thetavar <- 0.001
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr)
-#' paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr)
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr, cft)
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr, cft = function(X){sqrt(X)})
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr, cft,
+#' nsim = 1000)
 #'
 #'#Example 2: Compare pif.variance.approximate with paf.variance.loglinear
-#'X1       <- rnorm(1000,3,.5)
-#'X2       <- rnorm(1000,4,1)
+#'X1       <- rnorm(100,3,.5)
+#'X2       <- rnorm(100,4,1)
 #'X        <- as.matrix(cbind(X1,X2))
 #'Xmean    <- colMeans(X)
 #'Xvar     <- cov(X)
 #'thetahat <- c(0.12, 0.17)
 #'thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#'
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, rr)
-#' paf.confidence.loglinear(X, thetahat, thetavar, rr)
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, rr, cft = function(X){0.8*X})
+#'pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, 
+#'rr, cft = function(X){0.8*X}, nsim = 100)
 #' 
 #' @import MASS numDeriv
 #' @export
