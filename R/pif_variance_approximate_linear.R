@@ -8,7 +8,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetasd   Estimator of standard deviation of thetahat (usually standard error)
+#' @param thetavar   Estimator of variance of thetahat 
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -33,10 +33,10 @@
 #' Xmean   <- 3
 #' Xvar    <- 1
 #' theta   <- 1.2
-#' thetasd <- 0.15
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr)
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft) 
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft = function(X){sqrt(X)}) 
+#' thetavar <- 0.15
+#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr)
+#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr,cft) 
+#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr,cft = function(X){sqrt(X)}) 
 #' 
 #' 
 #' #Example 2: Compare pif.variance.approximate with paf.variance.approximate
@@ -46,23 +46,23 @@
 #' Xmean    <- colMeans(X)
 #' Xvar     <- cov(X)
 #' theta    <- c(0.12, 0.17)
-#' thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#' thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr)
-#' paf.variance.approximate (Xmean,Xvar,theta,thetasd,rr)
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr, cft)
+#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr)
+#' paf.variance.approximate (Xmean,Xvar,theta,thetavar,rr)
+#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr, cft)
 #' 
 #' @import MASS stats numDeriv matrixcalc
 #' @export 
 
 
-pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetasd, rr,
+pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                      cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}, 
                                      check_thetas = TRUE, 
                                      nsim = 1000){
   
   #Function for checking that thetas are correctly inputed
-  if(check_thetas){ check.thetas(thetasd, thetahat, NA, NA, "approximate") }
+  if(check_thetas){ check.thetas(thetavar, thetahat, NA, NA, "approximate") }
   
   #Set X as matrix
   .Xmean  <- matrix(Xmean, ncol = length(Xmean))
@@ -75,7 +75,7 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetasd, rr,
   }
   
   #Check exposure values are greater than zero
-  check.exposure(Xmean)
+  check.exposure(.Xmean)
   
   #Check that rr is 1 when X = 0
   check.rr(.Xmean, thetahat, rr)
@@ -108,7 +108,7 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetasd, rr,
   #Get expected value and variance of that
   .meanvec   <- rep(NA, .nsim)
   .varvec    <- rep(NA, .nsim)
-  .thetasim  <- mvrnorm(.nsim, thetahat, thetasd)
+  .thetasim  <- mvrnorm(.nsim, thetahat, thetavar, empirical = TRUE)
   for (i in 1:.nsim){
     .meanvec[i]  <- .pifexp(.thetasim[i,])
     .varvec[i]   <- .pifvar(.thetasim[i,])
