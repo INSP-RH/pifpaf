@@ -6,7 +6,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetasd   Estimator of standard error of thetahat (usually standard error) 
+#' @param thetavar   Estimator of variance of thetahat
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -46,17 +46,18 @@
 #' X2 <- rnorm(2000,3,.5)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.1, 0.03)
-#' thetasd <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
+#' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 #' rr        <- function(X, theta){
 #'            .X <- matrix(X, ncol = 2)
 #'            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
-#'            }#' cft <- function(X){0.5*X}
-#' pif.variance.linear(X, thetahat, thetasd, rr, cft) 
+#'            }
+#' cft <- function(X){0.5*X}
+#' pif.variance.linear(X, thetahat, thetavar, rr, cft) 
 #' 
 #' 
 #' @export
 
-pif.variance.linear <- function(X, thetahat, thetasd, rr, 
+pif.variance.linear <- function(X, thetahat, thetavar, rr, 
                                 cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), check_thetas = FALSE,  nsim = 100){
   #Set X as matrix
@@ -66,26 +67,26 @@ pif.variance.linear <- function(X, thetahat, thetasd, rr,
   .nsim        <- max(nsim,10)
   
   #Check 
-  .thetasd <- as.matrix(thetasd)
-  if(check_thetas){ check.thetas(.thetasd, thetahat, NA, NA, "linear") }
+  .thetavar <- as.matrix(thetavar)
+  if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "linear") }
   
   #Get the expected pif
   .pifexp <- function(theta){
     R0 <- weighted.mean(rr(.X, theta), weights)
-    RC <- weighted.mean(rr(cft(X), theta), weights)
+    RC <- weighted.mean(rr(cft(.X), theta), weights)
     return(1-RC/R0)
   }
   
   #Get the variance of pif
   .pifvar <- function(theta){
-    vr <- pif.conditional.variance.linear(X, theta, rr, cft, weights)
+    vr <- pif.conditional.variance.linear(.X, theta, rr, cft, weights)
     return(vr)
   }
   
   #Get expected value and variance of that
   .meanvec   <- rep(NA, .nsim)
   .varvec    <- rep(NA, .nsim)
-  .thetasim  <- mvrnorm(.nsim, thetahat, thetasd)
+  .thetasim  <- mvrnorm(.nsim, thetahat, .thetavar, empirical = TRUE)
   for (i in 1:.nsim){
     .meanvec[i]  <- .pifexp(.thetasim[i,])
     .varvec[i]   <- .pifvar(.thetasim[i,])

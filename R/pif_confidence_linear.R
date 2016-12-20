@@ -6,7 +6,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetavar   Estimator of standard error of thetahat (usually standard error) 
+#' @param thetavar   Estimator of variance of thetahat
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -46,12 +46,12 @@
 #' X2 <- rnorm(2000,3,.5)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.1, 0.03)
-#' thetasd <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
+#' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 #' rr        <- function(X, theta){
 #'            .X <- matrix(X, ncol = 2)
 #'            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
 #'            }#' cft <- function(X){0.5*X}#' cft <- function(X){0.5*X}
-#' pif.confidence.linear(X, thetahat, thetasd, rr, cft) 
+#' pif.confidence.linear(X, thetahat, thetavar, rr, cft) 
 #' 
 #' @export
 
@@ -71,14 +71,16 @@ pif.confidence.linear <- function(X, thetahat, thetavar, rr,
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "linear") }
   
   #Set the vector for the confidence intervals
-  .ci <- c("Lower_CI" = NA, "Point_Estimate" = NA, "Upper_CI" = NA, "Estimated_Variance" = NA)
+  .ci <- c("Lower_CI" = NA, "Point_Estimate" = NA, 
+           "Upper_CI" = NA, "Estimated_Variance" = NA)
   
   #Set Z for the confidence interval
   Z <- qnorm(1 - ((100-confidence)/200))
   
   #Get the point estimate and variance
   .ci["Point_Estimate"]     <- pif(X, thetahat, rr, cft, weights = weights)
-  .ci["Estimated_Variance"] <- pif.variance.linear(X, thetahat, .thetavar, rr,cft, weights = weights, check_thetas = FALSE, nsim = nsim)
+  .ci["Estimated_Variance"] <- pif.variance.linear(X, thetahat, .thetavar, rr,cft, weights = weights, 
+                                                   check_thetas = FALSE, nsim = nsim)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
   .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])
   

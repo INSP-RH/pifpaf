@@ -35,12 +35,12 @@
 #' Xmean   <- 3
 #' Xvar    <- 1
 #' theta   <- 0.4
-#' thetasd <- 0.001
+#' thetavar <- 0.001
 #' .Xmean  <- as.matrix(Xmean)
 #' .Xvar   <- as.matrix(Xvar)
-#' pif.confidence.approximate(Xmean,Xvar,theta,thetasd,rr)
-#' paf.confidence.approximate(Xmean,Xvar,theta,thetasd,rr)
-#' pif.confidence.approximate(Xmean,Xvar,theta,thetasd,rr, cft)
+#' pif.confidence.approximate(Xmean,Xvar,theta,thetavar,rr)
+#' paf.confidence.approximate(Xmean,Xvar,theta,thetavar,rr)
+#' pif.confidence.approximate(Xmean,Xvar,theta,thetavar,rr, cft)
 #'
 #' #Example 2: Compare pif.variance.approximate with pif.variance.linear
 #' X1       <- rnorm(1000,3,.5)
@@ -51,12 +51,12 @@
 #' .Xmean   <- matrix(Xmean, ncol = length(Xmean))
 #' .Xvar    <- matrix(Xvar, ncol = sqrt(length(Xvar)))
 #' theta    <- c(0.12, 0.17)
-#' thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#' thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' pif.confidence.approximate(Xmean, Xvar, theta, thetasd, rr)
-#' paf.confidence.approximate(Xmean, Xvar, theta, thetasd, rr)
-#' pif.confidence.approximate(Xmean, Xvar, theta, thetasd, rr, cft = function(X){sqrt(X)})
-#' pif.confidence.approximate(Xmean, Xvar, theta, thetasd, rr, cft = function(X){0.5*X})
+#' pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr)
+#' paf.confidence.approximate(Xmean, Xvar, theta, thetavar, rr)
+#' pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr, cft = function(X){sqrt(X)})
+#' pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr, cft = function(X){0.5*X})
 #' 
 #' @export
 
@@ -80,7 +80,8 @@ pif.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
   
   #Get the point estimate and variance
   .ci["Point_Estimate"]     <- pif.approximate(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, cft = cft)
-  .ci["Estimated_Variance"] <- pif.variance.approximate.linear(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, thetasd = .thetavar, rr = rr, nsim = nsim)
+  .ci["Estimated_Variance"] <- pif.variance.approximate.linear(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, 
+                                                               thetavar = .thetavar, rr = rr, nsim = nsim)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
   .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])
   

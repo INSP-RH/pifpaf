@@ -8,7 +8,7 @@
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
-#' @param thetavar   Estimator of standard deviation of thetahat (usually standard error)
+#' @param thetavar   Estimator of variance of thetahat 
 #' 
 #' @param rr        Function for relative risk
 #' 
@@ -34,11 +34,11 @@
 #' Xmean   <- 3
 #' Xvar    <- 1
 #' theta   <- 0.4
-#' thetasd <- 0.001
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr)
-#' paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr)
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr, cft)
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetasd, rr, cft = function(X){sqrt(X)})
+#' thetavar <- 0.001
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr)
+#' paf.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr)
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr, cft)
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr, cft = function(X){sqrt(X)})
 #'
 #'#Example 2: Compare pif.variance.approximate with paf.variance.loglinear
 #'X1       <- rnorm(1000,3,.5)
@@ -47,12 +47,12 @@
 #'Xmean    <- colMeans(X)
 #'Xvar     <- cov(X)
 #'thetahat <- c(0.12, 0.17)
-#'thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#'thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #'
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetasd, rr)
-#' paf.confidence.loglinear(X, thetahat, thetasd, rr)
-#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetasd, rr, cft = function(X){0.8*X})
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, rr)
+#' paf.confidence.loglinear(X, thetahat, thetavar, rr)
+#' pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, rr, cft = function(X){0.8*X})
 #' 
 #' @import MASS numDeriv
 #' @export
@@ -124,7 +124,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   #Get expected value and variance of that
   .logmeanvec   <- rep(NA, .nsim)
   .logvarvec    <- rep(NA, .nsim)
-  .thetasim     <- mvrnorm(.nsim, thetahat, thetavar)
+  .thetasim     <- mvrnorm(.nsim, thetahat, .thetavar, empirical = TRUE)
   for (i in 1:.nsim){
     .logmeanvec[i]  <- .logpifexp(.thetasim[i,])
     .logvarvec[i]   <- .logpifvar(.thetasim[i,])
