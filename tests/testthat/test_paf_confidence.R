@@ -94,14 +94,14 @@ test_that("Checking paf.confidence",{
     thetahat <- 0.2
     thetavar <- 0
     rr       <- function(X,theta){exp(X*theta)}
-    paf.confidence(X, thetahat, thetavar, rr, method = "log", est.method = "empirical")
+    paf.confidence(X, thetahat = thetahat, thetavar = thetavar, 
+                   rr = rr, method = "log", est.method = "empirical")
   },
   {
-    paf.confidence.loglinear(X, thetahat, thetavar, rr)
+    paf.confidence.loglinear(X = X, thetahat = thetahat, rr = rr, thetavar = thetavar) 
   })
   
   #Loglinear Approximate
-  
   expect_equal({
     set.seed(76787)
     X        <- mean(rnorm(100,3,1))
@@ -112,7 +112,8 @@ test_that("Checking paf.confidence",{
     paf.confidence(X, thetahat, thetavar = thetavar, rr = rr, method = "log", est.method = "approximate", Xvar = Xvar)
   },
   {
-    paf.confidence.approximate.loglinear(X, Xvar, thetahat, thetavar, rr)
+    paf.confidence.loglinear(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr,
+                             Xvar = Xvar, method = "approximate")
   })
   
 })
