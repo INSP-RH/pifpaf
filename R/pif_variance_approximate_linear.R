@@ -34,10 +34,7 @@
 #' Xvar    <- 1
 #' theta   <- 1.2
 #' thetavar <- 0.15
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr)
 #' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr,cft) 
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr,cft = function(X){sqrt(X)}) 
-#' 
 #' 
 #' #Example 2: Compare pif.variance.approximate with paf.variance.approximate
 #' X1       <- rnorm(1000,3,.5)
@@ -48,9 +45,8 @@
 #' theta    <- c(0.12, 0.17)
 #' thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr)
-#' paf.variance.approximate (Xmean,Xvar,theta,thetavar,rr)
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr, cft)
+#' pif.variance.approximate.linear(Xmean,Xvar, theta, thetavar, rr, 
+#' cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
 #' 
 #' @import MASS stats numDeriv matrixcalc
 #' @export 
@@ -58,21 +54,17 @@
 
 pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                      cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}, 
-                                     check_thetas = TRUE, 
-                                     nsim = 1000){
+                                     check_thetas = TRUE, nsim = 1000){
   
   #Function for checking that thetas are correctly inputed
   if(check_thetas){ check.thetas(thetavar, thetahat, NA, NA, "approximate") }
   
   #Set X as matrix
-  .Xmean  <- matrix(Xmean, ncol = length(Xmean))
-  .Xvar   <- matrix(Xvar, ncol = sqrt(length(Xvar)))
+  .Xvar   <- check.xvar(Xvar)
+  .Xmean  <- matrix(Xmean, ncol = ncol(.Xvar))
+  
   #Set a minimum for nsim
   .nsim        <- max(nsim,10)
-  
-  if(is.positive.semi.definite(.Xvar) == FALSE){
-    stop("Cobariance matrix must be positive semi-definite.")
-  }
   
   #Check exposure values are greater than zero
   check.exposure(.Xmean)
@@ -82,7 +74,7 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
   
   #Get the expected pif
   .pifexp <- function(theta){
-    pif.approximate(Xmean, Xvar, thetahat = theta, rr = rr, cft = cft)
+    pif.approximate(Xmean = .Xmean, Xvar = .Xvar, thetahat = theta, rr = rr, cft = cft)
   }
   
   #Get the variance of pif
