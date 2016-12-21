@@ -39,7 +39,7 @@ check.xvar <- function(Xvar){
   }
   
   #Check is positive definite
-  if(is.negative.definite(.Xvar)){
+  if(is.negative.definite(Xvar)){
     stop("Covariance matrix must be positive semi-definite.")
   }
   
