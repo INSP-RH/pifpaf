@@ -116,7 +116,7 @@ pif.counterfactual.heatmap <-function(X, thetahat, rr,
   }
   
   #Create Heatmap
-  plotobject <- ggplot(M, aes(x = a, y = b, fill = pif)) + 
+  plotobject <- ggplot(M, aes(x = M[,1], y = M[,2], fill = M[,3])) + 
     geom_tile() + xlab(xlab) + ylab(ylab) + ggtitle(title) + theme_classic() + 
     scale_fill_gradientn(legendtitle, colours = palette)
   
