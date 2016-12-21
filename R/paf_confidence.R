@@ -77,14 +77,12 @@
 #' Xvar     <- 1
 #' theta    <- 0.4
 #' thetavar <- 0.001
-#' .Xmean   <- as.matrix(Xmean)
-#' .Xvar    <- as.matrix(Xvar)
 #' paf.confidence(X = Xmean, Xvar = Xvar, thetahat = theta,
 #'  thetavar = thetavar, rr = rr, est.method = "approximate")
 #' 
 #' #Compare approximate method with default method
-#' X1       <- rnorm(1000,3,.5)
-#' X2       <- rnorm(1000,4,1)
+#' X1       <- rnorm(100,3,.5)
+#' X2       <- rnorm(100,4,1)
 #' X        <- as.matrix(cbind(X1,X2))
 #' Xmean    <- colMeans(X)
 #' Xvar     <- cov(X)
