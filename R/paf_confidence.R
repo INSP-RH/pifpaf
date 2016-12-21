@@ -33,6 +33,9 @@
 #' @param force.min Boolean indicating whether to force the PAF to have a 
 #'                  minimum value of 0 instead of allowing negative values (not recommended).
 #'                  Only valid if \code{method} = "inverse"
+#'                  
+#'
+#' @param check_thetas Boolean indicating whether to check the theta input
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí 
