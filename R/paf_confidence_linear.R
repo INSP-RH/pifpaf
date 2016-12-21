@@ -13,6 +13,10 @@
 #' 
 #' **Optional**
 #' 
+#' @param Xvar      Covariance matrix of X or variance value (for univariate X)
+#' 
+#' @param method    Method for estimation (either approximate or empirical)
+#' 
 #' @param nsim      Number of simulations for estimation of variance
 #' 
 #' @param weights    Survey \code{weights} for the random sample \code{X}
