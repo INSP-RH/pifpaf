@@ -17,10 +17,24 @@
 #' 
 #' @param nsim      Number of simulations
 #' 
+#' @param weights   Survey \code{weights} for the random sample \code{X}
+#' 
+#' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}. 
+
 #' @param confidence Confidence level \% (default 95)
 #' 
 #' @param check_thetas Check that theta parameters are correctly inputed
 #' 
+#' @param ktype    \code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
+#'                  \code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}
+#' 
+#' @param bw        Smoothing bandwith parameter from density
+#' 
+#' @param cft.check Boolean. Check the counterfactual function?
+#' 
+#' @param adjust    Adjust bandwith parameter from density
+#' 
+#' @param npoints   Number of points
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí 
 #' 
