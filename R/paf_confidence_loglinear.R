@@ -45,7 +45,7 @@
 #' X       <- rnorm(100, 3, 0.1)
 #' theta   <- 0.4
 #' thetavar <- 0.001
-#' paf.confidence.loglinear(X, theta, rr, thetavar, Xvar = Xvar, method = "empirical")
+#' paf.confidence.loglinear(X, theta, rr, thetavar, method = "empirical")
 #' paf.confidence.loglinear(mean(X), theta, rr, thetavar, Xvar = var(X), method = "approximate")
 #'
 #'#Example 2: Compare paf.variance.approximate with paf.variance.loglinear
