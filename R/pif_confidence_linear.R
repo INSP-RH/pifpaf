@@ -34,7 +34,6 @@
 #' thetahat <- 0.12
 #' thetavar <- 0.1
 #' pif.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
-#' paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 #' 
 #' #Example with linear counterfactual
 #' cft      <- function(X){0.3*X}
@@ -42,15 +41,16 @@
 #' 
 #' #Example with theta and X multivariate
 #' set.seed(18427)
-#' X1 <- rnorm(2000, 3,.5)
-#' X2 <- rnorm(2000,3,.5)
+#' X1 <- rnorm(100, 3,.5)
+#' X2 <- rnorm(100,3,.5)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.1, 0.03)
 #' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 #' rr        <- function(X, theta){
 #'            .X <- matrix(X, ncol = 2)
 #'            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
-#'            }#' cft <- function(X){0.5*X}#' cft <- function(X){0.5*X}
+#'            }
+#' cft <- function(X){0.5*X}#' cft <- function(X){0.5*X}
 #' pif.confidence.linear(X, thetahat, thetavar, rr, cft) 
 #' 
 #' @export

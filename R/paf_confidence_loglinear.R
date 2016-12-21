@@ -35,6 +35,7 @@
 #' @param adjust    Adjust bandwith parameter from density
 #' 
 #' @param npoints   Number of points
+#' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí 
 #' 
@@ -46,8 +47,11 @@
 #' theta   <- 0.4
 #' thetavar <- 0.001
 #' paf.confidence.loglinear(X, theta, rr, thetavar, method = "empirical")
+#' 
+#' #Same example using approximate method
 #' paf.confidence.loglinear(mean(X), theta, rr, thetavar, Xvar = var(X), method = "approximate")
 #'
+#'\dontrun{
 #'#Example 2: Compare paf.variance.approximate with paf.variance.loglinear
 #'X1       <- rnorm(100,3,.5)
 #'X2       <- rnorm(100,4,1)
@@ -57,8 +61,13 @@
 #'theta    <- c(0.12, 0.17)
 #'thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #'rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#'paf.confidence.loglinear(X, theta, rr, thetavar)  #Default empirical method
+#'
+#'#Using empirical
+#'paf.confidence.loglinear(X, theta, rr, thetavar)  
+#'
+#'#Using approximate
 #'paf.confidence.loglinear(Xmean, theta, rr, thetavar, Xvar = Xvar, method = "approximate")
+#'}
 #'
 #' @import MASS numDeriv
 #' @export
