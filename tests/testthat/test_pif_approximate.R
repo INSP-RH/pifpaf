@@ -50,17 +50,6 @@ test_that("Checking pif.approximate function errors",{
     
   })
   
-  #Check that variance and covariance matrix dimensions go according to the dimension of X
-  expect_error({
-    
-    X     <- runif(1000,0,3)
-    Xmean <- mean(X)
-    Xvar  <- cov(matrix(X, ncol = 2))
-    thetahat <- 1.4
-    pif.approximate(Xmean, Xvar, thetahat, function(X, theta){X*theta + 1}, cft = function(X){0.5*X})
-    
-  })
-  
 })
 
 test_that("Checking pif.approximate function warnings",{
@@ -106,7 +95,6 @@ test_that("Checking pif.approximate convergence",{
   )
   
   #Check that approximate PAF works when RR is constant 1
- 
   expect_equal(
     pif.approximate(Xmean = 3, Xvar = 1, thetahat = 1, rr = function(X, theta){1}),
     0
