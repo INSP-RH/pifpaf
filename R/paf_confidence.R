@@ -63,21 +63,21 @@
 #' X2 <- rnorm(100,3,.6)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.12, 0.03)
-#' thetasd <- matrix(c(0.001, 0, 0, 0.0024), byrow = TRUE, nrow = 2)
+#' thetavar <- matrix(c(0.001, 0, 0, 0.0024), byrow = TRUE, nrow = 2)
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' paf.confidence(X, thetahat, thetasd, rr) 
+#' paf.confidence(X, thetahat, thetavar, rr) 
 #' 
 #' #Examples with approximate method
 #' set.seed(46987)
-#' rr      <- function(X,theta){exp(X*theta)}
-#' Xmean   <- 3
-#' Xvar    <- 1
-#' theta   <- 0.4
-#' thetasd <- 0.001
-#' .Xmean  <- as.matrix(Xmean)
-#' .Xvar   <- as.matrix(Xvar)
+#' rr       <- function(X,theta){exp(X*theta)}
+#' Xmean    <- 3
+#' Xvar     <- 1
+#' theta    <- 0.4
+#' thetavar <- 0.001
+#' .Xmean   <- as.matrix(Xmean)
+#' .Xvar    <- as.matrix(Xvar)
 #' paf.confidence(X = Xmean, Xvar = Xvar, thetahat = theta,
-#'  thetavar = thetasd,rr = rr, est.method = "approximate")
+#'  thetavar = thetavar, rr = rr, est.method = "approximate")
 #' 
 #' #Compare approximate method with default method
 #' X1       <- rnorm(1000,3,.5)
@@ -86,10 +86,10 @@
 #' Xmean    <- colMeans(X)
 #' Xvar     <- cov(X)
 #' theta    <- c(0.12, 0.17)
-#' thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+#' thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' paf.confidence(X = X, thetahat = theta, thetavar = thetasd, rr = rr)
-#' paf.confidence(X = Xmean, thetahat = theta, thetavar = thetasd,
+#' paf.confidence(X = X, thetahat = theta, thetavar = thetavar, rr = rr)
+#' paf.confidence(X = Xmean, thetahat = theta, thetavar = thetavar,
 #'  rr = rr, Xvar = Xvar, est.method = "approximate")
 #' 
 #' #Examples with approximate methods
@@ -98,16 +98,14 @@
 #' Xmean   <- 3.2
 #' Xvar    <- 1
 #' theta   <- 0.4
-#' thetasd <- 0.001
-#' .Xmean  <- as.matrix(Xmean)
-#' .Xvar   <- as.matrix(Xvar)
-#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd,
-#'  rr=rr, est.method = "approximate", Xvar = Xvar, method = "linear")
+#' thetavar <- 0.001
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetavar,
+#'  rr = rr, est.method = "approximate", Xvar = Xvar, method = "linear")
 #'  
-#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd,
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetavar,
 #'  rr=rr, est.method = "approximate", Xvar = Xvar, method = "log")
 #'  
-#' paf.confidence(Xmean, thetahat = theta, thetavar = thetasd, rr=rr, 
+#' paf.confidence(Xmean, thetahat = theta, thetavar = thetavar, rr=rr, 
 #' est.method = "approximate", Xvar = Xvar, method = "inverse")
 #' 
 #' paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, 
@@ -120,7 +118,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = NA, weights =
                            thetamin = NA, thetamax = NA, nsim = 1000, confidence = 95, 
                            method = c("inverse", "log", "linear", "one2one"),
                            est.method = c("empirical", "kernel", "approximate"),
-                           force.min = FALSE){
+                           force.min = FALSE, check_thetas = TRUE){
   
   #Check confidence
   check.confidence(confidence)
@@ -137,26 +135,27 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = NA, weights =
     
   switch (.method,
           inverse = {
-            .cipaf <- paf.confidence.inverse(X, thetahat = thetahat, thetavar = .thetavar, 
-                                              rr = rr, confidence = confidence, nsim = nsim, 
-                                              Xvar = Xvar, method = est.method)
+            .cipaf <- paf.confidence.inverse(X = X, thetahat = thetahat, thetavar = .thetavar, 
+                                             weights = weights, rr = rr, confidence = confidence, 
+                                             nsim = nsim, Xvar = Xvar, method = est.method, 
+                                             force.min = force.min, check_thetas = check_thetas)
           }, log     = {
-            .cipaf <- paf.confidence.loglinear(Xmean = X, Xvar = Xvar, thetahat = thetahat, 
+            .cipaf <- paf.confidence.loglinear(X = X, Xvar = Xvar, thetahat = thetahat, weights = weights,
                                                thetavar = thetavar, rr=rr, nsim = nsim, 
-                                               confidence = 95, check_thetas = FALSE,
+                                               confidence = confidence, check_thetas = check_thetas,
                                                method = est.method)
           }, linear  = {
-            .cipaf <- paf.confidence.linear(X, Xvar = Xvar, thetahat, .thetavar, rr, 
-                                                  confidence, nsim, check_thetas = FALSE,
-                                            method = est.method)
+            .cipaf <- paf.confidence.linear(X, Xvar = Xvar, thetahat = thetahat, thetavar = .thetavar, 
+                                            rr = rr, weights = weights, confidence = confidence, 
+                                            nsim = nsim, check_thetas = check_thetas, method = est.method)
           }, one2one = {
             .cipaf <- paf.confidence.one2one(X, thetahat = thetahat, thetalow = thetamin, thetaup = thetamax, 
-                                             rr= rr,confidence = confidence, check_thetas = FALSE, 
-                                             method = est.method, Xvar = Xvar)
+                                             rr= rr,confidence = confidence, weights = weights, 
+                                             check_thetas = check_thetas, method = est.method, Xvar = Xvar)
           }, {
-            warning("Invalid method. Defaulting to method = inverse with no forcing")
-            .cipaf <- paf.confidence.inverse(X, thetahat, thetavar, rr, weights, nsim, confidence, FALSE, 
-                                             method = est.method)
+            warning(paste("Invalid method. Please choose one of the following: 'inverse',",
+                          "'log', 'linear' or 'one2one'"))
+            .cipaf <- NA
           }
     )
   
