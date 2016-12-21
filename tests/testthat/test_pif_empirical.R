@@ -73,7 +73,7 @@ test_that("Checking pif.empirical convergence",{
     
     #Check that empirical PIF works when RR is constant 1
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){1}, cft = function(X){X^2}),
+      pif.empirical(c(1,2,3), 1, rr = function(X, theta){1}, cft = function(X){(0.2*X)^2}),
       0
     )
     
