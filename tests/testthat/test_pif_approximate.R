@@ -114,7 +114,7 @@ test_that("Checking pif.approximate convergence",{
   
   #Check that approximate PIF works when RR is constant 1
   expect_equal(
-    pif.approximate(Xmean = 3, Xvar = 1, thetahat = 1, rr = function(X, theta){1}, cft = function(X){X^2}),
+    pif.approximate(Xmean = 3, Xvar = 1, thetahat = 1, rr = function(X, theta){1}, cft = function(X){(0.4*X)^2}),
     0
   )
   
