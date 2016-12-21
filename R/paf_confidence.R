@@ -117,7 +117,7 @@
 #' @import MASS
 #' @export
 
-paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = NA, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
+paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
                            thetamin = NA, thetamax = NA, nsim = 1000, confidence = 95, 
                            method = c("inverse", "log", "linear", "one2one"),
                            est.method = c("empirical", "kernel", "approximate"),
