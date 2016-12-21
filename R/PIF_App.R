@@ -12,7 +12,7 @@
 #' @import ggplot2
 #' @export
 
-PIFApp <- function()
+pif.app <- function()
 {
   appDir <- system.file("shiny-examples", "PIFapp", package = "pif")
   if (appDir == "") {
