@@ -132,63 +132,33 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = NA, weights =
   #Change variance to matrix
   .thetavar <- as.matrix(thetavar)
   
-
-  
   #Check that thetas are as they should
   check.thetas(.thetavar, thetahat, thetamin, thetamax, .method)
-  
-  if(est.method[1] == "approximate"){
-    #Check Xvar
-    Xvar <- check.xvar(Xvar)
-    switch (.method,
-            inverse = {.cipaf <-  paf.confidence.inverse(X, thetahat = thetahat, thetavar = .thetavar,
-                                                         rr = rr, confidence = confidence, nsim = nsim,
-                                                         Xvar = Xvar, method = "approximate")},
-            log = {.cipaf <- paf.confidence.approximate.loglinear(Xmean = X, Xvar = Xvar, thetahat = thetahat,
-                                                                  thetavar = thetavar, rr=rr, nsim = nsim,
-                                                                  confidence = 95, check_thetas = FALSE)},
-            linear = {.cipaf <-  paf.confidence.approximate(X, Xvar = Xvar, thetahat, .thetavar, rr, confidence, nsim,
-                                                            check_thetas = FALSE)},
-            one2one = {.cipaf <- paf.confidence.one2one(X, thetahat = thetahat, thetalow = thetamin, thetaup = thetamax,
-                                                        rr= rr,confidence = confidence, check_thetas = FALSE,
-                                                        method = "approximate", Xvar = Xvar)},
-            
-            {.cipaf <-  paf.confidence.inverse(X, thetahat = thetahat, thetavar = .thetavar,
-                                               rr = rr, confidence = confidence, nsim = nsim,
-                                               Xvar = Xvar, method = "approximate")}
-    )
     
-  }else{
-    switch(.method,
-           
-           inverse = {
-             .cipaf <- paf.confidence.inverse(X, thetahat, .thetavar, rr, weights, confidence = confidence, nsim = nsim, force.min = force.min,
-                                              check_thetas = FALSE)
-           }, 
-           
-           log = {
-             .cipaf <- paf.confidence.loglinear(X, thetahat, .thetavar, rr, weights, confidence = confidence, nsim = nsim,
-                                                check_thetas = FALSE)
-           },
-           
-           linear = {
-             .cipaf <- paf.confidence.linear(X, thetahat, .thetavar, rr, weights, confidence = confidence, nsim = nsim,
-                                             check_thetas = FALSE)
-           },
-           
-           one2one = {
-             .cipaf <- paf.confidence.one2one(X, thetahat, thetamin, thetamax, rr, weights, confidence = confidence,
-                                              check_thetas = FALSE)
-           },
-           
-           {
-             warning("Invalid method. Defaulting to method = inverse with no forcing")
-             .cipaf <- paf.confidence.inverse(X, thetahat, thetavar, rr, weights, nsim, confidence, FALSE)
-           }
+  switch (.method,
+          inverse = {
+            .cipaf <- paf.confidence.inverse(X, thetahat = thetahat, thetavar = .thetavar, 
+                                              rr = rr, confidence = confidence, nsim = nsim, 
+                                              Xvar = Xvar, method = est.method)
+          }, log     = {
+            .cipaf <- paf.confidence.loglinear(Xmean = X, Xvar = Xvar, thetahat = thetahat, 
+                                               thetavar = thetavar, rr=rr, nsim = nsim, 
+                                               confidence = 95, check_thetas = FALSE,
+                                               method = est.method)
+          }, linear  = {
+            .cipaf <- paf.confidence.linear(X, Xvar = Xvar, thetahat, .thetavar, rr, 
+                                                  confidence, nsim, check_thetas = FALSE,
+                                            method = est.method)
+          }, one2one = {
+            .cipaf <- paf.confidence.one2one(X, thetahat = thetahat, thetalow = thetamin, thetaup = thetamax, 
+                                             rr= rr,confidence = confidence, check_thetas = FALSE, 
+                                             method = est.method, Xvar = Xvar)
+          }, {
+            warning("Invalid method. Defaulting to method = inverse with no forcing")
+            .cipaf <- paf.confidence.inverse(X, thetahat, thetavar, rr, weights, nsim, confidence, FALSE, 
+                                             method = est.method)
+          }
     )
-  }
-  
-  
   
   #Return variance
   return(.cipaf)

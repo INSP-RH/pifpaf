@@ -33,12 +33,9 @@
 #' thetavar <- 0.1
 #' paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 #' 
-#' #With larger sample the confidence interval reduces
-#' set.seed(18427)
-#' X <- rnorm(10000,3,.5)
-#' thetahat <- 0.12
-#' thetavar <- 0.1
-#' paf.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+#' #Same example with approximate method 
+#' paf.confidence.linear(3, thetahat, thetavar, function(X, theta){exp(theta*X)}, 
+#' Xvar = 0.25, method = "approximate")
 #' 
 #' #Example with theta and X multivariate
 #' set.seed(18427)
@@ -50,32 +47,47 @@
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' paf.confidence.linear(X, thetahat, thetavar, rr) 
 #' 
+#' 
+#' 
 #' @export
 
 
-paf.confidence.linear <- function(X, thetahat, thetavar, rr, 
+paf.confidence.linear <- function(X, thetahat, thetavar, rr, Xvar = var(X),
                                   weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                                  confidence = 95, nsim = 1000, check_thetas = TRUE){
-  #Check confidence
-  check.confidence(confidence)
+                                  confidence = 95, nsim = 1000, check_thetas = TRUE,
+                                  method = c("empirical", "kernel", "approximate")){
   
   #Make thetavar matrix
   .thetavar <- as.matrix(thetavar)
   
-  #Function for checking that thetas are correctly inputed
-  if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "linear") }
-  
-  #Set the vector for the confidence intervals
-  .ci <- c("Lower_CI" = NA, "Point_Estimate" = NA, "Upper_CI" = NA, "Estimated_Variance" = NA)
-  
-  #Set Z for the confidence interval
-  Z <- qnorm(1 - ((100-confidence)/200))
+  #Get the method
+  .method   <- method[1]
   
   #Get the point estimate and variance
-  .ci["Point_Estimate"]     <- pif(X, thetahat, rr, weights = weights)
-  .ci["Estimated_Variance"] <- paf.variance.linear(X, thetahat, .thetavar, rr, weights = weights, nsim = nsim)
-  .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
-  .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])
+  switch(.method,
+         empirical = {
+           
+           #Check confidence
+           check.confidence(confidence)
+           
+           #Set Z for the confidence interval
+           Z <- qnorm(1 - ((100-confidence)/200))
+           
+           #Set the vector for the confidence intervals
+           .ci <- c("Lower_CI" = NA, "Point_Estimate" = NA, "Upper_CI" = NA, "Estimated_Variance" = NA)
+           
+           #Create confidence intervals with asymptotic normality
+           .ci["Point_Estimate"]      <- pif(X, thetahat, rr, weights = weights, method = .method)
+           .ci["Estimated_Variance"]  <- paf.variance.linear(X, thetahat, .thetavar, rr, weights = weights, nsim = nsim, check_thetas)
+           .ci["Lower_CI"]            <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
+           .ci["Upper_CI"]            <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])
+           
+         }, approximate = {
+           .ci <- paf.confidence.approximate(Xmean = X, Xvar = Xvar, thetahat = thetahat, 
+                                             thetavar = .thetavar, rr = rr, 
+                                             confidence = confidence, nsim = nsim, 
+                                             check_thetas = check_thetas)
+         })
   
   return(.ci)
   
