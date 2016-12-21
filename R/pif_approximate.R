@@ -83,8 +83,8 @@ pif.approximate <- function(Xmean, Xvar, thetahat, rr,
   
   
   #Estimate weighted sums
-  .mucft   <- rr.cft.fun(.Xmean) + 0.5*EntryMult(hessian(rr.cft.fun,.Xmean), .Xvar)
-  .mux     <- rr.fun.x(.Xmean)   + 0.5*EntryMult(hessian(rr.fun.x,.Xmean), .Xvar)
+  .mucft   <- as.numeric(rr.cft.fun(.Xmean) + 0.5*EntryMult(hessian(rr.cft.fun,.Xmean), .Xvar))
+  .mux     <- as.numeric(rr.fun.x(.Xmean)   + 0.5*EntryMult(hessian(rr.fun.x,.Xmean), .Xvar))
 
   #Check that integrals make sense
   check.integrals(.mux, .mucft)
