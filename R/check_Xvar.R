@@ -6,6 +6,8 @@
 #' 
 #' @return Xvar
 #' 
+#' @importFrom matrixcalc is.negative.definite
+#' 
 #' @examples 
 #' #Example 1 
 #' Xvar <- NA
@@ -18,10 +20,28 @@
 #' @export
 
 check.xvar <- function(Xvar){
-  if(is.na(Xvar)){
-    warning("Covariance of exposure values Xvar wasn't defined, default to zero")
-    n    <- dim(as.matrix(Xvar))[2]
+  
+  #Convert to matrix
+  Xvar <- as.matrix(Xvar)
+  
+  #Check nan, NA and character
+  if(any(is.na(Xvar)) || any(is.nan(Xvar)) || any(is.character(Xvar))){
+    
+    warning("Covariance of exposure values Xvar had non-numeric arguments, defaulting everything to zero")
+    n    <- ncol(Xvar)
     Xvar <- matrix(0, ncol = n, nrow = n)
+    
   }
+  
+  #Check is squared
+  if(ncol(Xvar) != nrow(Xvar)){
+    stop("Covariance matrix is not square matrix")
+  }
+  
+  #Check is positive definite
+  if(is.negative.definite(.Xvar)){
+    stop("Covariance matrix must be positive semi-definite.")
+  }
+  
   return(Xvar)
 }
