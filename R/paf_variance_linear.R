@@ -45,7 +45,8 @@
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.12, 0.03)
 #' thetavar <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
-#' paf.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}) 
+#' paf.variance.linear(X, thetahat, thetavar, 
+#' function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}) 
 #' 
 #' @import MASS stats
 #' @export
