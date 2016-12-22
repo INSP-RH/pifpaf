@@ -26,9 +26,9 @@
 #' 
 #' @param Xvar       Variance of exposure levels.
 #'                   
-#' @param thetamin   Minimum value of theta (needed if \code{method} = one2one)
+#' @param thetalow   Lower bound of the confidence interval of theta (needed if \code{method} = one2one)
 #' 
-#' @param thetamax   Maximum value of theta (needed if \code{method} = one2one)
+#' @param thetaup    Upper bound of the confidence interval of theta (needed if \code{method} = one2one)
 #' 
 #' @param force.min Boolean indicating whether to force the PAF to have a 
 #'                  minimum value of 0 instead of allowing negative values (not recommended).
@@ -109,14 +109,15 @@
 #' paf.confidence(Xmean, thetahat = theta, thetavar = thetavar, rr=rr, 
 #' est.method = "approximate", Xvar = Xvar, method = "inverse")
 #' 
-#' paf.confidence(Xmean, thetahat = .4, thetamin = .3, thetamax = .5, 
+#' paf.confidence(Xmean, thetahat = .4, thetalow = .3, thetaup = .5, 
 #' rr = rr, est.method = "approximate", method = "one2one",  Xvar = Xvar)
 #' 
 #' @import MASS
 #' @export
 
-paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                           thetamin = NA, thetamax = NA, nsim = 1000, confidence = 95, 
+paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X),
+                           weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
+                           thetalow = NA, thetaup = NA, nsim = 1000, confidence = 95, 
                            method = c("inverse", "log", "linear", "one2one"),
                            est.method = c("empirical", "kernel", "approximate"),
                            force.min = FALSE, check_thetas = TRUE){
@@ -132,7 +133,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
   .thetavar <- as.matrix(thetavar)
   
   #Check that thetas are as they should
-  check.thetas(.thetavar, thetahat, thetamin, thetamax, .method)
+  check.thetas(.thetavar, thetahat, thetalow, thetaup, .method)
     
   switch (.method,
           inverse = {
@@ -150,7 +151,7 @@ paf.confidence <- function(X, thetahat, thetavar = NA, rr,  Xvar = var(X), weigh
                                             rr = rr, weights = weights, confidence = confidence, 
                                             nsim = nsim, check_thetas = check_thetas, method = est.method)
           }, one2one = {
-            .cipaf <- paf.confidence.one2one(X, thetahat = thetahat, thetalow = thetamin, thetaup = thetamax, 
+            .cipaf <- paf.confidence.one2one(X, thetahat = thetahat, thetalow = thetalow, thetaup = thetaup, 
                                              rr= rr,confidence = confidence, weights = weights, 
                                              check_thetas = check_thetas, method = est.method, Xvar = Xvar)
           }, {
