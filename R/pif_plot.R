@@ -42,39 +42,39 @@
 #' set.seed(18427)
 #' library(ggplot2)
 #' X <- rnorm(100, 4.2, 1.3)
-#' plotpif(X, thetamin = 0, thetamax = 2, function(X, theta){exp(theta*X)}) +
+#' pif.plot(X, thetamin = 0, thetamax = 2, function(X, theta){exp(theta*X)}) +
 #'  ggtitle("PAF under different values of theta \n Empirical method")
 #' 
 #' #Example with kernel method
-#' plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel") +
+#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel") +
 #'  ggtitle("PAF under different values of theta \n Kernel method")
 #' 
 #' #Example for approximate method
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)
-#' plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, 
+#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, 
 #' method = "approximate", Xvar = Xvar) +
 #'  ggtitle("PAF under different values of theta \n Approximate method")
 #' 
 #' #Example with square root counterfactual
-#' plotpif(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)}) + 
+#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)}) + 
 #' ggtitle("PIF under different values of theta \n square root counterfactual  \n Empirical method")
 #' 
 #' #Example for approximate method with square root counterfactual
-#' plotpif(X, 0, 2, function(X, theta){exp(theta*X)},  cft = function(X){sqrt(X)},
+#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)},  cft = function(X){sqrt(X)},
 #'  method = "approximate", Xvar = Xvar) +
 #'  ggtitle("PIF under different values of theta \n square root counterfactual  \n Approximate method")
 #' 
 #' @export
 
-plotpif <- function(X, thetamin = 0 , thetamax = 1, rr, 
+pif.plot <- function(X, thetamin = 0 , thetamax = 1, rr, 
                     cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                     weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), npoints = 100, method = c("empirical", "kernel", "approximate"),
                     Xvar = 1,
                     ktype = "epanechnikov", bw = "nrd0", adjust = 1, mpoints = 1000){
   
   if(length(thetamin) > 1 || length(thetamax) > 1){
-    stop("plotpif only works for rr with unidimensional theta")
+    stop("pif.plot only works for rr with unidimensional theta")
   }
   #Check that we are able to plot
   if (thetamin >= thetamax){
