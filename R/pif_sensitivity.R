@@ -50,11 +50,11 @@
 #' 
 #' \dontrun{
 #' #Using empirical method
-#' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
+#' pif.sensitivity(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
 #'                 m = 25, n = 20,  title = "My Sensitivity Analysis")
 
 #' #Same example with kernel
-#' sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
+#' pif.sensitivity(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
 #'                  m = 100, n = 25, method = "kernel", 
 #'                  title = "Sensitivity Analysis for kernel PAF")
 #'                 
@@ -64,7 +64,7 @@
 #' 
 
 
-sensitivity.pif <- function(X, thetahat, rr, 
+pif.sensitivity <- function(X, thetahat, rr, 
                             cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                             weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                             n = 50, m = 100, filename = NA,  method = c("empirical", "kernel"),
