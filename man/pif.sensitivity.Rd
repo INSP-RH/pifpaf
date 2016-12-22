@@ -4,7 +4,7 @@
 \alias{sensitivity.pif}
 \title{Potential Impact Fraction Sensitivity Analysis plot}
 \usage{
-sensitivity.pif(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
+pif.sensitivity(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
   ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), n = 50,
   m = 100, filename = NA,
@@ -42,7 +42,7 @@ set.seed(18427)
 X        <- rnorm(1000, 4,1) 
 thetahat <- 0.02
 cft      <- function(X){0.5*X}
-sensitivity.pif(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
+pif.sensitivity(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
                 m = 100, n = 20,  title = "My Sensitivity Analysis")
 
 }
