@@ -92,7 +92,7 @@ pif.counterfactual.heatmap <-function(X, thetahat, rr,
                                  method = "empirical", Xvar = var(X),
                                  ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000,
                                  legendtitle = "PIF",
-                                 mina = 0, maxa = 1, minb = -1, maxb = 1, nmesh = 10,
+                                 mina = 0, maxa = 1, minb = -1, maxb = 0, nmesh = 10,
                                  title = "Potential Impact Fraction (PIF) with counterfactual \n f(X)= aX+b",
                                  xlab = "a", ylab = "b", cft = function(X, a, b){a*X + b},
                                  palette = heat.colors(nmesh)){
