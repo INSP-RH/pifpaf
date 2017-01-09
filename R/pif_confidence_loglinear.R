@@ -53,7 +53,6 @@
 #'            }
 #' pif.confidence.loglinear(X, thetahat, thetavar, rr) 
 #' paf.confidence.loglinear(X, thetahat, thetavar, rr)
-#' system.time(pif.confidence.loglinear(X, thetahat, thetavar, rr))
 #' 
 #' @import MASS
 #' @export
