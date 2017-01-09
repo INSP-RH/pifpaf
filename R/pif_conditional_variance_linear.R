@@ -49,9 +49,9 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
                                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X)))){
   
   check.cft(cft,X)
-  .X         <- as.matrix(X)
-  rr.fun     <- function(X){rr(X, thetahat)} 
-  rr.cft.fun <- function(X){rr(cft(X), thetahat)}
+  .X     <- as.matrix(X)
+  .cft.X <- as.matrix(cft(X))
+
   
   s        <- sum(weights)
   s2       <- sum(weights^2)
