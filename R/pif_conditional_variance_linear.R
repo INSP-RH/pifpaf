@@ -53,17 +53,16 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
   rr.fun     <- function(X){rr(X, thetahat)} 
   rr.cft.fun <- function(X){rr(cft(X), thetahat)}
   
-  n          <- dim(.X)[1]
-  R0         <- weighted.mean(rr(X, thetahat), weights)
-  RC         <- weighted.mean(rr(cft(X), thetahat), weights)
-  R0RC       <- weighted.mean((rr.fun(X)*rr.cft.fun(X)), weights)
-  #R0RC       <- sum(sapply(1:n, function(i){sapply(1:n, function(j){weights[i]*weights[j]*rr.fun(.X[i,])*rr.cft.fun(.X[j,])})}))
+  s        <- sum(weights)
+  s2       <- sum(weights^2)
+  .RO      <- weighted.mean(rr(.X,.theta), weights)
+  .RC      <- weighted.mean(rr(.cft.X,.theta), weights)
   
-  VarR0      <- weighted.mean((rr.fun(X))^2, weights) - (R0)^2
-  VarRC      <- weighted.mean((rr.cft.fun(X))^2, weights) - (RC)^2
-  CovR0.RC   <- round(R0RC - R0*RC, 8)
+  .varRO   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
+  .varRC   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.cft.X,.theta) - .RC)^2, weights)
+  .covRORC <- s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, .theta))*(rr(.cft.X,theta)), weights)-.RO*.RC)
 
-  Var       <- (1/R0)^2*((RC/R0)^2*VarR0+VarRC-2*(RC/R0)*CovR0.RC)
+  Var       <- (1/.RO)^2*((.RC/.RO)^2*.varRO+.varRC-2*(.RC/.RO)*.covRORC)
   return(Var)
 }
   
