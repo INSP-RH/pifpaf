@@ -55,12 +55,12 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
   
   s        <- sum(weights)
   s2       <- sum(weights^2)
-  .RO      <- weighted.mean(rr(.X,.theta), weights)
-  .RC      <- weighted.mean(rr(.cft.X,.theta), weights)
+  .RO      <- weighted.mean(rr(.X,theta), weights)
+  .RC      <- weighted.mean(rr(.cft.X,theta), weights)
   
-  .varRO   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
-  .varRC   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.cft.X,.theta) - .RC)^2, weights)
-  .covRORC <- s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, .theta))*(rr(.cft.X,theta)), weights)-.RO*.RC)
+  .varRO   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.X,theta) - .RO)^2, weights)
+  .varRC   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.cft.X,theta) - .RC)^2, weights)
+  .covRORC <- s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, theta))*(rr(.cft.X,theta)), weights)-.RO*.RC)
 
   Var       <- (1/.RO)^2*((.RC/.RO)^2*.varRO+.varRC-2*(.RC/.RO)*.covRORC)
   return(Var)
