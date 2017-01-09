@@ -33,16 +33,12 @@
 #' thetahat <- 0.4
 #' thetavar <- 0.1
 #' cft      <- function(X){sqrt(X)}
-#' \dontrun{
-#' pif.confidence.loglinear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft, nsim = 100)
-#' }
+#' pif.confidence.loglinear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft)
 #' 
 #' #Example with linear counterfactual
 #' a    <- 0.5
 #' cft  <- function(X){a*X}
-#' \dontrun{
 #' pif.confidence.loglinear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
-#' }
 #' 
 #' #Example with theta and X multivariate
 #' set.seed(18427)
@@ -55,9 +51,9 @@
 #'            .X <- matrix(X, ncol = 2)
 #'            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
 #'            }
-#'\dontrun{
 #' pif.confidence.loglinear(X, thetahat, thetavar, rr) 
-#' }
+#' paf.confidence.loglinear(X, thetahat, thetavar, rr)
+#' system.time(pif.confidence.loglinear(X, thetahat, thetavar, rr))
 #' 
 #' @import MASS
 #' @export
@@ -100,17 +96,18 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
   
   #Calculate the conditional variance as a function of theta
   
+
   .logpifvar <- function(.theta){
-    .E.logRC         <- weighted.mean(log(rr(.cft.X, .theta)), weights)
-    .E.logRO         <- weighted.mean(log(rr(.X, .theta)), weights)
-    #.E.logRO.logRC   <- weighted.mean(log(rr(.X, .theta))*log(rr(.cft.X,theta)), weights)
-    .E.logRO.logRC   <- sum(sapply(1:n, function(i){sapply(1:n, function(j){weights[i]*weights[j]*log(rr(.X[i,], .theta))*log(rr(.cft.X[j,], .theta))})}))
+    s        <- sum(weights)
+    s2       <- sum(weights^2)
+    .RO      <- weighted.mean(rr(.X,.theta), weights)
+    .RC      <- weighted.mean(rr(.cft.X,.theta), weights)
     
-    .varlogRC        <- weighted.mean((log(rr(.cft.X, .theta)))^2, weights) - (.E.logRC)^2
-    .varlogRO        <- weighted.mean((log(rr(.X, .theta)))^2, weights) - (.E.logRO)^2
-    .cov.logRO.logRC <- .E.logRO.logRC - .E.logRO*.E.logRC
+    .varRO   <- (1/.RO^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
+    .varRC   <- (1/.RC^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.cft.X,.theta) - .RC)^2, weights)
+    .covRORC <- (1/(.RO*.RC))*s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, .theta))*(rr(.cft.X,theta)), weights)-.RO*.RC)
     
-    .var             <- .varlogRO + .varlogRC - 2*.cov.logRO.logRC
+    .var     <-  .varRO + .varRC - 2*.covRORC
     return(.var)
   }
   
