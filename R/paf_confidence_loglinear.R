@@ -136,7 +136,7 @@ paf.confidence.loglinear <- function(X, thetahat, rr, thetavar,
              s  <- sum(weights)
              s2 <- sum(weights^2)
              .RO  <- weighted.mean(rr(.X,.theta), weights)
-             .var <- (1/.RO^2)*( s / (s^2 - s2) ) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
+             .var <- (1/.RO^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
              return(.var)
            }
          }
