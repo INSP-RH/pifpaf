@@ -76,7 +76,7 @@ paf.variance.linear <- function(X, thetahat, thetavar, rr,
     s2  <- sum(weights^2)
     s   <- sum(weights)
     R0  <- weighted.mean(rr(.X, theta), weights)
-    vr  <- (1/R0^4)*(s/(s^2-s2))*weighted.mean((rr(.X, theta) - R0)^2, weights)
+    vr  <- (1/R0^4)*(s/(s^2-s2))*weighted.mean((rr(.X, theta) - R0)^2, weights)*s2
     return(vr)
   }
   
