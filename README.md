@@ -13,7 +13,7 @@ Installing
 
 ``` r
 install.packages(devtools)
-devtools::install_github("INSP-RH/pif")
+devtools::install_github("INSP-RH/pif", build_vignettes = TRUE)
 ```
 
 You can also run our app without installation by copying this text into the R console:
