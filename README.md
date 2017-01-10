@@ -164,7 +164,7 @@ pif.sensitivity(X, 0.11, rr, cft)
 
 ![](README_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
-#### Counterfactual Heatmpa
+#### Counterfactual Heatmap
 
 We can also generate a heatmap showing how distinct counterfactual assumptions result in different impact fractions
 
