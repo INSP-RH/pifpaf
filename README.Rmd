@@ -24,7 +24,7 @@ The *pif* package works for the estimation of the [Potential Impact Fraction](ht
 
 ```{r install, eval = FALSE}
 install.packages(devtools)
-devtools::install_github("INSP-RH/pif")
+devtools::install_github("INSP-RH/pif", build_vignettes = TRUE)
 ```
 
 You can also run our app without installation by copying this text into the R console:
