@@ -1,0 +1,545 @@
+---
+title: "Potential Attributable Fraction in R"
+author: Dalia Camacho García Formentí \& Rodrigo Zepeda Tello 
+output: rmarkdown::html_vignette
+bibliography: Referencias.bib
+csl: american-journal-of-epidemiology.csl
+vignette: >
+  %\VignetteIndexEntry{Potential Attributable Fraction in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+ 
+```{r, echo=FALSE}
+library(pif)
+library(ggplot2)
+```
+##Introduction
+The Population Attributable Fraction (PAF) quantifies the contribution of a risk-factor exposure to either morbidity or mortality. In particular, it compares the observed burden of disease (or death) with a hypothetical no-exposure scenario (or theoretical-minimum-risk scenario). Mathematically the PAF is defined ^[This is a general definition that encompases all cases presented in [@murray2003comparative; @vander2004estimating] ] as:
+
+
+\begin{equation}
+\textrm{PAF} = \frac{E_{X}\left[RR\big(X;\theta\big)\right] - 1 }{E_{X}\left[RR\big(X;\theta\big)\right]} =  1 - \frac{1 }{E_{X}\left[RR\big(X; \theta\big)\right]},\label{eq:PIF}
+\end{equation}
+
+1. $RR(X;\theta)$ is the Relative Risk function at exposure level $X$ and for a parameter $\theta$. 
+2. $E_X[RR(X;\theta)]$ denotes the expected value of the Relative Risk.
+
+
+Some examples of Relative Risk functions are [@barendregt2010categorical]: 
+
+1. Linear: $R(X;\theta) = 1 + \theta X$,
+2. Exponential: $R(X;\theta) = e^{\theta X}$.
+
+There are two important cases of the Population Attrubutable Fraction: when the exposure is considered discrete (categorical) and when it is continuous (\textit{i.e.} has a probability density function). 
+
+In the first case, the expected value of the relative risk is given by:
+\begin{equation}\label{discPAF}
+E_{X}\left[RR\big(X;\theta\big)\right] =\sum_{i=1}^m P_i \cdot RR(i;\theta),
+\end{equation}
+
+where there are $m$ levels of exposure, $P_i$ denotes the probability of an individual being at level $i$ and $R(i;\theta)$ denotes the relative risk associated to that level. 
+
+In the latter case, the theoretical PAF is:
+where: 
+\begin{equation}\label{eq:expected}
+
+E_{X}\left[RR\big(X;\theta\big)\right] =  
+\int_{\mathcal{X}} RR(X;\theta)F(X)dX,
+\end{equation}
+
+where $F$ is the observed distribution of the exposure $X$. 
+
+We remark that for the PAF to make sense, the expected value of the relative risk  must exist. Although the PAF has been widely used the selection process for a distribution of the exposure values in the continuous case tends to be unclear, and can lead to a number of issues or miscalculations.  Therefore we present a consistent method to calculate the PAF and an R package to do it. The following section contains a brief explanation of the method to calculate the point estimate for the PAF and its confidence intervals. The last section contains examples of usage.
+
+Since miscalculations of the PAF concerning the selection of an incorrect distribution for exposure values arise more often in the continuous case than in the discrete one our study has been focused to continuous exposure values with continuous relative risk functions. However the method suggested can be used for discrete exposure values or discrete relative risk functions. Examples of these cases will be given in the last section as well.
+
+##The Empirical Population Attributable Fraction
+
+Let the relative risk function $RR:\mathcal{X} \times \Theta \to I \subset (0,\infty)$ be either convex, concave or Lipschitz continuous as a function of $\theta$. For $\mathscr{S}_n = \left \{ X_1, X_2, \dots, X_n \right \}$ a random sample of $X\in\mathcal{X}\subset\mathbb{R}^p$ with normalized sampling weights  $w_1, w_2, \dots, w_n$ and $\hat{\theta} \in \Theta \subset \mathbb{R}^q$ a consistent estimator of  $\theta$ with $\Theta, \mathcal{X}, I$ compact sets. We define the function:
+
+\begin{equation}
+\hat{\mu}_n(\theta) = \sum\limits_{i=1}^{n}  w_i RR\big( X_i; \theta \big),
+\end{equation}
+then:
+
+\begin{equation}\label{pafestimate}
+\widehat{\textrm{PAF}} = 1 - \frac{1}{\hat{\mu}_n(\hat{\theta})}
+\end{equation}
+is a consistent estimator of the Population Attributable Fraction ($\textrm{PAF}$). 
+
+###Confidence Intervals
+
+To get the confidence intervals of the PAF we must calculate the variance of PAF (or of a transformation of the PAF), notice that uncertainty comes from two sources: the exposure data $X$ and the Relative Risk parameter $\theta$. Since we have a sample of the exposure values and the point estimate and confidence intervals of parameter $\theta$ we use conditional probability:
+
+\begin{equation}\label{conditioningvar}
+\textrm{Var} \left(A \right)  = E_{B} \left[ \textrm{Var} \left( A \left. \right| B \right) \right] + \textrm{Var}_{B} \left[ E\left( A \left. \right| B\right)  \right],
+\end{equation}
+conditioning on $\theta$.
+
+Four different approaches to get confidence intervals were taken. 
+
+1. The linear method, that calculates the confidence interval for the linearization of PAF.
+2. The loglinear method in which the confidence interval for $g(\hat{\theta}) = \text{ln}\left(1 - \widehat{PAF}(\hat{\theta})\right)=\hat{\mu}_n(\theta)$ is calculated and then transformed to get PAF confidence interval.
+3. The inverse method consists on estimating the confidence intervals for $\hat{\mu}_n(\theta)$ and then inverting.
+4. The one to one method estimates of conditional confidence intervals for $R_O(\theta)$  (as in the inverse method) are calculated and applied to the lower and upper bounds of $\theta$ to obtain a confidence interval[@bar1999confidence].
+
+All confidence intervals are constructed assuming asymptotic normality. 
+
+###Approximate empirical method
+In the previous section estimates were calculated assuming one has a sample of exposure levels, however this might not be the case. It may occur that the only available information is the sample-mean $\hat{\mu}$ and sample-variance $\hat{\sigma}^2$  of the exposure levels. To avoid errors that arise from distribution mis-specification we propose using the estimator:
+
+\begin{equation}
+\widehat{PAF}= 1-\frac{1}{R(\hat{\mu};\hat{\theta})+\frac{1}{2} \frac{\partial^2 R(x;\hat{\theta})}{\partial x^2}|_{\hat{\mu}}\hat{\sigma}^2}\label{approxpaf}
+\end{equation}
+
+To calculate confidence intervals using the approximate point estimate the variance was calculated considering the linearization of PAF. (The resulting confidence intervals are different than those for the empirical method using linear confidence intervals.)
+
+
+###Potential Impact Fraction
+The potential impact fraction is a generalization of the PAF, since the observed burden of disease (or death) can be compared with a hypothetical counterfactual scenario, which may or may not be the no-exposure scenario. The potential impact fraction is given by:
+
+\begin{equation}
+\textrm{PIF}_f = \frac{E_{X}\left[RR\big(X;\theta\big)\right] - E_{X}\left[RR\big(f(X);\theta\big)\right] }{E_{X}\left[RR\big(X;\theta\big)\right]} =  1 - \frac{E_{X}\left[RR\big(f(X);\theta\big)\right] }{E_{X}\left[RR\big(X; \theta\big)\right]}.
+\end{equation}
+where $f(X)$ denotes the counterfactual transform of the exposure $X$, $RR$ the relative risk function with parameter $\theta$. Note that PAF is a special case of the $\textrm{PIF}_f$ when the counterfactual function is $f(X)=0$ for all $X$. 
+
+Given a sample of exposure levels $X_1, X_2, \dots, X_n$ with normalized weights $w_1, w_2, \dots, w_n$ and a point estimate for $\hat{\theta}$ of $\theta$ the empirical method to calculate $\widehat{\textrm{PIF}}$ is:
+
+\begin{equation}
+\widehat{\textrm{PIF}}_f = 1 - \frac{\hat{\mu}_{f(X)}(\hat{\theta})}{\hat{\mu}_{X}(\hat{\theta})}, 
+\end{equation}
+where $\hat{\mu}_{X} = \sum\limits_{i=1}^{n} w_i RR(X_i;\hat{\theta})$ and $\hat{\mu}_{f(X)} = \sum\limits_{i=1}^{n} w_i RR(f(X_i);\hat{\theta})$. $\widehat{\textrm{PIF}}_f$ is a consistent estimator of $\textrm{PIF}_f$.
+
+##Examples of usage
+
+The R package pif was developed to calculate the PAF and the PIF via the empirical and approximate methods, however an option to estimate the distribution of the exposure values using kernels is also available. Confidence intervals for the PAF and the PIF using different approaches have been programmed. Along with the confidence intervals a sensitivity analysis can be done when a sample of exposure values is available. The package pif also offers the posibility to plot the PAF and the PIF for a sample of exposure values (or point estimate) and different values of $\theta$, when $\theta$ is unidimensional. Other visual aids are heatmaps for counterfactuals, one can visually compare what would occur in different counterfactual scenarios. 
+
+In this section we show how to use the package pif through examples.
+###Potential Attributable Fraction (PAF)
+```{r}
+# devtools::install_github("INSP-RH/pif")
+library(pif)
+library(ggplot2)
+```
+
+
+Consider an exponential relative risk function $RR(X;\theta)=e^{\theta X}$, where the parameter $\theta$ is estimated by $\hat{\theta} = 0.11$, and consider a random sample of the exposure values $X$.
+
+```{r}
+set.seed(242)
+rr       <- function(x, theta){exp(theta*x)}
+thetahat <- 0.11
+X        <- rnorm(1000, 9, 3)
+```
+
+We use our package to estimate the population atributable fraction via the empirical method:
+```{r}
+paf(X = X, thetahat = thetahat, rr = rr)
+```
+
+The PAF calculated above considers the sampling weights of the exposure values to be equal. In case the observed exposure values have different sampling weights, the PAF is calculated by:
+
+```{r}
+weights <- c(rep(1/1500, 500), rep(2/1500, 500))
+paf(X = X, thetahat = thetahat, rr = rr, weights = weights)
+```
+
+The default method is empirical, but it can be changed to kernel method when the exposure values for one observation are unidimensional and there are no covariates.
+
+```{r}
+paf(X = X, thetahat = thetahat, rr = rr, method = "kernel")
+```
+
+where the kernel-type, adjustment and bandwidth can be changed:
+
+```{r}
+paf(X = X, thetahat = thetahat, rr = rr, method = "kernel", ktype = "cosine", adjust = 0.6)
+```
+
+Confidence intervals for the PAF can be calculated. For example if the variance of $\hat{\theta}$ is $0.0025$:
+
+```{r}
+thetavar <- 0.0025
+paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr)
+```
+
+The inverse method to calculate confidence intervals for the PAF is the inverse method, however other methods have been implemented. In particular, because $e^{\theta X}$ is convex, we can use the one to one ("one2one") method by specifying the lower and upper bounds of $\hat{\theta}$ confidence interval. If the confidence interval for $\hat{\theta}$ is given by $(0.09, 0.13)$ then the confidence interval with the one to one method is calculated as:
+
+```{r}
+thetalow <- 0.09
+thetaup  <- 0.13
+paf.confidence(X, thetahat = thetahat, thetalow = thetalow, thetaup = thetaup, rr = rr, method = "one2one")
+```
+
+The previous examples consider a random sample of exposure values is available, however we developed a method for estimating the PAF when only mean and variance of the exposure values are known. 
+
+```{r}
+Xmean <- mean(X)
+Xvar  <- var(X)
+paf(X = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, method = "approximate")
+```
+
+###Potential Impact Fraction (PIF)
+
+Consider the same relative risk function, $\hat{\theta}$ and sample of exposure values as before. We are now interested in estimating the effects of a counterfactual scenario, which is not necessarily the no-exposure counterfactual. As an example, consider a transformation of X given by: $T(X) = aX + b$. Consider $a = 0.5$ and $b = -1$, to estimate the PIF first we code the counterfactual function:
+
+```{r}
+cft <- function(X){0.5*X - 1}
+```
+
+Then we estimate the PIF via the empirical method:
+```{r}
+pif(X = X, thetahat = thetahat, rr = rr, cft = cft)
+```
+
+The PIF can also be calculated by estimating a distribution for exposure values using a kernel:
+
+```{r}
+pif(X = X, thetahat = thetahat, rr = rr, cft = cft, method = "kernel", ktype = "gaussian")
+```
+
+###Plots and visual aids
+
+####Plot for different values of $\theta$
+
+The command "pif.plot" allows us to analyze how the potential impact fraction varies as the values of $\theta$ changes:
+
+```{r fig.width=7, fig.height=4}
+thetamin <- 0.09
+thetamax <- 0.13
+pif.plot(X = X, thetamin = thetamin, thetamax = thetamax, rr = rr, cft = cft)
+```
+
+####Sensitivity Analysis
+
+The command pif.sensitivity allows us to analyze how our estimates for the potential impact fraction would vary had we excluded some part of the exposure sample:
+
+```{r fig.width=7, fig.height=4}
+pif.sensitivity(X = X,thetahat = thetahat, rr = rr, cft = cft)
+```
+
+The default sensitivity analysis removes up to a hundred observations, and takes fifty samples in each case. This is possible to modify if one wishes to remove at most fifty observations and take twenty samples in this case the code should be:
+
+```{r fig.width=7, fig.height=4}
+pif.sensitivity(X = X,thetahat = thetahat, rr = rr, cft = cft, n = 20, m = 50)
+```
+
+The title can also be modified, for example if one is doing the sensitivity analysis for the PAF instead of the PIF, the title could be "Sensitivity Analysis for Population Attributable Fraction"
+
+```{r fig.width=7, fig.height=4}
+pif.sensitivity(X = X,thetahat = thetahat, rr = rr, title = "Sensitivity Analysis for Population Attributable Fraction")
+```
+
+The sensitivity analysis can only be performed when a sample of exposure values is available, therefore no sensitivity analysis can be made for the PIF when only mean and variance of exposure is known.
+
+####Heatmap for counterfactuals
+
+To evaluate different counterfactual scenarios a heatmap is a useful tool, for one can have an idea of the possible outcomes from different counterfactuals. The counterfactual scenarios analyzed by default are those with the counterfactual function $\text{cft}(X)=aX+b$, where $a\in(0.01, 0.99)$ and $b\in(-1,0)$. These counterfactual scenarios can be graphed as:
+
+```{r fig.width=7, fig.height=4}
+pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr)
+```
+
+However other counterfactual scenarios can be represented. 
+For example, the same counterfactual function can be analyzed for different values of $a$ and $b$. If $a\in(0.5, 1)$ and $b\in(-3,-1)$ 
+
+```{r fig.width=7, fig.height=4}
+mina <- 0.5
+maxa <- 1
+minb <- -3
+maxb <- -1
+pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr, mina = mina, maxa = maxa, minb = minb)
+```
+
+Not only linear counterfactuals can be shown in the heatmap. For the counterfactual $log(aX + b)$, with $a\in (0.5, 1)$ and $b\in(-0.2,0)$:
+
+```{r fig.width=7, fig.height=4}
+cft <- function(X, a, b){log(a*X+b)}
+
+mina <- 0.5
+maxa <- 1
+minb <- -0.2
+maxb <- 0
+
+pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr, mina = mina, maxa = maxa, minb = minb, cft = cft)
+```
+
+The title, axis names, colors, and the grid can also be changed 
+
+```{r fig.width=7, fig.height=4}
+
+pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr,
+                           nmesh = 20, title = "PIF under different counterfactuals",
+                           xlab = "Variable a", ylab = "Variable b",
+                           palette = rainbow(20))
+```
+
+The following example is to show how the package can be used to calculate the PAF and the PIF of lung cancer due to tobacco exposure.
+
+###Calculating de PAF of lung cancer due to tobacco exposure
+####Empirical method
+Imagine one wishes to calculate the PAF of lung cancer given to tobacco exposure, and a sample $X$ (with equal sampling weights) of the exposure levels is provided. Assume the relative risk function is $e^{\theta X}$, where $\hat{\theta}=0.2$.
+
+```{r}
+#Suppose this is the random sample:
+X        <- rnorm(500, 3, 0.1)
+thetahat <- 0.2
+
+#Create the Relative Risk function
+RR       <- function(X,theta){exp(X*theta)}
+
+#Calculate the PAF
+PAF      <- pif(X, thetahat = thetahat, rr = RR)
+PAF
+```
+
+Therefore the potential attributable fraction is approximately `r I(round(PAF,2))` , and `r I(round(PAF,4)*100)`\% of lung cancer cases are attributable to exposure. 
+
+The sample of exposure levels might have outliers that drastically change the resulting PAF, therefore the package offers the possibility to make a sensitivity analysis.
+
+```{r fig.width=7, fig.height=4}
+pif.sensitivity(X, thetahat = thetahat, rr = RR)
+```
+
+
+Now assume a confidence interval for $\theta$ is provided where $\theta \in (0.1,0.3)$ is a $95\%$ confidence interval. If we're interested on knowing how PAF is going to be within this interval we can plot PAF as follows.
+
+```{r fig.width=7, fig.height=4}
+thetamin <- 0.1
+thetamax <- 0.3
+
+plot     <- pif.plot(X, thetamin = thetamin, thetamax = thetamax, rr = RR)
+plot     <- plot + ggtitle(paste("PAF for lung cancer under different",
+                                 "values of theta \n Empirical method"))
+plot
+```
+
+From the graph it is possible to see that for this interval for theta PAF values range from an approximate `r I(round(pif(X,thetahat=thetamin,rr =RR),2))`, to `r I(round(pif(X,thetahat=thetamax,rr =RR),2))`. So between `r I(round(pif(X,thetahat=thetamin,rr =RR),4)*100)`\% and  `r I(round(pif(X,thetahat=thetamax,rr =RR),4)*100)`\% of lung cancer cases seem attributable to tobacco exposure. The $(0.25, 0.6)$ interval is not a confidence interval for PAF, because it doesn't take into account variability in the exposure values. Therefore a confidence interval for $PAF$ is required. Assuming $\theta$ has a normal distribution and confidence intervals have $95\%$ confidence and using the one to one method the resulting confidence interval for PAF is:
+
+```{r}
+paf.confidence(X, thetahat = thetahat, thetalow =  thetamin, thetaup = thetamax, rr = RR, method = "one2one")
+```
+
+
+Suppose having an exposure equal to zero for all individuals is unachievable, however a policy where tobacco exposure can be reduced to half can be applied. In this case the counterfactual function is $f(X)=\frac{X}{2}$. To calculate the population impact fraction we do the following:
+
+
+```{r}
+cft      <- function(X){X/2}
+PIF      <- pif(X, thetahat = thetahat, rr = RR, cft = cft)
+PIF
+```
+
+With this policy approximately `r I(round(PIF,4)*100)`\% of lung cancer cases could be reduced. 
+
+Now imagine one wishes to consider different policies with different possible counterfactual scenarios. If these scenarios are a linear transformations of the current one a heatmap is useful. 
+
+```{r fig.width=7, fig.height=4}
+mina <- 0
+maxa <- 0.8
+minb <- 0
+maxb <- 0
+pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr,
+                           mina = mina, maxa = maxa, minb = minb, nmesh = 15)
+```
+
+
+####Approximate method
+Now assume that one wishes to calculate PAF and PIF as before, but the only information available is the mean and variance of the exposure values.
+
+```{r}
+Xmean  <- mean(X)
+Xvar   <- var(X)
+```
+
+Assume one wishes to calculate PAF of lung cancer given to tobacco exposure with relative risk function is $e^{\theta X}$, where $\hat{\theta}=0.2$ just as in the previous example. But now only mean exposure ($\bar{X} =$ `r Xmean`) and variance ($s^2 =$ `r Xvar`) of the exposure are provided. In this case paf should be calculated with the approximate method.
+
+```{r}
+PAFapprox <- pif(X = Xmean, thetahat = thetahat, rr = RR,
+                 method = "approximate", Xvar = Xvar)
+PAFapprox
+```
+
+PAF in this case gives `r I(round(PAFapprox,2))`, and if there was no exposure   `r I(round(PAFapprox,2)*100)`\% of lung cancer cases could be avoided. 
+
+A plot of how PAF approximate changes with different values of $\theta$ can be done also:
+
+```{r fig.width=7, fig.height=4}
+
+plot     <- pif.plot(Xmean, thetamin = thetamin, 
+                     thetamax = thetamax, rr = RR, 
+                     method = "approximate", Xvar = Xvar)
+plot     <- plot + ggtitle(paste("PAF for lung cancer under different", 
+                                 "values of theta \n Approximate method")) 
+
+plot
+```
+
+Now we calculate confidence intervals for PAF when only mean and variance of exposure values from a previous study is available. We calculate the interval with the one to one method.
+
+```{r}
+PAFCI <- paf.confidence(Xmean, thetahat = thetahat, thetalow = thetamin, thetaup = thetamax,
+                        rr = RR, Xvar = Xvar, est.method = "approximate", 
+                        method = "one2one")
+PAFCI
+```
+
+If we calculate the confidence interval for the whole sample using the linear method
+An approximate PIF is also easily computed: 
+
+```{r}
+PIFapprox <- pif(X = Xmean, thetahat = thetahat, 
+                 rr = RR, cft = cft, 
+                 method = "approximate", Xvar = Xvar)
+PIFapprox
+```
+
+With the policy that helps reduce tobacco exposure to half, the potential impact fraction is of `r I(round(PIFapprox,4))`. Therefore about `r I(round(PIFapprox,4)*100)`\% of lung cancer cases could be prevented with this policy.
+
+###Examples where either the relative risk or exposure values are categorical
+
+####Example 1: Categorical Relative Risk & Exposure
+In this case the population is divided in categories: normal, overweight and obese. The relative risk function has a value of $1$ in the normal category, of $1.2$ for the overweight population, and of $1.5$ for the obese population. 
+In this case the relative risk function can be defined as:  
+
+```{r}
+set.seed(18427)
+X        <- sample(c("Normal","Overweight","Obese"), 100, 
+                   replace = TRUE, prob = c(0.4, 0.1, 0.5))
+thetahat <- c(1, 1.2, 1.5)
+
+#Categorical relative risk function
+rr <- function(X, theta){
+  
+  #Create return vector with default risk of 1
+  r_risk <- rep(1, length(X))
+  
+  #Assign categorical relative risk
+  r_risk[which(X == "Normal")]      <- thetahat[1]
+  r_risk[which(X == "Overweight")]  <- thetahat[2]
+  r_risk[which(X == "Obese")]       <- thetahat[3]
+  
+  return(r_risk)
+}
+```
+
+The PAF using package pif is simply calculated as:
+```{r}
+paf(X, thetahat, rr)
+```
+
+The counterfactual scenario in which all obese people are treated and become normal can be given by:
+```{r}
+#Counterfactual of reducing all obesity to normality
+cft <- function(X){
+  X[which(X == "Obese")] <- "Normal"
+  return(X)
+}
+```
+
+With this the PIF is calculated as:
+
+```{r}
+pif(X, thetahat, rr, cft)
+
+```
+
+#####Example 2: Categorical Relative Risk & continuous exposure
+This case considers the BMI of the individuals as such, instead of solely dividing them in categories. This is useful for interventions aimed to decrease BMI in a certain amount of BMI units. However the relative risk is considered as a categorical relative risk, for people with BMI less than 20 (malnourished) the relative risk is $2.2$, for normal category  (BMI between 20 and 25) the relative risk is $1$, people in the overweight category (BMI between 25 and 30) have a relative risk of $1.8$, and the relative risk for obese people (BMI over 30) the relative risk is $2.5$.
+```{r}
+set.seed(18427)
+BMI      <- rlnorm(100, 3.1, sdlog = 0.1)
+thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, Obese = 2.5)
+rr       <- function(X, theta){
+  
+  #Create return vector with default risk of 1
+  r_risk <- rep(1, length(X))
+  
+  #Assign categorical relative risk
+  r_risk[which(X < 20)]                             <- theta[1] #Malnourished
+  r_risk[intersect(which(X >= 20), which(X < 25))]  <- theta[2] #Normal
+  r_risk[intersect(which(X >= 25), which(X < 30))]  <- theta[3] #Overweight
+  r_risk[which(X >= 30)]                            <- theta[4] #Obese
+  
+  return(r_risk)
+}
+
+#Counterfactual of everyone in normal range
+cft <- function(bmi){
+  bmi <- rep(22.5, length(bmi))
+  return(bmi)
+}
+
+#pif(BMI, thetahat, rr, cft, check_rr = FALSE)
+```
+
+#####Example 3: Discrete Exposure and Relative Risk
+Since BMI is always greater than zero, an exposure to zero BMI is impossible, however BMI values can be transformed by subtracting $20$, this means that people in the normal category with a BMI of $20$ are considered to be unexposed.
+```{r}
+set.seed(18427)
+
+#Assume we have BMI from a sample
+BMI          <- rlnorm(100, 3.1, sdlog = 0.1)
+
+#Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+BMI_adjusted <- BMI - 20
+
+thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, Obese = 2.5)
+rr       <- function(X, theta){
+  
+  #Create return vector with default risk of 1
+  r_risk <- rep(1, length(X))
+  
+  #Assign categorical relative risk
+  r_risk[which(X < 0)]                             <- theta[1] #Malnourished
+  r_risk[intersect(which(X >= 0), which(X < 5))]   <- theta[2] #Normal
+  r_risk[intersect(which(X >= 5), which(X < 10))]  <- theta[3] #Overweight
+  r_risk[which(X >= 10)]                           <- theta[4] #Obese
+  
+  return(r_risk)
+}
+
+#paf(BMI_adjusted, thetahat, rr, check_rr = FALSE, check_exposure = FALSE)
+```
+
+####Example 4: Bivariate exposure and rr ("classical PAF")
+This is the case where individuals are either exposed or unexposed to the risk factor. The PAF can be calculated as follows:
+```{r}
+set.seed(18427)
+X     <- sample(c("Exposed","Unexposed"), 1000, replace = TRUE, prob = c(0.1, 0.9))
+theta <- c("Exposed" = 2.5, "Unexposed" = 1.2)  
+rr <- function(X, theta){
+  
+  #Create relative risk function
+  r_risk <- rep(1, length(X))
+  
+  #Assign values of relative risk
+  r_risk[which(X == "Unexposed")] <- theta["Unexposed"]
+  r_risk[which(X == "Exposed")]   <- theta["Exposed"]
+  
+  return(r_risk)
+}    
+
+pif(X, theta, rr)
+
+#Counterfactual of reducing the exposure in half of the individuals
+cft <- function(X){
+  
+  #Find out which ones are exposed
+  Xexp  <- which(X == "Exposed")
+  
+  #Use only half of the exposed randomly
+  reduc <- sample(Xexp, length(Xexp)/2)
+  
+  #Unexpose those individuals
+  X[reduc] <- "Unexposed"
+  
+  return(X)
+}
+
+#pif(X, theta, rr, cft, check_rr = FALSE, check_exposure = FALSE)
+```
+
+## References
+
