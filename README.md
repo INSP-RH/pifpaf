@@ -146,27 +146,27 @@ pif(X, 0.11, rr, cft, method = "kernel", ktype = "gaussian")
 
 #### Plots
 
-The command `plotpif` allows us to analyze how the potential impact fraction varies as the values of θ change:
+The command `pif.plot` allows us to analyze how the potential impact fraction varies as the values of θ change:
 
 ``` r
-plotpif(X, 0, 0.3, rr, cft)
+pif.plot(X, 0, 0.3, rr, cft)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-18-1.png)
 
 #### Sensitivity function
 
-The command `sensitivity.pif` allows us to analyze how our estimates for the potential impact fraction would vary had we excluded some part of the exposure sample.
+The command `pif.sensitivity` allows us to analyze how our estimates for the potential impact fraction would vary had we excluded some part of the exposure sample.
 
 ``` r
-sensitivity.pif(X, 0.11, rr, cft)
+pif.sensitivity(X, 0.11, rr, cft)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
-#### Plot 3D
+#### Counterfactual Heatmpa
 
-We can also generate a 3D plot showing how distinct counterfactual assumptions result in different impact fractions
+We can also generate a heatmap showing how distinct counterfactual assumptions result in different impact fractions
 
 ``` r
 pif.counterfactual.heatmap(X, 0.11, rr)
