@@ -213,9 +213,9 @@ pif.plot(X = X, thetamin = thetamin, thetamax = thetamax, rr = rr, cft = cft)
 
 ####Sensitivity Analysis
 
-The command pif.sensitivity allows us to analyze how our estimates for the potential impact fraction would vary had we excluded some part of the exposure sample:
+The command pif.sensitivity allows us to analyze how our estimates for the potential impact fraction would vary if we excluded some part of the exposure sample, the usage would be the following:
 
-```{r fig.width=7, fig.height=4}
+```{r, eval=FALSE}
 pif.sensitivity(X = X,thetahat = thetahat, rr = rr, cft = cft)
 ```
 
@@ -228,7 +228,7 @@ pif.sensitivity(X = X,thetahat = thetahat, rr = rr, cft = cft, n = 20, m = 50)
 The title can also be modified, for example if one is doing the sensitivity analysis for the PAF instead of the PIF, the title could be "Sensitivity Analysis for Population Attributable Fraction"
 
 ```{r fig.width=7, fig.height=4}
-pif.sensitivity(X = X,thetahat = thetahat, rr = rr, title = "Sensitivity Analysis for Population Attributable Fraction")
+pif.sensitivity(X = X,thetahat = thetahat, rr = rr, title = "Sensitivity Analysis for Population Attributable Fraction", n = 20, m = 50)
 ```
 
 The sensitivity analysis can only be performed when a sample of exposure values is available, therefore no sensitivity analysis can be made for the PIF when only mean and variance of exposure is known.
@@ -249,7 +249,7 @@ mina <- 0.5
 maxa <- 1
 minb <- -3
 maxb <- -1
-pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr, mina = mina, maxa = maxa, minb = minb)
+pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr, mina = mina, maxa = maxa, minb = minb, nmesh = 5)
 ```
 
 Not only linear counterfactuals can be shown in the heatmap. For the counterfactual $log(aX + b)$, with $a\in (0.5, 1)$ and $b\in(-0.2,0)$:
@@ -262,7 +262,7 @@ maxa <- 1
 minb <- -0.2
 maxb <- 0
 
-pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr, mina = mina, maxa = maxa, minb = minb, cft = cft)
+pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr, mina = mina, maxa = maxa, minb = minb, cft = cft, nmesh = 5)
 ```
 
 The title, axis names, colors, and the grid can also be changed 
@@ -270,9 +270,9 @@ The title, axis names, colors, and the grid can also be changed
 ```{r fig.width=7, fig.height=4}
 
 pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr,
-                           nmesh = 20, title = "PIF under different counterfactuals",
+                           nmesh = 5, title = "PIF under different counterfactuals",
                            xlab = "Variable a", ylab = "Variable b",
-                           palette = rainbow(20))
+                           palette = rainbow(5))
 ```
 
 The following example is to show how the package can be used to calculate the PAF and the PIF of lung cancer due to tobacco exposure.
@@ -299,7 +299,7 @@ Therefore the potential attributable fraction is approximately `r I(round(PAF,2)
 The sample of exposure levels might have outliers that drastically change the resulting PAF, therefore the package offers the possibility to make a sensitivity analysis.
 
 ```{r fig.width=7, fig.height=4}
-pif.sensitivity(X, thetahat = thetahat, rr = RR)
+pif.sensitivity(X, thetahat = thetahat, rr = RR, n = 20, m = 50)
 ```
 
 
@@ -341,7 +341,7 @@ maxa <- 0.8
 minb <- 0
 maxb <- 0
 pif.counterfactual.heatmap(X=X, thetahat = thetahat, rr = rr,
-                           mina = mina, maxa = maxa, minb = minb, nmesh = 15)
+                           mina = mina, maxa = maxa, minb = minb, nmesh = 10)
 ```
 
 
