@@ -6,7 +6,7 @@
 #' @param fname Name of the function as a string
 #' 
 #' @import tools
-#' @export# 
+#' @export 
 check.read.Rfun <- function(file, fname){
   sol <- TRUE
   if(is.null(file)){
