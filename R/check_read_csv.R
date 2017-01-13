@@ -5,7 +5,7 @@
 #' @param file  Contains file information from "fileInput"
 #' 
 #' @import tools
-#' @export# 
+#' @export 
 check.read.csv <- function(file){
   if(is.null(file)){
     sol <- "warn1"
