@@ -1,11 +1,16 @@
-#' @title Check counterfactual decreases exposure levels
+#' @title Check that counterfactual decreases exposure levels
 #' 
-#' @description Function that checks whether the counterfactual function decreases the exposure values
+#' @description Function that checks whether the counterfactual function of \code{\link{pif}} decreases the exposure values
 #' 
-#' @param cft   counterfactual function
+#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
+#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
+#'   is 0 exposure.
 #' 
-#' @param X     sample of exposure values / or mean exposure, when only point estimates are available
+#' @param X         Random sample (vector or matrix) which includes exposure and
+#'   covariates. or sample mean.
 #' 
+#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
 #' #Example 1 
@@ -17,14 +22,23 @@
 #' @export
 
 check.cft <- function(cft, X){
+  
+  #Convert to matrix
   .X <- as.matrix(X)
-  n  <- dim(.X)[1]
-  m  <- dim(.X)[2]
+  
+  #Check rows and columns
+  n  <- nrow(.X)
+  m  <- ncol(.X)
+  
+  #Loop checking counterfactual evaluation
   bool <- TRUE
   i    <- 1
   while(i <= n && bool){
+    
+    #Calculate counterfactual
     Cfti <- cft(.X[i,])
     
+    #Loop checking that cft > X
     j <- 1
     while(j <= m && bool){
       if(Cfti[j] > .X[i,j]){

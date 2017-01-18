@@ -53,6 +53,8 @@
 #' cft <- function(X){0.5*X}#' cft <- function(X){0.5*X}
 #' pif.confidence.linear(X, thetahat, thetavar, rr, cft) 
 #' 
+#' @importFrom stats qnorm
+#' 
 #' @export
 
 

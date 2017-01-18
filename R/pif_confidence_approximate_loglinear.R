@@ -2,32 +2,51 @@
 #' 
 #' @description Confidence intervals for the Population Attributable Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
 #' 
-#' @param Xmean     Mean value of exposure levels from a previous study.
+#'@param Xmean  Mean value of exposure levels from a cross-sectional.
+#'  
+#'@param Xvar   Variance of the exposure levels.
 #' 
-#' @param Xvar      Variance of exposure levels from a previous study.
+#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
+#'   Relative Risk function \code{rr}
 #' 
-#' @param thetahat  Estimative of \code{theta} for the Relative Risk function
+#' @param thetavar   Estimator of variance of \code{thetahat}
 #' 
-#' @param thetavar   Estimator of variance of thetahat 
-#' 
-#' @param rr        Function for relative risk
+#' @param rr        Function for Relative Risk which uses parameter 
+#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #' 
 #' 
 #' **Optional**
-#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'                  the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure
+#'@param cft       Differentiable function \code{cft(X)} for counterfactual. Leave empty for 
+#'  the Population Attributable Fraction \code{\link{paf}} where counterfactual 
+#'  is 0 exposure.
 #' 
-#' @param nsim      Number of simulations
+#' @param confidence Concidence level (0 to 100) default = \code{95} \%
 #' 
-#' @param confidence Confidence level \% (default 95)
+#' @param nsim      Number of simulations for estimation of variance
 #' 
-#' @param check_thetas Check that theta parameters are correctly inputed
+#' @param check_thetas Checks that theta parameters are correctly inputed
 #' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#' @author Dalia Camacho García Formentí 
+#'@param deriv.method.args \code{method.args} for
+#'  \code{\link[numDeriv]{hessian}}.
+#'  
+#'@param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}.
+#'  Don't change this unless you know what you are doing.
+#'  
+#'@param check_integrals Check that counterfactual and relative risk's expected 
+#'  values are well defined for this scenario.
+#'  
+#'@param check_exposure  Check that exposure \code{X} is positive and numeric.
+#'  
+#'@param check_rr        Check that Relative Risk function \code{rr} equals 
+#'  \code{1} when evaluated at \code{0}.
+#'  
+#'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
-#' #Example 1
+#' 
+#' #Example 1: Exponential Relative Risk
+#' #--------------------------------------------
 #' set.seed(46987)
 #' rr      <- function(X,theta){exp(X*theta)}
 #' cft     <- function(X){0.4*X}
@@ -38,11 +57,12 @@
 #' pif.confidence.approximate.loglinear(Xmean, Xvar, theta, thetavar, rr, cft,
 #' nsim = 1000)
 #'
-#'#Example 2: Compare pif.variance.approximate with paf.variance.loglinear
+#' #Example 2: Multivariate Relative Risk
+#' #--------------------------------------------
 #'X1       <- rnorm(100,3,.5)
 #'X2       <- rnorm(100,4,1)
 #'X        <- as.matrix(cbind(X1,X2))
-#'Xmean    <- colMeans(X)
+#'Xmean    <- t(as.matrix(colMeans(X)))
 #'Xvar     <- cov(X)
 #'thetahat <- c(0.12, 0.17)
 #'thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
@@ -50,17 +70,24 @@
 #'pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, 
 #'rr, cft = function(X){0.8*X}, nsim = 100)
 #' 
-#' @import MASS numDeriv
+#' @importFrom MASS mvrnorm
+#' @importFrom numDeriv hessian grad
 #' @export
 
 pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                                  cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
+                                                 deriv.method.args = list(), 
+                                                 deriv.method = c("Richardson", "complex"),
+                                                 check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
                                                  nsim = 1000, confidence = 95, check_thetas = TRUE){
   
   #Get confidence
   check.confidence(confidence)
   .alpha <- max(0, 1 - confidence/100)
   .Z     <- qnorm(1-.alpha/2)
+  
+  #Get method
+  .method <- deriv.method[1]
   
   #Get number of simulations
   .nsim  <- max(10, ceiling(nsim))
@@ -70,45 +97,54 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "log") }
   
   #Set X as matrix
-  .Xmean  <- matrix(Xmean, ncol = length(Xmean))
-  .Xvar   <- matrix(Xvar, ncol = sqrt(length(Xvar)))
+  .Xmean  <- as.matrix(Xmean)
+  .Xvar   <- as.matrix(Xvar)
   
   #Calculate the conditional expected value as a function of theta
   .logpifexp <- function(.theta){
-    rr.cft.fun <- function(X){
+    
+    .rr_cft_fun <- function(X){
       Xcft.value  <- cft(X)
       rr(Xcft.value,.theta)
     } 
-    rr.fun.x <- function(X){
+    
+    .rr_fun_x <- function(X){
       rr(X,.theta)
     }
     
+    #Calculate the hessians
+    .hcft  <- hessian(.rr_cft_fun, .Xmean, method = .method, method.args = deriv.method.args)
+    .hrr   <- hessian(.rr_fun_x,   .Xmean, method = .method, method.args = deriv.method.args)
+    
     #Estimate weighted sums
-    .R1   <- rr.cft.fun(.Xmean) + 0.5*EntryMult(hessian(rr.cft.fun,.Xmean), .Xvar)
-    .R0   <- rr.fun.x(.Xmean) + 0.5*EntryMult(hessian(rr.fun.x,.Xmean), .Xvar)
+    .R1  <- .rr_cft_fun(.Xmean) + 0.5*sum(.hcft*.Xvar)
+    .R0  <- .rr_fun_x(.Xmean)   + 0.5*sum(.hrr*.Xvar)
     
     return( log(.R1)-log(.R0) )
   }
   
   #Inverse
-  .pif      <- pif.approximate(.Xmean, .Xvar, thetahat, rr, cft)
+  .pif      <- pif.approximate(X = .Xmean, Xvar = .Xvar, thetahat = thetahat, rr = rr, cft = cft,
+                               deriv.method = deriv.method, deriv.method.args = deriv.method.args,
+                               check_exposure = check_exposure, check_rr = check_rr, 
+                               check_integrals = check_integrals)
   .inverse  <- 1 - .pif
   
   #Calculate the conditional variance as a function of theta
   
   .logpifvar <- function(.theta){
-    rr.fun.x <- function(X){
+    .rr_fun_x <- function(X){
       rr(X,.theta)
     }
     
-    rr.cft.fun <- function(X){
+    .rr_cft_fun <- function(X){
       Xcft.value  <- cft(X)
       rr(Xcft.value,.theta)
     } 
-    dR1    <- as.matrix(grad(rr.cft.fun, .Xmean))
+    dR1    <- as.matrix(grad(.rr_cft_fun, .Xmean, method = .method, method.args = deriv.method.args))
     R1     <- rr(cft(.Xmean), .theta)
     
-    dR0    <- as.matrix(grad(rr.fun.x, .Xmean))
+    dR0    <- as.matrix(grad(.rr_fun_x, .Xmean,  method = .method, method.args = deriv.method.args))
     R0     <- rr(.Xmean, .theta)
     
     .var1  <- t(1/R1*dR1)%*%.Xvar%*%(1/R1*dR1)

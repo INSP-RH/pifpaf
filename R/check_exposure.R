@@ -7,34 +7,43 @@
 #' 
 #' @examples 
 #' #Example 1 
-#' X <- runif(500, 0,1)
+#' X <- matrix(runif(500, 0,1))
 #' check.exposure(X)
 #' 
+#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @export
 
 check.exposure <- function(X){
   
   #Boolean variable = 1
-  bool <- TRUE
+  .bool <- TRUE
   
+  #Get column numbers and row numbers
+  .m <- nrow(X)
+  .n <- ncol(X)
   
-  X <- as.matrix(X)
-  m <- dim(X)[1]
-  n <- dim(X)[2]
-  
-  #Check condition
-  i <- 1
-  while(i <= m && bool){
-    j <- 1
-    while(j <= n && bool){
-      if(X[i,j] >= 0){
-        j <- j+1
-      }else{
-        bool <- FALSE
+  #Check condition for all rows
+  .i <- 1
+  while(.i <= .m & .bool){
+    
+    #Loop through all columns
+    .j <- 1
+    while(.j <= .n & .bool){
+      
+      #Check that is positive numeric
+      if(is.numeric(X[.i, .j]) & X[.i, .j] >= 0){
+        .j <- .j + 1
+      } else if (is.character(X[.i, .j]) || is.factor(X[.i, .j])){
+        .j <- .j + 1
+      } else {
+        .bool <- FALSE
         warning(paste("Some exposure values are less than zero, verify this is correct."))
       }
     }
-    i <- i+1
+    .i <- .i + 1
   }
+  
+  return(.bool)
 }

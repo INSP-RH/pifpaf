@@ -2,41 +2,66 @@
 #' 
 #' @description Function that calculates approximate variance to the potential impact fraction.
 #' 
-#' @param Xmean     Mean value of exposure levels from a previous study.
+#' @param Xmean     Mean value of exposure levels.
 #' 
-#' @param Xvar      Variance of exposure levels from a previous study.
+#' @param Xvar      Variance of exposure levels.
 #' 
-#' @param thetahat  Estimative of \code{theta} for the Relative Risk function
+#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
+#'   Relative Risk function \code{rr}
 #' 
-#' @param thetavar   Estimator of variance of thetahat 
+#' @param thetavar   Estimator of variance of \code{thetahat}
 #' 
-#' @param rr        Function for relative risk
+#' @param rr        Function for Relative Risk which uses parameter 
+#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #' 
 #' 
 #' **Optional**
+#' 
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'                  the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure.
-#'                  
+#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
+#'   is 0 exposure.
+#' 
+#' @param nsim      Number of simulations for estimation of variance
+#' 
 #' @param check_thetas Checks that theta parameters are correctly inputed
 #' 
-#' @param nsim      Number of simulations
+#' @param check_cft  Check if counterfactual function \code{cft} reduces exposure.
 #' 
+#' @param check_xvar Check if it is covariance matrix.
+#' 
+#'@param check_exposure  Check that exposure \code{X} is positive and numeric
+#'  
+#'@param check_rr        Check that Relative Risk function \code{rr} equals 
+#'  \code{1} when evaluated at \code{0}
+#'  
+#'@param deriv.method.args \code{method.args} for
+#'  \code{\link[numDeriv]{hessian}}.
+#'  
+#'@param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}.
+#'  Don't change this unless you know what you are doing.
+#'  
+#'@param check_integrals Check that counterfactual and relative risk's expected 
+#'  values are well defined for this scenario.
+#'  
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#' @author Dalia Camacho García Formentí 
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
 #' 
-#' #Example 1
+#' #Example 1: Exponential Relative risk
+#' #--------------------------------------------
 #' set.seed(46987)
 #' rr      <- function(X,theta){exp(X*theta)}
 #' cft     <- function(X){0.5*X}
-#' Xmean   <- 3
-#' Xvar    <- 1
+#' X       <- rnorm(3)
+#' Xmean   <- mean(X)
+#' Xvar    <- var(X)
 #' theta   <- 1.2
 #' thetavar <- 0.15
-#' pif.variance.approximate.linear(Xmean,Xvar,theta,thetavar,rr,cft) 
+#' pif.variance.approximate.linear(Xmean, Xvar, theta, thetavar, rr, cft) 
 #' 
-#' #Example 2: Compare pif.variance.approximate with paf.variance.approximate
+#' #Example 2: Multivariate example
+#' #--------------------------------------------
 #' X1       <- rnorm(1000,3,.5)
 #' X2       <- rnorm(1000,4,1)
 #' X        <- as.matrix(cbind(X1,X2))
@@ -48,37 +73,41 @@
 #' pif.variance.approximate.linear(Xmean,Xvar, theta, thetavar, rr, 
 #' cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
 #' 
-#' @import MASS stats numDeriv matrixcalc
+#' @importFrom MASS mvrnorm 
+#' @importFrom stats weighted.mean
+#' @importFrom numDeriv grad
+#' 
 #' @export 
 
 
 pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                      cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}, 
-                                     check_thetas = TRUE, nsim = 1000){
+                                     check_thetas = TRUE, check_cft = TRUE, check_xvar = TRUE, check_rr = TRUE, 
+                                     check_integrals = TRUE, check_exposure = TRUE, deriv.method.args = list(), 
+                                     deriv.method = c("Richardson", "complex"), nsim = 1000){
   
   #Function for checking that thetas are correctly inputed
   if(check_thetas){ check.thetas(thetavar, thetahat, NA, NA, "approximate") }
   
   #Set X as matrix
-  .Xvar   <- check.xvar(Xvar)
+  if(check_xvar) {Xvar   <- check.xvar(Xvar)}
+  .Xvar   <- Xvar
   .Xmean  <- matrix(Xmean, ncol = ncol(.Xvar))
   
   #Set a minimum for nsim
   .nsim        <- max(nsim,10)
   
-  #Check exposure values are greater than zero
-  check.exposure(.Xmean)
-  
-  #Check that rr is 1 when X = 0
-  check.rr(.Xmean, thetahat, rr)
-  
   #Get the expected pif
   .pifexp <- function(theta){
-    pif.approximate(Xmean = .Xmean, Xvar = .Xvar, thetahat = theta, rr = rr, cft = cft)
+    pif.approximate(X = .Xmean, Xvar = .Xvar, thetahat = theta, rr = rr, cft = cft, 
+                    deriv.method.args = deriv.method.args, deriv.method = deriv.method, 
+                    check_exposure = check_exposure, check_rr = check_rr, 
+                    check_integrals = check_integrals)
   }
   
   #Get the variance of pif
   .pifvar <- function(theta){
+    
     #Rewrite functions as functions of X
     rr.fun.x <- function(X){
       rr(X,theta)
@@ -88,12 +117,18 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
       rr(cftX, theta)
     }
     
+    #Calculate gradients
     dR0 <- as.matrix(grad(rr.fun.x, .Xmean))
     dR1 <- as.matrix(grad(rr.fun.cft, .Xmean))
-    R0  <- rr(.Xmean, theta)
-    R1  <- rr(cft(.Xmean), theta)
+    
+    #Estimate relative risks 
+    R0  <- rr.fun.x(.Xmean)
+    R1  <- rr.fun.cft(.Xmean)
+    
+    #Calculate Taylor this way
     aux <- ((dR1*R0 - dR0*R1)/(R0^2))
     vr  <- t(aux)%*%.Xvar%*%(aux)
+    
     return(vr)
   }
   

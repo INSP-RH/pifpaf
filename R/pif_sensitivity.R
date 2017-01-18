@@ -1,108 +1,212 @@
 #' @title Potential Impact Fraction Sensitivity Analysis plot
-#' 
-#' @description Function that plots a sensitivity analysis for the potential impact fraction by checking how estimates vary when reducing the sample
-#' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
-#' 
-#' @param thetahat  Estimative of \code{theta} for the Relative Risk function
-#' 
-#' 
-#' @param rr        Function for relative risk
-#' 
-#' 
-#' **Optional**
-#' 
-#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for \code{PAF}
-#' 
-#' @param weights   Survey \code{weights} for the random sample \code{X}
-#' 
-#' @param n         Number of samples to include in order to conduct sensitivity analysis
-#' 
-#' @param m         Limit to number of variables to remove
-#'
-#' @param method    Either \code{empirical} (default) or \code{kernel}. Approximate method is not available for sensitivity Analysis.
-#' 
-#' @param ktype    \code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
-#'                  \code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}
-#' 
-#' @param bw        Smoothing bandwith parameter from density
-#' 
-#' @param adjust    Adjust bandwith parameter from density
-#' 
-#' @param npoints   Number of points
-#' 
-#' @param filename  Name of file for saving plot
-#' 
-#' @param title  Plot title
-#' 
+#'   
+#' @description Function that plots a sensitivity analysis for the potential
+#'   impact fraction by checking how estimates vary when reducing the exposure
+#'   sample \code{X}.
+#'   
+#' @param X         Random sample (vector or matrix) which includes exposure and
+#'   covariates. or sample mean if approximate method is selected.
+#'   
+#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
+#'   Relative Risk function.
+#'   
+#' @param rr        Function for Relative Risk which uses parameter 
+#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   
+#'   
+#'   **Optional**
+#'   
+#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
+#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
+#'   is 0 exposure.
+#'   
+#' @param weights   Normalized survey \code{weights} for the sample \code{X}.
+#'   
+#' @param method    Either \code{empirical} (default), or  \code{kernel}.
+#'   
+#' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
+#'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
+#'   method). Additional information on kernels in \code{\link[stats]{density}}
+#'   
+#' @param bw        Smoothing bandwith parameter from density (for \code{kernel}
+#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#'   
+#' @param adjust    Adjust bandwith parameter from density (for \code{kernel} 
+#'   method) from \code{\link[stats]{density}}.
+#'   
+#' @param n   Number of equally spaced points at which the density (for 
+#'   \code{kernel} method) is to be estimated (see 
+#'   \code{\link[stats]{density}}).
+#'   
+#' @param check_integrals Check that counterfactual and relative risk's expected
+#'   values are well defined for this scenario
+#'   
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#'   
+#' @param check_rr        Check that Relative Risk function \code{rr} equals 
+#'   \code{1} when evaluated at \code{0}
+#'   
+#' @param nsim      Integer with number of samples to include (for each removal)
+#'   in order to conduct sensitivity analysis
+#'   
+#' @param mremove   Limit to number of measurements of \code{X} to remove
+#'   
+#' @param title     String with plot title
+#'   
+#' @param legendtitle   String title for the legend of plot
+#'   
+#' @param xlab          String label for the X-axis of the plot (corresponding
+#'   to "a")
+#'   
+#' @param ylab          String label for the Y-axis of the plot (corresponding
+#'   to "b")
+#'   
+#' @param colors        String vector with colors for plots
+#'   
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#' 
+#'   
 #' @import  ggplot2
-#' 
+#'   
+#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation,
+#'   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual,
+#'   \code{\link{pif.plot}} for a plot of potential impact fraction as a
+#'   function of theta
+#'   
 #' @examples 
 #' 
-#' #Example with risk given by HR
+#' #Example 1
+#' #------------------------------------------------------------------
+#' set.seed(3284)
+#' X  <- rnorm(250,3)                        #Sample
+#' rr <- function(X,theta){exp(X*theta)}     #Relative risk
+#' theta <- 0.1                              #Estimate of theta
+#' \donttest{
+#' pif.sensitivity(X, thetahat = theta, rr = rr)
+#' }
 #' 
-#' set.seed(18427)
-#' X        <- rnorm(1000, 4,1) 
-#' thetahat <- 0.02
-#' cft      <- function(X){0.5*X}
+#' #Save file
+#' #ggsave("My Potential Impact Fraction Sensitivity Analysis.pdf")
 #' 
-#' \dontrun{
+#' #Example 2
+#' #--------------------------------------------------------------
+#' set.seed(3284)
+#' X     <- rbeta(1000, 1, 0.2)
+#' theta <- c(0.12, 1)
+#' rr    <- function(X, theta){X*theta[1] + theta[2]}
+#' cft   <- function(X){X/2}
+#' 
+#' \donttest{
 #' #Using empirical method
-#' pif.sensitivity(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
-#'                 m = 25, n = 20,  title = "My Sensitivity Analysis")
-
+#' pif.sensitivity(X, thetahat = theta, rr = rr, cft = cft,
+#'                 mremove = 100, nsim = 50, 
+#'                 title = "My Sensitivity Analysis for example 1")
+#' }          
+#' \donttest{
 #' #Same example with kernel
-#' pif.sensitivity(X, thetahat, rr = function(X, theta){exp(theta*X)}, 
-#'                  m = 100, n = 25, method = "kernel", 
-#'                  title = "Sensitivity Analysis for kernel PAF")
-#'                 
+#' pif.sensitivity(X, theta, rr = rr, cft = cft,
+#'                  m = 100, nsim = 50, method = "kernel", 
+#'                  title = "Sensitivity Analysis for example 1 using kernel")
 #' }                 
-#'                 
-#' @export
 #' 
+#' #Example 4: Plot counterfactual with categorical risks
+#' #------------------------------------------------------------------
+#' set.seed(18427)
+#' X        <- sample(c("Normal","Overweight","Obese"), 1000, 
+#'                    replace = TRUE, prob = c(0.4, 0.1, 0.5))
+#' thetahat <- c(1, 1.7, 2)
+#' 
+#' #Categorical relative risk function
+#' rr <- function(X, theta){
+#' 
+#'    #Create return vector with default risk of 1
+#'    r_risk <- rep(1, length(X))
+#'    
+#'    #Assign categorical relative risk
+#'    r_risk[which(X == "Normal")]      <- thetahat[1]
+#'    r_risk[which(X == "Overweight")]  <- thetahat[2]
+#'    r_risk[which(X == "Obese")]       <- thetahat[3]
+#'    
+#'    return(r_risk)
+#' }
+#' 
+#' 
+#' #Counterfactual of halving the percent of obesity and overweight cases
+#' #to normality
+#' cft <- function(X){
+#' 
+#'    #Find the overweight and obese individuals
+#'    which_obese <- which(X == "Obese")
+#'    which_over  <- which(X == "Overweight")
+#'    
+#'    #Reduce per.over % of overweight and per.obese % of obese
+#'    X[sample(which_obese, length(which_obese)*0.5)] <- "Normal"
+#'    X[sample(which_over,  length(which_over)*0.5)]  <- "Normal"
+#'    
+#'    return(X)
+#' }
+#' 
+#' \donttest{
+#' pifplot <- pif.sensitivity(X, thetahat = thetahat, rr = rr, cft = cft, 
+#'                            title = "Sensitivity analysis of PIF for excess-weight",
+#'                            colors = rainbow(4), 
+#'                            legendtitle = "Values", 
+#'                            check_exposure = FALSE, check_rr = FALSE)              
+#' pifplot              
+#' 
+#' #You can edit pifplot as it is a ggplot object
+#' pifplot + theme_classic()
+#' }
+#' 
+#' @import ggplot2
+#' @export
 
 
-pif.sensitivity <- function(X, thetahat, rr, 
-                            cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
-                            weights = rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                            n = 50, m = 100, filename = NA,  method = c("empirical", "kernel"),
-                            ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000,
-                            title = "Sensitivity Analysis for Potential Impact Fraction (PIF)"){
-
+pif.sensitivity <- function(X, thetahat, rr,         
+                            weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
+                            cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
+                            method  = c("empirical", "kernel"),
+                            adjust = 1, n = 512,
+                            ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
+                                       "biweight","cosine", "optcosine"), 
+                            bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
+                            nsim = 50, mremove = 100, ylab  = "PIF", 
+                            xlab  = "Number of randomly deleted observations for X", 
+                            legendtitle = "Sensitivity Analysis",
+                            title = "Potential Impact Fraction (PIF) Sensitivity Analysis",
+                            colors = c("red", "deepskyblue", "gray75", "gray25"),
+                            check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
+  
   #Set X as matrix
   .X       <- as.matrix(X)
   
   #Check m and n are correctly defined
-  if(m <= 0){
+  if(mremove <= 0){
     stop("m (maximum observations to remove) must be positive")
-  }
-  if(m >= dim(.X)[1]){
+  } else if(mremove >= nrow(.X)){
     stop("m (maximum observations to remove) must be less than the amount of observations")
   }
   
-  if(n <= 0){
+  if(nsim <= 0){
     stop("n (number of samples) must be positive")
-  }
-  if(n >= 500){
-    stop("n (number of samples) is too big")
+  } else if(nsim >= 500){
+    warning("n (number of samples) is too big")
   }
   
   #Limit m values
-  .m       <- min(ceiling(m), nrow(X))
+  .m       <- min(ceiling(mremove), nrow(X))
   
   #Check that n is integer
-  .n       <- min(ceiling(n), nrow(X))
+  .n       <- min(ceiling(nsim), nrow(X))
   
   #Create matrix for saving values
-  .pifdata <- matrix(data = NA, nrow = n, ncol = m)
+  .pifdata <- matrix(data = NA, nrow = .n, ncol = .m)
   
   #Create matrix for saving values 
-  .sumdata <- matrix(data = NA, nrow = m, ncol = 7)
+  .sumdata <- matrix(data = NA, nrow = .m, ncol = 7)
   
   #Get colnames
-  colnames(.sumdata) <- c("Simulation","Min","First","Median","Mean","Third","Max")
+  colnames(.sumdata) <- c("Simulation", "Min", "First", "Median", "Mean", "Third", "Max")
   
   #Loop reducing i values from the sample and estimating the pif
   for( .j in 1:.m){
@@ -118,50 +222,50 @@ pif.sensitivity <- function(X, thetahat, rr,
         
       } else {
         
-        #Sample
-        .todelete <- sample(1:nrow(.X), .j-1, replace = FALSE)
+        #Randomly sample elements to remove
+        .todelete <- sample(1:nrow(.X), .j-1, replace = FALSE, prob = weights)
         
-        #Remove this sample 
+        #Remove from this sample 
         .newX <- .X[-.todelete,]  
         .newW <- weights[-.todelete]
         .newW <- .newW/sum(.newW)
       }
       
       
-      #Estimate pif and save it in pifdata
-      .pifdata[.i,.j] <- pif(.newX, thetahat, rr, cft, weights = .newW, method = method,
-                             ktype = ktype, bw = bw , adjust = adjust, npoints = npoints)
+      #Estimate pif and save it matrix
+      .pifdata[.i,.j] <- pif(X = .newX, thetahat = thetahat, rr = rr, cft = cft,
+                             weights = .newW, method = method, adjust = adjust, n = n,
+                             ktype = ktype, bw = bw,check_exposure = check_exposure, 
+                             check_rr = check_rr, check_integrals = check_integrals)
       
     }
     
-    #Get minimum and maximum
-    .sumdata[.j,] <- c(.m - (.j-1),summary(.pifdata[,.j]))
+    #Get summary of simulation for each removal .j
+    .sumdata[.j,] <- c(.m - (.j-1), summary(.pifdata[,.j]))
     
   }
   
   #Create plot
-  .plot <- ggplot(as.data.frame(.sumdata),aes(x = .m - .sumdata[,"Simulation"])) +
-    geom_errorbar(aes(ymin = .sumdata[,"First"], ymax = .sumdata[,"Third"], color = "75% cases")) +
-    geom_line(aes(y =  .sumdata[,"Max"],    color = "Maximum"), linetype = 3) +
-    geom_line(aes(y =  .sumdata[,"Min"],    color = "Minimum"), linetype = 3) +
+  .plot <- ggplot(data.frame(.sumdata), aes(x = .m - .sumdata[,"Simulation"])) +
+    geom_ribbon(aes(ymin = .sumdata[,"Min"], ymax = .sumdata[,"Max"], 
+                    fill = "100% of cases"), alpha = 0.75) +
+    geom_ribbon(aes(ymin = .sumdata[,"First"], ymax = .sumdata[,"Third"], 
+                    fill = "75% of cases"), alpha = 0.75) +
+    geom_line(aes(y  = .sumdata[,"Max"],    color = "100% of cases")) +
+    geom_line(aes(y  = .sumdata[,"Min"],    color = "100% of cases")) +
+    geom_line(aes(y  = .sumdata[,"First"],  color = "75% of cases")) +
+    geom_line(aes(y  = .sumdata[,"Third"],  color = "75% of cases")) +
+    geom_line(aes(y  = .sumdata[,"Median"], color = "Median")) +
     geom_point(aes(y = .sumdata[,"Mean"],   color = "Mean")) +
-    geom_line(aes(y =  .sumdata[,"Median"], color = "Median")) +
-    theme_minimal() +
-    ggtitle(title) +
-    ylab("PIF") +
-    xlab("Number of randomly deleted observations for X") + 
-    scale_color_manual("Analysis", 
-                       values = c("Mean" = "red","Median" = "blue",
-                                  "Maximum" = "gray75", "Minimum" = "gray75",
-                                  "75% cases" = "gray25"))
-  
-  if(!is.na(filename)){
-    
-    ggsave(filename, .plot)
-    
-  }
+    theme_minimal() + ggtitle(title) + ylab(ylab) + xlab(xlab) + 
+    scale_color_manual(name = legendtitle, 
+                       values = c("Mean" = colors[1],"Median" = colors[2],
+                                  "100% of cases" = colors[3], 
+                                  "75% of cases" = colors[4]),
+                       drop = FALSE) + 
+    scale_fill_manual(values = c("100% of cases" = colors[3], 
+                                 "75% of cases" = colors[4]), guide = FALSE) 
   
   return(.plot)
   
 }
-  

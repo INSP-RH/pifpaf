@@ -1,79 +1,246 @@
 #' @title Population Attributable Fraction
-#' 
-#' @description Function that calculates the population attributable fraction
-#' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
-#' 
-#' @param thetahat  Estimative of \code{theta} for the Relative Risk function
-#' 
-#' @param rr        Function for relative risk
-#' 
-#' 
-#' **Optional**
-#' 
-#' @param weights   Survey \code{weights} for the random sample \code{X}
-#' 
-#' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}. 
-#' 
-#' @param Xvar      Variance of exposure levels.
-#' 
-#' @param ktype    \code{kernel} type from  \code{gaussian}, \code{epanechnikov}, \code{rectangular},
-#'                  \code{triangular}, \code{biweight}, \code{cosine}, \code{optcosine}
-#' 
-#' @param bw        Smoothing bandwith parameter from density
-#' 
-#' @param adjust    Adjust bandwith parameter from density
-#' 
-#' @param npoints   Number of points
-#' 
-#' @return paf      Estimate of population attributable fraction
-#' 
+#'   
+#' @description Function for estimating the Population Attributable Fraction
+#'   \code{paf} from a cross-sectional sample of the exposure \code{X} with a
+#'   known Relative Risk function \code{rr} with parameters \code{theta}.
+#'   
+#' @param X         Random sample (vector or matrix) which includes exposure and
+#'   covariates. or sample mean if approximate method is selected.
+#'   
+#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
+#'   Relative Risk function.
+#'   
+#' @param rr        Function for Relative Risk which uses parameter 
+#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   
+#'   
+#'   **Optional**
+#'   
+#' @param weights   Normalized survey \code{weights} for the sample \code{X}.
+#'   
+#' @param method    Either \code{empirical} (default), \code{kernel} or 
+#'   \code{approximate}.
+#'   
+#' @param Xvar      Variance of exposure levels (for \code{approximate} method)
+#'   
+#' @param deriv.method.args \code{method.args} for 
+#'   \code{\link[numDeriv]{hessian}} (for \code{approximate} method).
+#'   
+#' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
+#'   Don't change this unless you know what you are doing (for 
+#'   \code{approximate} method).
+#'   
+#' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
+#'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
+#'   method). Additional information on kernels in \code{\link[stats]{density}}
+#'   
+#' @param bw        Smoothing bandwith parameter from density (for \code{kernel}
+#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#'   
+#' @param adjust    Adjust bandwith parameter from density (for \code{kernel} 
+#'   method) from \code{\link[stats]{density}}.
+#'   
+#' @param n   Number of equally spaced points at which the density (for 
+#'   \code{kernel} method) is to be estimated (see 
+#'   \code{\link[stats]{density}}).
+#'   
+#' @param check_integrals Check that counterfactual and relative risk's expected
+#'   values are well defined for this scenario
+#'   
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#'   
+#' @param check_rr        Check that Relative Risk function \code{rr} equals 
+#'   \code{1} when evaluated at \code{0}
+#'   
+#' @return paf      Estimate of Population Attributable Fraction
+#'   
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#' @author Dalia Camacho García Formentí
-#' 
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#'   
+#' @note \code{approximate} method should be the last choice. In practice 
+#'   \code{empirical} should be prefered as convergence is faster than 
+#'   \code{kernel} for most functions. In addition, the scope of \code{kernel} 
+#'   is limited as it does not work with multivariate exposure data \code{X}.
+#'   
+#' @note \code{\link{paf}} is a wrapper for \code{\link{pif}} with
+#'   counterfactual of \code{0} exposure
+#'   
+#'   
 #' @examples 
 #' 
-#' #Example with risk given by HR
+#' #Example 1: Exponential Relative Risk
+#' #--------------------------------------------
 #' set.seed(18427)
-#' X <- rnorm(100,3,.5)
+#' X        <- rnorm(100,3,1)
 #' thetahat <- 0.12
-#' paf(X, thetahat, function(X, theta){exp(theta*X)})
+#' rr       <- function(X, theta){exp(theta*X)}
+#' 
+#' #Using the empirical method
+#' paf(X, thetahat, rr)
 #' 
 #' #Same example with kernel method
-#' paf(X, thetahat, function(X, theta){exp(theta*X)}, method = "kernel")
+#' paf(X, thetahat, rr, method = "kernel")
 #' 
-#' #Example with linear relative risk
-#' paf(X, thetahat, function(X, theta){theta*X + 1})
+#' #Same example with approximate method
+#' Xmean <- mean(X)
+#' Xvar  <- var(X)
+#' paf(Xmean, thetahat, rr, method = "approximate", Xvar = Xvar)
 #' 
-#' #Multivariate example
+#' #Additional options for approximate:
+#' paf(Xmean, thetahat, rr, method = "approximate", Xvar = Xvar, 
+#'    deriv.method = "Richardson",  deriv.method.args = list(eps=1e-3, d=0.1))
+#' 
+#' #Example 2: Linear Relative Risk with weighted sample
+#' #--------------------------------------------
 #' set.seed(18427)
-#' X1 <- rnorm(1000,3,.5)
-#' X2 <- rnorm(1000,3,.5)
-#' X  <- as.matrix(cbind(X1,X2))
+#' X                   <- rbeta(100,3,1)
+#' weights             <- runif(100)
+#' normalized_weights  <- weights/sum(weights)
+#' thetahat            <- 0.12
+#' rr                  <- function(X, theta){theta*X^2 + 1}
+#' paf(X, thetahat, rr, weights = normalized_weights)
+#' 
+#'    
+#' #Additional options for kernel:
+#' paf(X, thetahat, rr, weights = normalized_weights, 
+#'      method = "kernel", ktype = "cosine", bw = "nrd0")
+#' 
+#' 
+#' #Example 3: Multivariate Linear Relative Risk
+#' #--------------------------------------------
+#' set.seed(18427)
+#' X1       <- rnorm(100,4,1)
+#' X2       <- rnorm(100,2,0.4)
+#' X        <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.12, 0.03)
-#' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+#' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' paf(X, thetahat, rr) 
 #' 
+#' #Same multivariate example for approximate method calculating mean and variance
+#' Xmean <- colMeans(X)
+#' Xvar  <- var(X)
+#' paf(Xmean, thetahat, rr, method = "approximate", Xvar = Xvar)
+#' 
 #' \dontrun{
-#' #Multivariate cases cannot be evaluated with kernel method
+#' #Warning: Multivariate cases cannot be evaluated with kernel method
 #' paf(X, thetahat, rr, method = "kernel") 
 #' }
 #' 
+#' #Example 4: Categorical Relative Risk & Exposure
+#' #--------------------------------------------
+#' set.seed(18427)
+#' X        <- sample(c("Normal","Overweight","Obese"), 100, 
+#'                    replace = TRUE, prob = c(0.4, 0.1, 0.5))
+#' thetahat <- c(1, 1.2, 1.5)
 #' 
+#' #Categorical relative risk function
+#' rr <- function(X, theta){
+#' 
+#'    #Create return vector with default risk of 1
+#'    r_risk <- rep(1, length(X))
+#'    
+#'    #Assign categorical relative risk
+#'    r_risk[which(X == "Normal")]      <- thetahat[1]
+#'    r_risk[which(X == "Overweight")]  <- thetahat[2]
+#'    r_risk[which(X == "Obese")]       <- thetahat[3]
+#'    
+#'    return(r_risk)
+#' }
+#' 
+#' paf(X, thetahat, rr, check_rr = FALSE)
+#' 
+#' #Example 5: Continuous Exposure and Categorical Relative Risk
+#' #------------------------------------------------------------------
+#' set.seed(18427)
+#' 
+#' #Assume we have BMI from a sample
+#' BMI          <- rlnorm(100, 3.1, sdlog = 0.1)
+#' 
+#' #Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+#' BMI_adjusted <- BMI - 20
+#' 
+#' thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, Obese = 2.5)
+#' rr       <- function(X, theta){
+#'      
+#'      #Create return vector with default risk of 1
+#'      r_risk <- rep(1, length(X))
+#'    
+#'      #Assign categorical relative risk
+#'      r_risk[which(X < 0)]                             <- theta[1] #Malnourished
+#'      r_risk[intersect(which(X >= 0), which(X < 5))]   <- theta[2] #Normal
+#'      r_risk[intersect(which(X >= 5), which(X < 10))]  <- theta[3] #Overweight
+#'      r_risk[which(X >= 10)]                           <- theta[4] #Obese
+#'    
+#'    return(r_risk)
+#' }
+#' 
+#' paf(BMI_adjusted, thetahat, rr, check_rr = FALSE)
+#' 
+#' #Example 6: Bivariate exposure and rr ("classical PAF")
+#' #------------------------------------------------------------------
+#' set.seed(18427)
+#' X     <- sample(c("Exposed","Unexposed"), 1000, replace = TRUE, prob = c(0.1, 0.9))
+#' theta <- c("Exposed" = 2.5, "Unexposed" = 1.2)  
+#' rr <- function(X, theta){
+#'    
+#'    #Create relative risk function
+#'    r_risk <- rep(1, length(X))
+#'    
+#'    #Assign values of relative risk
+#'    r_risk[which(X == "Unexposed")] <- theta["Unexposed"]
+#'    r_risk[which(X == "Exposed")]   <- theta["Exposed"]
+#'    
+#'    return(r_risk)
+#' }    
+#' 
+#' paf(X, theta, rr, check_rr = FALSE)
+#' 
+#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation.
+#'   
+#'   See \code{\link{paf.exponential}} and \code{\link{paf.linear}} for
+#'   fractions with ready-to-use exponential and linear relative risk
+#'   respectively.
+#'   
+#'   For more information on kernels see \code{\link[stats]{density}}
+#'   
+#' @references Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
+#'   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
+#'   exposure and hazard data. Comparative quantification of health risks: 
+#'   global and regional burden of disease attributable to selected major risk 
+#'   factors}. Geneva: World Health Organization, 2129-40.
+#'  
+#' @importFrom stats var   
+#'     
 #' @export
 
-paf <- function(X, thetahat, rr, 
+paf <- function(X, thetahat,   rr,         
                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                method = c("empirical", "kernel", "approximate"),
-                Xvar = var(X),
-                ktype = "epanechnikov", bw = "nrd0", adjust = 1, npoints = 1000){
+                method  = c("empirical", "kernel", "approximate"),
+                Xvar    = var(X), 
+                deriv.method.args = list(), 
+                deriv.method      = c("Richardson", "complex"),
+                adjust = 1, n = 512,
+                ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
+                           "biweight","cosine", "optcosine"), 
+                bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
+                check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
+  #Counterfactual of exposure set to 0
+  .cft <- function(X)
+  {
+    X <- as.matrix(X)
+    return( matrix(0, ncol = ncol(X), nrow = nrow(X)) )
+  }
   
-  .paf <- pif(X = X, thetahat = thetahat, rr = rr, 
+  #Estimation of PAF
+  .paf <- pif(X = X, thetahat = thetahat, rr = rr, cft = .cft,
               weights = weights, method = method, 
-              Xvar = Xvar,
-              ktype = ktype, bw = bw, adjust = adjust, 
-              npoints = npoints)
+              Xvar = Xvar, deriv.method.args = deriv.method.args,
+              deriv.method = deriv.method, adjust = adjust, n = n,
+              ktype = ktype, bw = bw, 
+              check_exposure = check_exposure, check_rr = check_rr,
+              check_integrals = check_integrals)
   
   return(.paf)
 }

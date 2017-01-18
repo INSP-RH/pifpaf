@@ -1,37 +1,56 @@
-#' @title Approximate Confidence Intervals for the Population Attributable Fraction with one to one RR function, only for unidimensional theta values
-#' 
-#' @description Function that calculates approximate confidence intervals of the Population Attributable Fraction
-#' considering a one to one Relative Risk with unidimensional theta values.
-#' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.
-#' 
+#' @title Approximate Confidence Intervals for the Population Attributable
+#'   Fraction with one to one RR function, only for unidimensional theta values
+#'   
+#' @description Function that calculates approximate confidence intervals of the
+#'   Population Attributable Fraction considering a one to one Relative Risk
+#'   with unidimensional theta values.
+#'   
+#' @param X         Random sample (can be vector or matrix) which includes
+#'   exposure and covariates.
+#'   
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
-#' 
+#'   
 #' @param thetalow  Lower bound of the confidence interval (vector)
-#' 
+#'   
 #' @param thetaup   Upper band of the confidence interval (vector)
-#' 
-#' @param rr        Function for relative risk
-#' 
-#' 
-#' **Optional**
-#' 
-#' @param weights   Survey \code{weights} for the random sample \code{X}
-#' 
-#' @param method    Either \code{empirical} (default) or \code{approximate}. 
-#' 
+#'   
+#' @param rr        Function for Relative Risk which uses parameter 
+#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   
+#'   
+#'   **Optional**
+#'   
+#' @param weights    Survey \code{weights} for the random sample \code{X}.
+#'   
+#' @param method    Either \code{empirical} (default) or \code{approximate}.
+#'   
 #' @param Xvar      Variance of exposure levels.
-#' 
+#'   
 #' @param confidence Confidence level \% (default: 95)
-#' 
+#'   
 #' @param check_thetas Check that thetas are correctly specified
-#' 
+#'   
+#' @param check_integrals Check that counterfactual and relative risk's expected
+#'   values are well defined for this scenario
+#'   
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#'   
+#' @param check_rr        Check that Relative Risk function \code{rr} equals 
+#'   \code{1} when evaluated at \code{0}
+#'   
+#' @param deriv.method.args \code{method.args} for
+#'  \code{\link[numDeriv]{hessian}}.
+#'  
+#' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}.
+#'  Don't change this unless you know what you are doing.
+#'
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#' @author Dalia Camacho García Formentí 
-#' 
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#'   
 #' @examples 
 #' 
-#' #Example with risk given by HR
+#' #Example 1: Exponential Relative Risk
+#' #--------------------------------------------
 #' set.seed(18427)
 #' X <- rnorm(1000, 3,.7)
 #' thetahat <- 0.4
@@ -39,8 +58,14 @@
 #' thetaup  <- 0.7
 #' paf.confidence.one2one(X, thetahat, thetalow, thetaup, function(X, theta){exp(theta*X)})
 #' 
+#' #Approximate method:
+#' Xmean <- mean(X)
+#' Xvar  <- var(X)
+#' paf.confidence.one2one(Xmean, thetahat, thetalow, thetaup, function(X, theta){exp(theta*X)}, 
+#' Xvar = Xvar, method = "approximate")
 #' 
-#' #Example with theta and X multivariate
+#' #Example 2: Multivariate example
+#' #--------------------------------------------
 #' set.seed(18427)
 #' X1 <- rnorm(1000,3,.7)
 #' X2 <- rnorm(1000,3,.7)
@@ -51,59 +76,40 @@
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr) 
 #' 
-#' #Example with approximate method
-#' set.seed(46987)
-#' rr      <- function(X,theta){exp(X*theta)}
-#' X       <- rnorm(100,3.2,1)
-#' Xmean   <- 3.2
-#' Xvar    <- 1
-#' theta   <- 0.4
-#' paf.confidence.one2one(Xmean, thetahat = .4, thetalow = .3,
-#'  thetaup = .5, rr = rr, method = "approximate", Xvar = Xvar)
-#' @import MASS
+#' #Approximate method:
+#' Xmean <- colMeans(X)
+#' Xvar  <- var(X)
+#' paf.confidence.one2one(Xmean, thetahat, thetalow, thetaup, 
+#' function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}, 
+#' Xvar = Xvar, method = "approximate")
+#' 
 #' @export
 
 paf.confidence.one2one <- function(X, thetahat, thetalow, thetaup, rr, 
                                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                                    confidence = 95, check_thetas = TRUE,
-                                   method = c("empirical","approximate"), Xvar = NA){
+                                   deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
+                                   method = c("empirical","approximate"), Xvar = var(X),
+                                   check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
-  #Check Confidence
-  check.confidence(confidence)
- 
- 
   #Get method from vector
   .method <- as.vector(method)[1]
-  
-  #Check that thetas apply
-  if(check_thetas){ check.thetas(NA, thetahat, thetalow, thetaup, "one2one") }
   
   #Get thetavar as matrix
   thetavar <- matrix(0, ncol = length(thetahat), nrow = length(thetahat))
   
   #Calculate the PIF with confidence intervals
-  switch (.method,
-    empirical = {
-    .upper <- paf.confidence.inverse(X, thetaup,  thetavar = thetavar, rr = rr, method = "empirical",
-                                                  weights = weights, confidence = confidence, nsim = 0)
-    .lower <- paf.confidence.inverse(X, thetalow, thetavar = thetavar, rr = rr, method = "empirical",
-                                     weights = weights, confidence = confidence, nsim = 0)
-    .point <- pif(X, thetahat, rr = rr, weights = weights)
-    },
-    approximate ={
-      
-      #Check Xvar 
-      Xvar <- check.xvar(Xvar)
-      .upper <- paf.confidence.inverse(X, thetahat = thetaup, thetavar = thetavar, rr = rr, nsim = 0, 
-                                       confidence = confidence, 
-                                       method = "approximate", Xvar = Xvar)
-      
-      .lower <- paf.confidence.inverse(X, thetahat = thetalow, thetavar = thetavar, rr = rr, nsim = 0, 
-                                       confidence = confidence, 
-                                       method = "approximate", Xvar = Xvar)
-      .point <- pif(X, thetahat, rr = rr, method = "approximate", Xvar = Xvar)
-    }
-  )
+  .upper <- paf.confidence.inverse(X, thetahat = thetaup,  thetavar = thetavar, rr = rr,
+                                   method = .method, weights = weights, confidence = confidence,
+                                   nsim = 1, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
+                                   force.min = FALSE, check_thetas = check_thetas, Xvar = Xvar)
+  .lower <- paf.confidence.inverse(X, thetahat = thetalow,  thetavar = thetavar, rr = rr,
+                                   method = .method, weights = weights, confidence = confidence,
+                                   nsim = 1, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
+                                   force.min = FALSE, check_thetas = FALSE, Xvar = Xvar)
+  .point <- pif(X, thetahat, rr = rr, weights = weights, method = .method, check_exposure = check_exposure, 
+                check_rr = check_rr, check_integrals = check_integrals, Xvar = Xvar, 
+                deriv.method.args = deriv.method.args, deriv.method = deriv.method)
   
   
   #Return

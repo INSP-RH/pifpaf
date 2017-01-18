@@ -1,19 +1,16 @@
-#' @title Check covariance of exposure values was defined, if not a covariance matrix with entries equal to zero is assumed. 
+#' @title Check covariance of exposure values was defined.
 #' 
-#' @description Function that verifies Xvar was defined
+#' @description Function that verifies Xvar was defined 
 #' 
 #' @param Xvar     Input of covariance matrix of exposure values
 #' 
 #' @return Xvar
 #' 
-#' @importFrom matrixcalc is.negative.definite
+#' @importFrom matrixcalc is.positive.semi.definite
 #' 
 #' @examples 
-#' #Example 1 
-#' Xvar <- NA
-#' check.xvar(Xvar)
 #' 
-#' #Example 2
+#' #Example 1
 #' Xvar <- 0.2
 #' check.xvar(Xvar)
 #' 
@@ -27,9 +24,7 @@ check.xvar <- function(Xvar){
   #Check nan, NA and character
   if(any(is.na(Xvar)) || any(is.nan(Xvar)) || any(is.character(Xvar))){
     
-    warning("Covariance of exposure values Xvar had non-numeric arguments, defaulting everything to zero")
-    n    <- ncol(Xvar)
-    Xvar <- matrix(0, ncol = n, nrow = n)
+    stop("Covariance of exposure values Xvar had non-numeric arguments")
     
   }
   

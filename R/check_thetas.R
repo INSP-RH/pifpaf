@@ -1,6 +1,6 @@
 #' @title Check thetas against method
 #' 
-#' @description Function for checking that the thetas are correctly specified according to chosen method
+#' @description Function for checking that the thetas are .correctly specified according to chosen method
 #' 
 #' @param thetavar  Variance of theta
 #' 
@@ -14,13 +14,16 @@
 #' 
 #' @return bool     Boolean variable indicating if hypothesis are matched
 #' 
-#' @import matrixcalc
+#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' 
+#' @importFrom matrixcalc is.positive.semi.definite is.symmetric.matrix is.square.matrix
 #' @export
 
 check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
   
   #Boolean default true
-  bool <- TRUE
+  .bool <- TRUE
   
   if(is.na(thetahat[1])){
     stop("Thetahat wasn't specified")
@@ -32,7 +35,7 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
            
            #Check that thetalow and thetaup exist
            if (is.na(thetalow) || is.na(thetaup)){
-             stop("You have not correctly specified the bounds of the interval of confidence of theta")
+             stop("You have not .correctly specified the bounds of the interval of confidence of theta")
            }
           .thetalow <- as.matrix(thetalow)
           .thetaup  <- as.matrix(thetaup)
@@ -41,29 +44,19 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
           if((dim(.thetahat)!=dim(.thetalow) || dim(.thetahat)!=dim(.thetaup))){
             stop("Dimensions of thetahat, thetalow, and thetaup are not the same.")
           }
+          
            #Check that thetahat < thetaup
-          correct <- TRUE
-          i       <- 1
-          while(correct && i <= length(.thetahat)){
-            if (.thetaup[i] < .thetahat[i]){
-              correct <- FALSE
-              stop("thetaup < thetahat Please check that you correctly specified the interval of confidence of theta")
+          .correct <- TRUE
+          .i       <- 1
+          while(.correct && .i <= length(.thetahat)){
+            if (.thetaup[.i] < .thetahat[.i] || .thetalow[.i] > .thetahat[.i] || .thetaup[.i] < .thetahat[.i]){
+              .correct <- FALSE
+              stop(paste0("Thetas do not comply the inequality: 'thetaup > thetahat > thetalow'.", 
+                   "Please check that you correctly specified the interval of confidence of theta"))
             }
-            i <- i+1
+            .i <- .i + 1
             
           }
-           
-          correct <- TRUE
-          i       <- 1
-          while(correct && i <= length(.thetahat)){
-            if (.thetalow[i] > .thetahat[i]){
-              correct <- FALSE
-              stop("thetalow > thetahat Please check that you correctly specified the interval of confidence of theta")
-            }
-            i <- i+1
-            
-          }
-       
          },
          
          {
@@ -94,6 +87,6 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
          }
          
   )
-  return(bool)
+  return(.bool)
   
 }

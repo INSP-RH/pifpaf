@@ -4,46 +4,58 @@
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
-#' @param thetahat  Estimative of \code{theta} for the Relative Risk function
-#' 
-#' @param thetavar   Estimator of variance of thetahat
-#' 
-#' @param rr        Function for relative risk
+#' @param thetahat  Maximum likelihood estimator of \code{theta} for the Relative Risk function
+#'
+#' @param thetavar  Estimator of variance of thetahat
+#'
+#' @param rr        Function for Relative Risk which uses parameter 
+#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #' 
 #' 
 #' **Optional**
-#'@param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'                  the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure
+#' 
+#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
+#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
+#'   is 0 exposure.
+#'   
+#' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #' 
 #' @param nsim      Number of simulations for estimation of variance
 #' 
-#' @param weights    Survey \code{weights} for the random sample \code{X}
-#' 
 #' @param check_thetas Checks that theta parameters are correctly inputed
 #' 
-#' @import MASS stats
+#' @param check_cft  Check if counterfactual function \code{cft} reduces exposure.
+#' 
+#' @param check_exposure Check if exposure > 0
+#' 
+#' @importFrom MASS mvrnorm 
+#' @importFrom stats weighted.mean
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#' @author Dalia Camacho García Formentí 
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
+#' @seealso \code{pif.variance.linear} for \code{pif} variance and \code{pif.variance.loglinear} for variance of \code{log(pif)}
+#' and \code{pif.confidence} for confidence intervals of \code{pif}
+#'
 #' @examples 
 #' 
-#' #Example with risk given by HR (PAF)
+#' #Example 1: Exponential Relative risk
+#' #--------------------------------------------
 #' set.seed(18427)
 #' X <- rnorm(100,3,.5)
 #' thetahat <- 0.12
 #' thetavar <- 0.1
 #' pif.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
-#' paf.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 #' 
-#' #Example with linear counterfactual
+#' #Same example with linear counterfactual
 #' cft      <- function(X){0.3*X}
 #' pif.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft)
 #' 
-#' #Example with theta and X multivariate
+#' #Example 2: Multivariate case
+#' #--------------------------------------------
 #' set.seed(18427)
-#' X1 <- rnorm(2000, 3,.5)
-#' X2 <- rnorm(2000,3,.5)
+#' X1 <- rnorm(100, 3,.5)
+#' X2 <- runif(100, 1, 1.5)
 #' X  <- as.matrix(cbind(X1,X2))
 #' thetahat <- c(0.1, 0.03)
 #' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
@@ -54,32 +66,36 @@
 #' cft <- function(X){0.5*X}
 #' pif.variance.linear(X, thetahat, thetavar, rr, cft) 
 #' 
-#' 
 #' @export
 
 pif.variance.linear <- function(X, thetahat, thetavar, rr, 
                                 cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
-                                weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), check_thetas = FALSE,  nsim = 100){
+                                weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), check_thetas = TRUE,  check_cft = TRUE, 
+                                check_exposure = TRUE, nsim = 1000){
   #Set X as matrix
-  .X  <- as.matrix(X)
+  .X    <- as.matrix(X)
+  
+  #Check exposure values are greater than zero
+  if(check_exposure){ check.exposure(.X) }
   
   #Set a minimum for nsim
-  .nsim        <- max(nsim,10)
+  .nsim <- max(nsim, 10)
   
   #Check 
   .thetavar <- as.matrix(thetavar)
   if(check_thetas){ check.thetas(.thetavar, thetahat, NA, NA, "linear") }
   
-  #Get the expected pif
+  #Get the conditional expected pif
   .pifexp <- function(theta){
     R0 <- weighted.mean(rr(.X, theta), weights)
     RC <- weighted.mean(rr(cft(.X), theta), weights)
     return(1-RC/R0)
   }
   
-  #Get the variance of pif
+  #Get the conditional variance of pif
   .pifvar <- function(theta){
-    vr <- pif.conditional.variance.linear(.X, theta, rr, cft, weights)
+    vr <- pif.conditional.variance.linear(X = .X, thetahat = theta, rr = rr, cft = cft, weights = weights, 
+                                          check_cft = check_cft)
     return(vr)
   }
   
