@@ -11,24 +11,17 @@ Encoding: UTF-8
 LazyData: true
 Type: Package
 Suggests:
-    testthat,
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
+    testthat
 LazyLoad: yes
 stringsAsFactors: FALSE
 Imports:
     ggplot2,
-    matrixStats,
+    matrixcalc,
     MASS,
     sfsmisc,
     stats,
-    matrixcalc,
     gridExtra,
-    latex2exp,
     shiny,
     numDeriv,
-    moments,
-    partitions,
-    grDevices
+    tools
 RoxygenNote: 5.0.1
