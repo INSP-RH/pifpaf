@@ -3,11 +3,10 @@ context("Kernel-based Population Impact Fraction point-estimate")
 test_that("Checking pif.kernel function errors",{
   
   #Check that relative risk > 0
-  expect_error({
+  expect_warning({
     X <- rnorm(100, 4,1)
     thetahat <- 1.4
     pif.kernel(X, thetahat, function(X, theta){-theta*X + 1})
-    
   })
   
   #Check that exposure levels are positive
@@ -15,16 +14,14 @@ test_that("Checking pif.kernel function errors",{
     X <- rnorm(100, -1)
     thetahat <- 1.4
     pif.kernel(X, thetahat, function(X, theta){exp(theta*X)})
-    
   })
   
   #Check that counterfactual relative risk > 0
-  expect_error({
+  expect_warning({
     X        <- rnorm(100, 4,1)
     thetahat <- 1.4
     pif.kernel(X, thetahat, rr = function(X, theta){X*theta + 1}, 
                   cft = function(X){-100*X})
-    
   })
   
   #Check that X has only one column

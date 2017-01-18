@@ -11,7 +11,6 @@ test_that("Checking check.thetas",{
   })
   
   #Check that thetahat is needed
-  
   expect_error({
     thetavar <- 0.005
     method   <- "one2one"

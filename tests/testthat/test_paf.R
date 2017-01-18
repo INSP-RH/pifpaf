@@ -11,7 +11,7 @@ test_that("Checking paf point estimate",{
   })
   
   #Check errors and warnings for negative theta values
-  expect_error({
+  expect_warning({
     X        <- c(1,4,2,1,2,1,1,0,0,1,2)
     thetahat <- -1
     rr       <- function(X,theta){X*theta+1}
@@ -27,7 +27,7 @@ test_that("Checking paf point estimate",{
   
   #Check errors for decreasing rr functions
   
-  expect_error({
+  expect_warning({
     X        <- c(1,4,2,1,2,1,1,0,0,1,2)
     thetahat <- 1
     rr       <- function(X,theta){-X*theta+1}

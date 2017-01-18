@@ -3,7 +3,7 @@ context("Empirical Population Impact Fraction point-estimate")
 test_that("Checking pif.empirical function errors",{
   
   #Check that relative risk > 0
-  expect_error({
+  expect_warning({
     
     X <- rnorm(100, 3, .7)
     thetahat <- 1.4
@@ -20,7 +20,7 @@ test_that("Checking pif.empirical function errors",{
   })
   
   #Check that counterfactual relative risk > 0
-  expect_error({
+  expect_warning({
     X <- rnorm(100, 4,1)
     thetahat <- 1.4
     pif.empirical(X, thetahat, rr = function(X, theta){X*theta + 1}, 
@@ -67,19 +67,19 @@ test_that("Checking pif.empirical convergence",{
     
     #Check that empirical PAF works when RR is constant 1
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){1}),
+      pif.empirical(c(1,2,3), 1, rr = function(X, theta){rep(1, length(X))}),
       0
     )
     
     #Check that empirical PIF works when RR is constant 1
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){1}, cft = function(X){(0.2*X)^2}),
+      pif.empirical(c(1,2,3), 1, rr = function(X, theta){rep(1, length(X))}, cft = function(X){(0.2*X)^2}),
       0
     )
     
     #Check that empirical PIF works when counterfactual is constant 0
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){0}),
+      pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){rep(0, length(X))}),
       1 - 3/sum(exp(c(1,2,3)))
     )
   

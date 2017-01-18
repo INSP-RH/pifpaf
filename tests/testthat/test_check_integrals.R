@@ -10,13 +10,13 @@ test_that("Checking check_integrals",{
   })
   
   #Check that for negative values of meancft or meanrr an error arises
-  expect_error({
+  expect_warning({
     meancft <- -3
     meanrr  <- 4
     check.integrals(meanrr, meancft)
   })
   
-  expect_error({
+  expect_warning({
     meancft <- 3
     meanrr  <- -4
     check.integrals(meanrr, meancft)

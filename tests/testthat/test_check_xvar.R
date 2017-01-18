@@ -3,7 +3,7 @@ context("Check Xvar")
 test_that("Checking check.xvar",{
   
   #Check that for positive values of meancft and meanrr gives TRUE
-  expect_warning({
+  expect_error({
     check.xvar(NA)
   })
   
