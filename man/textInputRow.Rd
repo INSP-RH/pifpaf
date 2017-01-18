@@ -2,7 +2,7 @@
 % Please edit documentation in R/TextInputRow.R
 \name{textInputRow}
 \alias{textInputRow}
-\title{Text input row}
+\title{textInputRow}
 \usage{
 textInputRow(inputId, label, value = "")
 }
@@ -15,6 +15,7 @@ textInputRow(inputId, label, value = "")
 }
 \description{
 This function arranges the display of Input boxes,
- code comes form answers in http://stackoverflow.com/questions/20637248/shiny-4-small-textinput-boxes-side-by-side .
+Source: Alex Brown, answer on 719016, "shiny 4 small textInput boxes side-by-side", Stack Overflow, January 15 '14, 
+        http://stackoverflow.com/a/21132918
 }
 

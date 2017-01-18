@@ -2,47 +2,100 @@
 % Please edit documentation in R/pif_empirical.R
 \name{pif.empirical}
 \alias{pif.empirical}
-\title{Point Estimate of the Potential Impact Fraction via the Empirical Method}
+\title{Point Estimate of the Potential Impact Fraction via the Empirical 
+ Method}
 \usage{
 pif.empirical(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
   ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))))
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
+  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (vector or matrix) which includes exposure and 
+covariates. or sample mean if approximate method is selected.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
+\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+Risk function.}
 
-\item{rr}{Function for relative risk
-
+\item{rr}{Function for Relative Risk which uses parameter \code{theta}.
+The order of the parameters shound be \code{rr(X, theta)}.#'
 
 **Optional**}
 
-\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for \code{PAF} where counterfactual is 0 exposure}
+\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
+the Population Attributable Fraction \code{\link{paf}} where counterfactual 
+is 0 exposure.}
 
-\item{weights}{Survey \code{weights} for the random sample \code{X}}
+\item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
+
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+
+\item{check_rr}{Check that Relative Risk function \code{rr} equals 
+\code{1} when evaluated at \code{0}}
+
+\item{check_integrals}{Check that counterfactual and relative risk's expected 
+values are well defined for this scenario}
 }
 \description{
-Function that calculates the potential impact fraction via the empirical method
+Function that calculates the potential impact fraction \code{pif}
+ via the empirical method. That is: for a random sample \code{X}, a relative
+ risk function \code{rr(X, thetahat)} with parameters \code{thetahat} the
+ empirical estimator is given by:
+ 
+ \deqn{PIF = 1 - 1/\sum rr(X_i; \theta)}
+}
+\note{
+The empirical method converges for relative risk \code{rr} functions 
+ that are Lipschitz, convex or concave on \code{thetahat}. For stranger 
+ functions use \code{\link{pif.kernel}}.
 }
 \examples{
 
-#Example with risk given by HR
+#Example 1: Relative risk given by exponential
+#--------------------------------------------
 set.seed(18427)
-X <- rnorm(100,3,.5)
+X        <- rnorm(100,3,.5)
 thetahat <- 0.12
-pif.empirical(X, thetahat, function(X, theta){exp(theta*X)})
+rr       <- function(X, theta){exp(theta*X)}
+pif.empirical(X, thetahat, rr, cft = function(X){ 0.5*X })
 
-#Same example considering counterfactual of halfing exposure
-pif.empirical(X, thetahat, function(X, theta){exp(theta*X)}, cft = function(X){ 0.5*X })
+#Without counterfactual estimates PAF
+pif.empirical(X, thetahat, rr) 
+ 
+#Example 2: Linear relative risk
+#--------------------------------------------
+pif.empirical(X, thetahat, rr = function(X, theta){theta*X + 1}, 
+               cft = function(X){ 0.5*X })
 
-#Example with linear relative risk
-pif.empirical(X, thetahat, function(X, theta){theta*X + 1}, cft = function(X){ 0.5*X })
+#Example 3: Multivariate relative risk
+#--------------------------------------------
+set.seed(18427)
+X1       <- rnorm(100,4,1)
+X2       <- rnorm(100,2,0.4)
+X        <- as.matrix(cbind(X1,X2))
+thetahat <- c(0.12, 0.03)
+rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+
+#Creating a counterfactual. As rr requires a bivariate input, cft should 
+#return a two-column matrix
+cft  <- function(X){
+   cbind(X[,1]/2, 1.1*X[,2])
+}
+pif.empirical(X, thetahat, rr, cft) 
+
 
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 
-Dalia Camacho García Formentí
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+}
+\seealso{
+\code{\link{pif}} which is a wrapper for all pif methods 
+ (\code{\link{pif.empirical}}, \code{\link{pif.approximate}}, 
+ \code{\link{pif.kernel}}).
+ 
+ For estimation of the Population Attributable Fraction see
+ \code{\link{paf}}.
 }
 

@@ -2,55 +2,112 @@
 % Please edit documentation in R/pif_approximate.R
 \name{pif.approximate}
 \alias{pif.approximate}
-\title{Point Estimate of the Potential Impact Fraction via the Approximate method.}
+\title{Point Estimate of the Potential Impact Fraction via the approximate
+ method.}
 \usage{
-pif.approximate(Xmean, Xvar, thetahat, rr, cft = function(Xmean) {    
-  matrix(0, ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean))) })
+pif.approximate(X, Xvar, thetahat, rr, cft = function(X) {     matrix(0, ncol
+  = ncol(as.matrix(X)), nrow = nrow(as.matrix(X))) },
+  deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
+  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
 }
 \arguments{
-\item{Xmean}{Mean value of exposure levels from a previous study.}
+\item{X}{Mean value of exposure levels from a cross-sectional.}
 
 \item{Xvar}{Variance of the exposure levels.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function.}
+\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+Risk function.}
 
-\item{rr}{Function for relative risk.
+\item{rr}{Function for Relative Risk which uses parameter \code{theta}.
+The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
-\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for \code{PAF} where counterfactual is 0 exposure.}
+\item{cft}{Differentiable function \code{cft(X)} for counterfactual. Leave empty for 
+the Population Attributable Fraction \code{\link{paf}} where counterfactual 
+is 0 exposure.}
+
+\item{deriv.method.args}{\code{method.args} for
+\code{\link[numDeriv]{hessian}}.}
+
+\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}.
+Don't change this unless you know what you are doing.}
+
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
+
+\item{check_rr}{Check that Relative Risk function \code{rr} equals 
+\code{1} when evaluated at \code{0}.}
+
+\item{check_integrals}{Check that counterfactual and relative risk's expected 
+values are well defined for this scenario.}
 }
 \description{
-Function that calculates the potential impact fraction via the approximate method.
+Function for estimating the Potential Impact Fraction \code{pif}
+  from a cross-sectional sample of the exposure \code{X} with a known 
+  Relative Risk function \code{rr} with parameters \code{theta} when only 
+  \code{mean(X)} and \code{var(X)} are known.
+}
+\note{
+\code{\link{pif.approximate}} method should be the last choice for the case when
+  no information on the exposure (except for mean and standard deviation) are
+  given. In practice \code{\link{pif.empirical}} should be prefered.
 }
 \examples{
+
 #Example 1
-Xmean     <- 2
+#--------------------------------------------
+X         <- 2
 thetahat  <- 0.12
 Xvar      <- 0.2
 rr        <- function(X,theta){exp(X*theta)}
 cft       <- function(X){0.5*X}
-pif.approximate(Xmean, Xvar, thetahat, rr, cft)
-pif.approximate(Xmean, Xvar, thetahat, rr)
+pif.approximate(X, Xvar, thetahat, rr, cft)
+
+#Change the derivative arguments 
+pif.approximate(X, Xvar, thetahat, rr, cft, 
+               deriv.method = "Richardson", 
+               deriv.method.args = list(eps=1e-8, d=0.000001))
+
+#When no counterfactual is specified paf is calculated
+pif.approximate(X, Xvar, thetahat, rr)
 
 #Example 2: Multivariate
-#Multivariate example
-
+#--------------------------------------------
 X1        <- 2
 X2        <- 1.1
-Xmean     <- as.matrix(cbind(X1,X2))
+X         <- as.matrix(cbind(X1,X2))
 Xvar      <- matrix(c(1,.4,.4,1),ncol = 2, byrow = TRUE)
-Cft       <- function(X){.25*X}
+cft       <- function(X){.25*X}
 thetahat  <- c(0.12, 0.03)
-rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-pif.approximate(Xmean, Xvar, thetahat, rr) 
-pif.approximate(Xmean, Xvar, thetahat, rr, Cft)
+rr        <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+pif.approximate(X, Xvar, thetahat, rr, cft)
+
+#Example 3: More multivariate
+#--------------------------------------------
+X1       <- rnorm(1000,3,.5)
+X2       <- rnorm(1000,4,1)
+X        <- cbind(X1,X2)
+Xmean    <- colMeans(X)
+Xvar     <- var(X)
+thetahat <- c(0.12, 0.17)
+thetavar <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+cft      <- function(X){cbind(sqrt(X[,1] + 0.2*X[,2]), X[,1])}
+pif.approximate(Xmean, Xvar, thetahat, rr, cft)
 
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 
-Dalia Camacho García Formentí
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+}
+\seealso{
+\code{\link{pif}} which is a wrapper for all pif methods
+  (\code{\link{pif.empirical}}, \code{\link{pif.approximate}},
+  \code{\link{pif.kernel}}). 
+  
+  For estimation of the Population Attributable
+  Fraction see \code{\link{paf}}.
 }
 

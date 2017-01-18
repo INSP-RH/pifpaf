@@ -2,17 +2,20 @@
 % Please edit documentation in R/check_cft.R
 \name{check.cft}
 \alias{check.cft}
-\title{Check counterfactual decreases exposure levels}
+\title{Check that counterfactual decreases exposure levels}
 \usage{
 check.cft(cft, X)
 }
 \arguments{
-\item{cft}{counterfactual function}
+\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
+the Population Attributable Fraction \code{\link{paf}} where counterfactual
+is 0 exposure.}
 
-\item{X}{sample of exposure values / or mean exposure, when only point estimates are available}
+\item{X}{Random sample (vector or matrix) which includes exposure and
+covariates. or sample mean.}
 }
 \description{
-Function that checks whether the counterfactual function decreases the exposure values
+Function that checks whether the counterfactual function of \code{\link{pif}} decreases the exposure values
 }
 \examples{
 #Example 1 
@@ -21,5 +24,10 @@ X   <- runif(100, 0,2)
 check.cft(cft, X)
 
 
+}
+\author{
+Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 

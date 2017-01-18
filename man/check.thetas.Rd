@@ -21,6 +21,11 @@ check.thetas(thetavar, thetahat, thetalow, thetaup, method)
 bool     Boolean variable indicating if hypothesis are matched
 }
 \description{
-Function for checking that the thetas are correctly specified according to chosen method
+Function for checking that the thetas are .correctly specified according to chosen method
+}
+\author{
+Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 

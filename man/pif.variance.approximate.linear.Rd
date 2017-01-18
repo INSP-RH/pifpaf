@@ -4,66 +4,89 @@
 \alias{pif.variance.approximate.linear}
 \title{Approximate Variance for the Potential Impact Fraction using the approximate method}
 \usage{
-pif.variance.approximate.linear(Xmean, Xvar, thetahat, thetasd, rr,
+pif.variance.approximate.linear(Xmean, Xvar, thetahat, thetavar, rr,
   cft = function(Xmean) {     matrix(0, ncol = ncol(as.matrix(Xmean)), nrow =
-  nrow(as.matrix(Xmean))) }, check_thetas = TRUE, nsim = 1000)
+  nrow(as.matrix(Xmean))) }, check_thetas = TRUE, check_cft = TRUE,
+  check_xvar = TRUE, check_rr = TRUE, check_integrals = TRUE,
+  check_exposure = TRUE, deriv.method.args = list(),
+  deriv.method = c("Richardson", "complex"), nsim = 1000)
 }
 \arguments{
-\item{Xmean}{Mean value of exposure levels from a previous study.}
+\item{Xmean}{Mean value of exposure levels.}
 
-\item{Xvar}{Variance of exposure levels from a previous study.}
+\item{Xvar}{Variance of exposure levels.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
+\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the 
+Relative Risk function \code{rr}}
 
-\item{thetasd}{Estimator of standard deviation of thetahat (usually standard error)}
+\item{thetavar}{Estimator of variance of \code{thetahat}}
 
-\item{rr}{Function for relative risk
+\item{rr}{Function for Relative Risk which uses parameter 
+  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure.}
+the Population Attributable Fraction \code{\link{paf}} where counterfactual
+is 0 exposure.}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
 
-\item{nsim}{Number of simulations}
+\item{check_cft}{Check if counterfactual function \code{cft} reduces exposure.}
+
+\item{check_xvar}{Check if it is covariance matrix.}
+
+\item{check_rr}{Check that Relative Risk function \code{rr} equals 
+\code{1} when evaluated at \code{0}}
+
+\item{check_integrals}{Check that counterfactual and relative risk's expected 
+values are well defined for this scenario.}
+
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+
+\item{deriv.method.args}{\code{method.args} for
+\code{\link[numDeriv]{hessian}}.}
+
+\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}.
+Don't change this unless you know what you are doing.}
+
+\item{nsim}{Number of simulations for estimation of variance}
 }
 \description{
 Function that calculates approximate variance to the potential impact fraction.
 }
 \examples{
 
-#Example 1
+#Example 1: Exponential Relative risk
+#--------------------------------------------
 set.seed(46987)
 rr      <- function(X,theta){exp(X*theta)}
 cft     <- function(X){0.5*X}
-Xmean   <- 3
-Xvar    <- 1
+X       <- rnorm(3)
+Xmean   <- mean(X)
+Xvar    <- var(X)
 theta   <- 1.2
-thetasd <- 0.15
-pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr)
-pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft) 
-pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr,cft = function(X){sqrt(X)}) 
+thetavar <- 0.15
+pif.variance.approximate.linear(Xmean, Xvar, theta, thetavar, rr, cft) 
 
-
-#Example 2: Compare pif.variance.approximate with paf.variance.approximate
+#Example 2: Multivariate example
+#--------------------------------------------
 X1       <- rnorm(1000,3,.5)
 X2       <- rnorm(1000,4,1)
 X        <- as.matrix(cbind(X1,X2))
 Xmean    <- colMeans(X)
 Xvar     <- cov(X)
 theta    <- c(0.12, 0.17)
-thetasd  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
+thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr)
-paf.variance.approximate (Xmean,Xvar,theta,thetasd,rr)
-pif.variance.approximate.linear(Xmean,Xvar,theta,thetasd,rr, cft)
+pif.variance.approximate.linear(Xmean,Xvar, theta, thetavar, rr, 
+cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
 
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 
-Dalia Camacho García Formentí
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 

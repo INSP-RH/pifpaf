@@ -2,12 +2,12 @@
 % Please edit documentation in R/check_Xvar.R
 \name{check.xvar}
 \alias{check.xvar}
-\title{Check Xvar was defined}
+\title{Check covariance of exposure values was defined.}
 \usage{
 check.xvar(Xvar)
 }
 \arguments{
-\item{Xvar}{Input of variance of X}
+\item{Xvar}{Input of covariance matrix of exposure values}
 }
 \value{
 Xvar
@@ -16,11 +16,8 @@ Xvar
 Function that verifies Xvar was defined
 }
 \examples{
-#Example 1 
-Xvar <- NA
-check.xvar(Xvar)
 
-#Example 2
+#Example 1
 Xvar <- 0.2
 check.xvar(Xvar)
 

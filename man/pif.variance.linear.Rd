@@ -4,29 +4,36 @@
 \alias{pif.variance.linear}
 \title{Approximate Variance for the Potential Impact Fraction}
 \usage{
-pif.variance.linear(X, thetahat, thetasd, rr, cft = function(Varx) {    
+pif.variance.linear(X, thetahat, thetavar, rr, cft = function(Varx) {    
   matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
-  check_thetas = FALSE, nsim = 100)
+  check_thetas = TRUE, check_cft = TRUE, check_exposure = TRUE,
+  nsim = 1000)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
+\item{thetahat}{Maximum likelihood estimator of \code{theta} for the Relative Risk function}
 
-\item{thetasd}{Estimator of standard error of thetahat (usually standard error)}
+\item{thetavar}{Estimator of variance of thetahat}
 
-\item{rr}{Function for relative risk
+\item{rr}{Function for Relative Risk which uses parameter 
+  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure}
+the Population Attributable Fraction \code{\link{paf}} where counterfactual
+is 0 exposure.}
 
-\item{weights}{Survey \code{weights} for the random sample \code{X}}
+\item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
+
+\item{check_cft}{Check if counterfactual function \code{cft} reduces exposure.}
+
+\item{check_exposure}{Check if exposure > 0}
 
 \item{nsim}{Number of simulations for estimation of variance}
 }
@@ -35,36 +42,41 @@ Function that calculates approximate variance of the potential impact fraction (
 }
 \examples{
 
-#Example with risk given by HR (PAF)
+#Example 1: Exponential Relative risk
+#--------------------------------------------
 set.seed(18427)
 X <- rnorm(100,3,.5)
 thetahat <- 0.12
 thetavar <- 0.1
 pif.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
-paf.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
 
-#Example with linear counterfactual
+#Same example with linear counterfactual
 cft      <- function(X){0.3*X}
 pif.variance.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft)
 
-#Example with theta and X multivariate
+#Example 2: Multivariate case
+#--------------------------------------------
 set.seed(18427)
-X1 <- rnorm(2000, 3,.5)
-X2 <- rnorm(2000,3,.5)
+X1 <- rnorm(100, 3,.5)
+X2 <- runif(100, 1, 1.5)
 X  <- as.matrix(cbind(X1,X2))
 thetahat <- c(0.1, 0.03)
-thetasd <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
+thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 rr        <- function(X, theta){
            .X <- matrix(X, ncol = 2)
            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
-           }#' cft <- function(X){0.5*X}
-pif.variance.linear(X, thetahat, thetasd, rr, cft) 
-
+           }
+cft <- function(X){0.5*X}
+pif.variance.linear(X, thetahat, thetavar, rr, cft) 
 
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 
-Dalia Camacho García Formentí
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+}
+\seealso{
+\code{pif.variance.linear} for \code{pif} variance and \code{pif.variance.loglinear} for variance of \code{log(pif)}
+and \code{pif.confidence} for confidence intervals of \code{pif}
 }
 

@@ -4,69 +4,152 @@
 \alias{risk.ratio.confidence}
 \title{Confidence intervals for the Risk Ratio Integral}
 \usage{
-risk.ratio.confidence(X, thetahat, thetasd, rr,
+risk.ratio.confidence(X, thetahat, thetavar, rr,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
   confidence = 95, check_thetas = TRUE, force.min = FALSE)
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (vector or matrix) which includes exposure and
+covariates. or sample mean if approximate method is selected.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
+\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the 
+Relative Risk function \code{rr}}
 
-\item{thetasd}{Estimator of standard deviation of thetahat (usually standard error)}
+\item{thetavar}{Estimator of variance of \code{thetahat}}
 
-\item{rr}{Function for relative risk
+\item{rr}{Function for Relative Risk which uses parameter 
+  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
-\item{weights}{Survey \code{weights} for the random sample \code{X}}
+\item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
 \item{nsim}{Number of simulations}
 
-\item{confidence}{Confidence level \% (default: 95)}
+\item{confidence}{Confidence level \% (default: \code{95})}
 
-\item{check_thetas}{Checks that theta parameters are correctly inputed}
+\item{check_thetas}{Checks that \code{theta} parameters are correctly inputed}
 
-\item{force.min}{Boolean indicating whether to force the RR to have a 
+\item{force.min}{Boolean indicating whether to force the \code{rr} to have a 
 minimum value of 1 instead of 0 (not recommended).}
 }
 \description{
-Function that calculates confidence interval for the integral ∫RR(X;theta)f(x)dx
+Function that calculates confidence interval for the integral
+\deqn{ \int RR(x;\theta)f(x)dx } 
+where \eqn{f(x)} is the density function of the exposure X, \eqn{ RR(x;\theta)} the
+relative risk of the exposure with associated parameter \eqn{\theta}
+}
+\note{
+The \code{force.min} option forces the relative risk \code{rr} to have a minimum of \code{1} and thus
+an \code{rr < 1} is NOT possible. This is only for when absolute certainty is had that \code{rr > 1} and should
+be used under careful consideration. The confidence interval to acheive such an \code{rr} is based on the paper
+by Do Le Minh and Y. .s. Sherif
 }
 \examples{
 
-#Example with risk given by HR
+#Example 1: Exponential Relative Risk
+#--------------------------------------------
 set.seed(18427)
-X        <- rnorm(100,3,.7)
-thetahat <- 0.4
-thetavar <- 0.1
-risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+X        <- rnorm(100)
+thetahat <- 0.1
+thetavar <- 0.2
+rr       <- function(X, theta){exp(theta*X)}
+risk.ratio.confidence(X, thetahat, thetavar, rr)
 
-#With larger sample the variance reduces
+#We can force RR'.s CI to be >= 1.
+#This should be done with extra methodological (philosophical) care as RR>= 1 should only 
+#be assumed with absolute mathematical certainty
+risk.ratio.confidence(X, thetahat, thetavar, rr, force.min = TRUE)
+
+#Example 2: Multivariate Relative Risk
+#--------------------------------------------
 set.seed(18427)
-X        <- rnorm(10000,4,1)
-thetahat <- 0.12
-thetavar <- 0.1
-risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+X1        <- rnorm(1000)
+X2        <- runif(1000)
+X         <- as.matrix(cbind(X1,X2))
+thetahat  <- c(0.02, 0.01)
+thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
+rr        <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
+risk.ratio.confidence(X, thetahat, thetavar, rr) 
 
-#We can force RR's CI to be >= 1
-risk.ratio.confidence(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, force.min = TRUE)
-
-#Example with theta and X multivariate
+#Example 3: Categorical Relative Risk & Exposure
+#--------------------------------------------
 set.seed(18427)
-X1       <- rnorm(1000,4,1)
-X2       <- rnorm(1000,4,1)
-X        <- as.matrix(cbind(X1,X2))
-thetahat <- c(0.12, 0.03)
-thetasd  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
-rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-risk.ratio.confidence(X, thetahat, thetasd, rr) 
+X        <- sample(c("Normal","Overweight","Obese"), 100, 
+                   replace = TRUE, prob = c(0.4, 0.1, 0.5))
+thetahat <- c(1, 1.2, 1.5)
+thetavar  <- diag(c(0.1, 0.2, 0.4))
+
+#Categorical relative risk function
+rr <- function(X, theta){
+
+   #Create return vector with default risk of 1
+   r_risk <- rep(1, length(X))
+   
+   #Assign categorical relative risk
+   r_risk[which(X == "Normal")]      <- thetahat[1]
+   r_risk[which(X == "Overweight")]  <- thetahat[2]
+   r_risk[which(X == "Obese")]       <- thetahat[3]
+   
+   return(r_risk)
+}
+
+risk.ratio.confidence(X, thetahat, thetavar, rr)
+
+#Example 4: Categorical Relative Risk & continuous exposure
+#----------------------------------------------------------
+set.seed(18427)
+BMI      <- rlnorm(100, 3.1, sdlog = 0.1)
+thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, Obese = 2.5)
+thetavar <- diag(c(0.5, 0.1, 0.1, 0.2))
+rr       <- function(X, theta){
+     
+     #Create return vector with default risk of 1
+     r_risk <- rep(1, length(X))
+   
+     #Assign categorical relative risk
+     r_risk[which(X < 20)]                             <- theta[1] #Malnourished
+     r_risk[intersect(which(X >= 20), which(X < 25))]  <- theta[2] #Normal
+     r_risk[intersect(which(X >= 25), which(X < 30))]  <- theta[3] #Overweight
+     r_risk[which(X >= 30)]                            <- theta[4] #Obese
+   
+   return(r_risk)
+}
+
+risk.ratio.confidence(BMI, thetahat, thetavar, rr)
+
+#Example 5: Bivariate exposure and rr ("classical rr")
+#------------------------------------------------------------------
+set.seed(18427)
+X        <- sample(c("Exposed","Unexposed"), 1000, replace = TRUE, prob = c(0.1, 0.9))
+thetahat <- c("Exposed" = 2.5, "Unexposed" = 1.2)  
+thetavar <- matrix(c(0.1, 0.2, 0.2, 0.4), ncol = 2)
+rr <- function(X, theta){
+   
+   #Create relative risk function
+   r_risk <- rep(1, length(X))
+   
+   #Assign values of relative risk
+   r_risk[which(X == "Unexposed")] <- theta["Unexposed"]
+   r_risk[which(X == "Exposed")]   <- theta["Exposed"]
+   
+   return(r_risk)
+}    
+
+risk.ratio.confidence(X, thetahat, thetavar, rr)
 
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 
-Dalia Camacho García Formentí
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+}
+\references{
+Sherif, Y. .s. (1989). The lower confidence limit for the mean of positive random variables. Microelectronics Reliability, 29(2), 151-152.
+}
+\seealso{
+\link{risk.ratio.approximate.confidence} for a method when only \code{mean(X)} and \code{var(X)}
+are known.
 }
 

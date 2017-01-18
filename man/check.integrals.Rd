@@ -12,17 +12,23 @@ check.integrals(meanrr, meancft)
 \item{meancft}{Mean of relative risk with counterfactual}
 }
 \value{
-TRUE if as desired
+bool   TRUE if as desired
 }
 \description{
-Function for checking that the integrals of PIF make sense
+Function for checking that the integrals of \code{\link{pif}} make sense.
 }
 \examples{
+check.integrals(1,0)
+
 \dontrun{
 check.integrals(0,1)
-check.integrals(1,0)
 check.integrals(1,-1)
 }
 
+}
+\author{
+Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 
