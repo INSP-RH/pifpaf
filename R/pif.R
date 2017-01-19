@@ -284,11 +284,14 @@ pif <- function(X, thetahat, rr,
          kernel      = {
            .pif <- pif.kernel(X = X, thetahat = thetahat, rr = rr, cft = cft, 
                               weights = weights, ktype = ktype, bw = bw, 
-                              adjust = adjust, n = n)
+                              adjust = adjust, n = n, check_exposure = check_exposure,
+                              check_rr = check_rr, check_integrals = check_integrals)
          }, 
          approximate = {
            .pif <- pif.approximate(X = X, Xvar = Xvar, thetahat = thetahat, rr = rr, 
-                                   cft = cft)
+                                   cft = cft, deriv.method.args = deriv.method.args,
+                                   deriv.method = deriv.method, check_exposure = check_exposure,
+                                   check_rr = check_rr, check_integrals = check_integrals)
          },{
            stop("Please specify method as either empirical, kernel or approximate")
          }
