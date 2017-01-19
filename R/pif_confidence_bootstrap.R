@@ -144,7 +144,7 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
     .wboost  <- weights[.whichX]/sum(weights[.whichX])                   #Renormalize weights ????
     
     #Get pif
-    .bpif[i] <- pif(X = .Xboost, thetahat = thetahat, rr = rr, cft = cft, .wboost, method = method, 
+    .bpif[i] <- pif(X = .Xboost, thetahat = .newtheta[i,], rr = rr, cft = cft, .wboost, method = method, 
                     adjust = adjust, n = n, ktype = ktype, bw = bw, 
                     check_exposure = FALSE, check_rr = FALSE,            #Set FALSE to avoid recalculating each time
                     check_integrals = FALSE)                             
