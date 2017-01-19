@@ -151,13 +151,25 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
   }
   
   #Get the confidence interval and variance
-  .quantiles        <- quantile(.bpif, probs = c(1 - .alpha/2, .alpha/2))
+  .quantiles        <<- quantile(.bpif, probs = c(1 - .alpha/2, .alpha/2))
   names(.quantiles) <- c()        #Delete names
   .variance         <- var(.bpif)
   
   #Create vector of ci
   .ci <- c("Lower_CI" = 2*.pif - .quantiles[1], "Point_Estimate"     = .pif, 
           "Upper_CI" =  2*.pif - .quantiles[2], "Estimated_Variance" = .variance)
+  
+  #Check upper limit < 1 as 1 is a limit case
+  #from: THE LOWER CONFIDENCE LIMIT FOR THE MEAN OF POSITIVE RANDOM VARIABLES
+  if (.ci["Upper_CI"] >= 1){
+    
+    #Transform the problem to 0 <= 1 - pif to apply bounded CIs
+    .transf_ci             <- 1 - .ci
+    names(.transf_ci)      <- c("Upper_CI", "Point_Estimate", "Lower_CI", "Estimated_Variance")
+    .transf_ci["Lower_CI"] <- (.transf_ci["Point_Estimate"]^2)/.transf_ci["Upper_CI"]           #Bound 1 - .ci below 
+    .ci["Upper_CI"]        <- 1 - .transf_ci["Lower_CI"]                                        #Transform back
+    
+  }
   
   #Return ci
   return(.ci)
