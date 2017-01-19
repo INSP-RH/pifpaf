@@ -113,6 +113,17 @@ pif.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
   .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])
   
+  #Check ci < 1
+  if (.ci["Upper_CI"] >= 1){
+    
+    #Transform the problem to 0 <= 1 - pif to apply bounded CIs
+    .transf_ci             <- 1 - .ci
+    names(.transf_ci)      <- c("Upper_CI", "Point_Estimate", "Lower_CI", "Estimated_Variance")
+    .transf_ci["Lower_CI"] <- (.transf_ci["Point_Estimate"]^2)/.transf_ci["Upper_CI"]           #Bound 1 - .ci below 
+    .ci["Upper_CI"]        <- 1 - .transf_ci["Lower_CI"]                                        #Transform back
+    
+  }
+  
   return(.ci)
   
 }
