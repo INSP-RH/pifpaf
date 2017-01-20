@@ -1,6 +1,6 @@
-#' @title Approximate Confidence Intervals for the Population Attributable Fraction
+#' @title Confidence Intervals for the Potential Impact Fraction for the approximate method
 #' 
-#' @description Function that calculates approximate confidence intervals to the population attributable fraction
+#' @description Function that calculates confidence intervals of the potential impact fraction for the approximate method
 #' 
 #' @param Xmean     Mean value of exposure levels.
 #' 
@@ -45,7 +45,7 @@
 #'@param check_integrals Check that counterfactual and relative risk's expected 
 #'  values are well defined for this scenario.
 #'  
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+ #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
