@@ -1,6 +1,6 @@
 #' @title Confidence Intervals for the Potential Impact Fraction when only mean and variance of exposure values is available using loglinear method
 #' 
-#' @description Confidence intervals for the Population Attributable Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
+#' @description Confidence intervals for the Potential Impact Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
 #' 
 #'@param Xmean  Mean value of exposure levels from a cross-sectional.
 #'  
