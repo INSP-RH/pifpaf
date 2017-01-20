@@ -1,6 +1,6 @@
-#' @title Confidence intervals for the Potencial Impact Fraction, using the loglinear method
+#' @title Confidence intervals for the Potential Impact Fraction, using the loglinear method
 #' 
-#' @description Confidence intervals for the potencial impact Fraction for relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
+#' @description Confidence intervals for the potential impact fraction for relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
