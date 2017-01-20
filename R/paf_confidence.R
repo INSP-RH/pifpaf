@@ -1,6 +1,6 @@
-#' @title Confidence intervals for the Potencial Attributable Fraction
+#' @title Confidence intervals for the Population Attributable Fraction
 #' 
-#' @description Confidence intervals for the potencial attributable fraction 
+#' @description Confidence intervals for the population attributable fraction 
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
