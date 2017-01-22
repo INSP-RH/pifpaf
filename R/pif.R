@@ -56,6 +56,8 @@
 #'   
 #' @param check_rr        Check that Relative Risk function \code{rr} equals 
 #'   \code{1} when evaluated at \code{0}
+#'
+#' @param is_paf    Boolean forcing evaluation of paf
 #'   
 #' @return pif      Estimate of Potential Impact Fraction
 #'   
@@ -269,7 +271,8 @@ pif <- function(X, thetahat, rr,
                 ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
                           "biweight","cosine", "optcosine"), 
                 bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-                check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
+                check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+                is_paf = FALSE){
   
   #Get method from vector
   .method <- as.vector(method)[1]
@@ -278,20 +281,23 @@ pif <- function(X, thetahat, rr,
          empirical   = {
            .pif <- pif.empirical(X = X, thetahat = thetahat, rr = rr, cft = cft, 
                                  weights = weights, check_exposure = check_exposure, 
-                                 check_rr = check_rr, check_integrals = check_integrals)
+                                 check_rr = check_rr, check_integrals = check_integrals,
+                                 is_paf = is_paf)
            
          }, 
          kernel      = {
            .pif <- pif.kernel(X = X, thetahat = thetahat, rr = rr, cft = cft, 
                               weights = weights, ktype = ktype, bw = bw, 
                               adjust = adjust, n = n, check_exposure = check_exposure,
-                              check_rr = check_rr, check_integrals = check_integrals)
+                              check_rr = check_rr, check_integrals = check_integrals,
+                              is_paf = is_paf)
          }, 
          approximate = {
            .pif <- pif.approximate(X = X, Xvar = Xvar, thetahat = thetahat, rr = rr, 
                                    cft = cft, deriv.method.args = deriv.method.args,
                                    deriv.method = deriv.method, check_exposure = check_exposure,
-                                   check_rr = check_rr, check_integrals = check_integrals)
+                                   check_rr = check_rr, check_integrals = check_integrals,
+                                   is_paf = is_paf)
          },{
            stop("Please specify method as either empirical, kernel or approximate")
          }

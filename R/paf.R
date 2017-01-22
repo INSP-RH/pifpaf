@@ -226,21 +226,15 @@ paf <- function(X, thetahat,   rr,
                 bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
                 check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
-  #Counterfactual of exposure set to 0
-  .cft <- function(X)
-  {
-    X <- as.matrix(X)
-    return( matrix(0, ncol = ncol(X), nrow = nrow(X)) )
-  }
-  
+ 
   #Estimation of PAF
-  .paf <- pif(X = X, thetahat = thetahat, rr = rr, cft = .cft,
+  .paf <- pif(X = X, thetahat = thetahat, rr = rr, 
               weights = weights, method = method, 
               Xvar = Xvar, deriv.method.args = deriv.method.args,
               deriv.method = deriv.method, adjust = adjust, n = n,
               ktype = ktype, bw = bw, 
               check_exposure = check_exposure, check_rr = check_rr,
-              check_integrals = check_integrals)
+              check_integrals = check_integrals, is_paf = TRUE)
   
   return(.paf)
 }

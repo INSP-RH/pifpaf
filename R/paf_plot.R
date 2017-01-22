@@ -1,6 +1,6 @@
 #' @title Plot of Potential Impact Fraction under different values of theta (univariate)
 #' 
-#' @description Function that plots the PIF under different values of an univariate parameter theta. 
+#' @description Function that plots the PAF under different values of an univariate parameter theta. 
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
@@ -13,10 +13,6 @@
 #' 
 #' **Optional**
 #' 
-#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
-#'   is 0 exposure.
-#'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
 #' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}.
@@ -63,9 +59,7 @@
 #' @param check_rr        Check that Relative Risk function \code{rr} equals 
 #'   \code{1} when evaluated at \code{0}
 #' 
-#' @param is_paf    Boolean forcing evaluation of paf
-#' 
-#' @return pif.plot       \code{\link[ggplot2]{ggplot}} object with plot of Potential Impact Fraction 
+#' @return paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of Potential Impact Fraction 
 #' as function of \code{theta}
 #'   
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -79,29 +73,21 @@
 #' #-----------------------------------------------------
 #' set.seed(18427)
 #' X <- rnorm(100, 4.2, 1.3)
-#' pif.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
+#' paf.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
 #' 
 #' #Same example with kernel method
-#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
+#' paf.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
 #' title = "Kernel method example") 
 #'  
 #' #Same example for approximate method
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)
-#' pif.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
+#' paf.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
 #' method = "approximate", Xvar = Xvar, title = "Approximate method example")
-#' 
-#' #Example with counterfactual
-#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)})
-#' 
-#' #Example for approximate method with square root counterfactual
-#' pif.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)},  cft = function(X){sqrt(X)},
-#'  method = "approximate", Xvar = Xvar) 
 #' 
 #' @export
 
-pif.plot <- function(X, thetalow, thetaup, rr,         
-                     cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
+paf.plot <- function(X, thetalow, thetaup, rr,         
                      weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                      method  = c("empirical", "kernel", "approximate"),
                      adjust = 1, n = 512, mpoints = 100,
@@ -111,51 +97,15 @@ pif.plot <- function(X, thetalow, thetaup, rr,
                      ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
                                 "biweight","cosine", "optcosine"), 
                      bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-                     color = "darkslategrey", xlab = "Theta", ylab = "PIF",
-                     title = "Potential Impact Fraction (PIF) under different values of theta",
-                     check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
-                     is_paf = FALSE){
+                     color = "darkslategrey", xlab = "Theta", ylab = "PAF",
+                     title = "Population Attributable Fraction (PAF) under different values of theta",
+                     check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
-  #Check thetas are univariate
-  if(length(thetalow) > 1 || length(thetaup) > 1){
-    stop("pif.plot only works for rr with unidimensional theta")
-  }
+  pif.plot(X = X, thetalow = thetalow, thetaup = thetaup,rr = rr, weights = weights,
+           method = method, adjust = adjust, n = n, mpoints = mpoints, Xvar = Xvar,
+           deriv.method.args = deriv.method.args, deriv.method = deriv.method,
+           ktype = ktype, bw = bw, color = color, xlab = xlab, ylab = ylab,
+           title = title, check_exposure = check_exposure, check_rr = check_rr,
+           check_integrals = check_integrals, is_paf = TRUE)
   
-  #Check that we are able to plot
-  if (thetalow >= thetaup){
-    stop("Minimum thetalow cannot be equal or greater than maximum thetaup")
-  }
-    
-    #Create sequence from thetalow to thetaup
-    .theta <- seq(thetalow, thetaup, length.out = ceiling(mpoints))
-    
-    #Create data frame for saving values of theta
-    .dat   <- matrix(NA, nrow = mpoints, ncol = 2)
-    colnames(.dat) <- c("Theta","PIF")
-    
-    #Loop through values of theta for plot
-    for (i in 1:mpoints){
-      
-      #Save theta value
-      .dat[i,"Theta"] <- .theta[i]
-      
-      #Calculate PIF
-      .dat[i,"PIF"]   <- pif(X = X, .theta[i], rr = rr, cft = cft,
-                             weights =  weights, method = method, 
-                             Xvar = Xvar, deriv.method.args = deriv.method.args,
-                             deriv.method = deriv.method,
-                             adjust = adjust, n = n,ktype  = ktype, bw     = bw,
-                             check_exposure = check_exposure, check_rr = check_rr, 
-                             check_integrals = check_integrals, is_paf = is_paf) 
-      
-    }
-    
-    #Create plot
-    .thetaplot <- ggplot(as.data.frame(.dat)) + 
-                  geom_path(aes(x = .dat[,"Theta"], y = .dat[,"PIF"]), color = color) +
-                  xlab(xlab) + theme_bw() + ylab(ylab) +
-                  ggtitle(title)
-    
-    return(.thetaplot)
-
 }

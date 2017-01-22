@@ -44,6 +44,8 @@
 #'@param check_rr        Check that Relative Risk function \code{rr} equals 
 #'  \code{1} when evaluated at \code{0}
 #'  
+#' @param is_paf    Boolean forcing evaluation of paf
+#'  
 #'@return pif      Estimate of Potential Impact Fraction
 #'  
 #'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -114,7 +116,8 @@ pif.kernel <- function(X, thetahat, rr,
                        adjust = 1, n = 512,
                        ktype = c("gaussian", "epanechnikov", "rectangular", "triangular", "biweight","cosine", "optcosine"), 
                        bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-                       check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
+                       check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+                       is_paf = FALSE){
   
   #Set X as matrix
   .X      <- as.matrix(X)
@@ -150,7 +153,11 @@ pif.kernel <- function(X, thetahat, rr,
   
   #Integrate
   .mux   <- integrate.xy(densX, densY*rr(densX, thetahat))
-  .mucft <- integrate.xy(densX, densY*rr(cft(densX), thetahat))
+  if (is_paf){
+    .mucft <- 1
+  } else {
+    .mucft <- integrate.xy(densX, densY*rr(cft(densX), thetahat))
+  }
   
   #Check that integrals make sense
   if(check_integrals){ check.integrals(.mux, .mucft) }

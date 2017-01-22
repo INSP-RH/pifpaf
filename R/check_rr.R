@@ -42,8 +42,8 @@ check.rr <- function(X, thetahat,  rr, tol = 1.e-8){
     }
     
   } else {
-    warning(paste("Relative Risks were not checked as input was not numeric.", 
-                  "Please set check.rr = FALSE to avoid this message "))
+    #warning(paste("Relative Risks were not checked as input was not numeric.", 
+    #              "Please set check.rr = FALSE to avoid this message "))
   }
   
   return(.bool)

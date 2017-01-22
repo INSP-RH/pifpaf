@@ -43,6 +43,8 @@
 #'@param check_integrals Check that counterfactual and relative risk's expected 
 #'  values are well defined for this scenario.
 #'  
+#' @param is_paf Force evaluation as paf   
+#'  
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
@@ -84,7 +86,8 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                      cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}, 
                                      check_thetas = TRUE, check_cft = TRUE, check_xvar = TRUE, check_rr = TRUE, 
                                      check_integrals = TRUE, check_exposure = TRUE, deriv.method.args = list(), 
-                                     deriv.method = c("Richardson", "complex"), nsim = 1000){
+                                     deriv.method = c("Richardson", "complex"), nsim = 1000,
+                                     is_paf = FALSE){
   
   #Function for checking that thetas are correctly inputed
   if(check_thetas){ check.thetas(thetavar, thetahat, NA, NA, "approximate") }
@@ -102,7 +105,7 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
     pif.approximate(X = .Xmean, Xvar = .Xvar, thetahat = theta, rr = rr, cft = cft, 
                     deriv.method.args = deriv.method.args, deriv.method = deriv.method, 
                     check_exposure = check_exposure, check_rr = check_rr, 
-                    check_integrals = check_integrals)
+                    check_integrals = check_integrals, is_paf = is_paf)
   }
   
   #Get the variance of pif
@@ -117,13 +120,18 @@ pif.variance.approximate.linear <- function(Xmean, Xvar, thetahat, thetavar, rr,
       rr(cftX, theta)
     }
     
-    #Calculate gradients
-    dR0 <- as.matrix(grad(rr.fun.x, .Xmean))
-    dR1 <- as.matrix(grad(rr.fun.cft, .Xmean))
-    
     #Estimate relative risks 
+    dR0 <- as.matrix(grad(rr.fun.x, .Xmean))
     R0  <- rr.fun.x(.Xmean)
-    R1  <- rr.fun.cft(.Xmean)
+    
+    #Estimate cft
+    if (is_paf){
+      dR1 <- 0
+      R1  <- 1
+    } else {
+      dR1 <- as.matrix(grad(rr.fun.cft, .Xmean))  
+      R1  <- rr.fun.cft(.Xmean)
+    }
     
     #Calculate Taylor this way
     aux <- ((dR1*R0 - dR0*R1)/(R0^2))

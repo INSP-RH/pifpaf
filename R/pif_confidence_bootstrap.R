@@ -54,6 +54,8 @@
 #' @param check_rr        Check that Relative Risk function \code{rr} equals 
 #'   \code{1} when evaluated at \code{0}
 #'   
+#' @param is_paf   Boolean forcing evaluation of \code{paf}
+#'   
 #' @return pif      Estimate of Potential Impact Fraction
 #'   
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -104,7 +106,7 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
                                                 "biweight","cosine", "optcosine"), 
                                      bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
                                      check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
-                                     check_thetas = TRUE){
+                                     check_thetas = TRUE, is_paf = FALSE){
   
   
   #Get confidence
@@ -124,7 +126,8 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
   #Get original pif
   .pif     <- pif(X = .X, thetahat = thetahat, rr = rr, cft = cft, weights = weights, method = method, 
                   adjust = adjust, n = n, ktype = ktype, bw = bw,
-                  check_exposure = check_exposure, check_rr = check_rr, check_integrals = check_integrals) 
+                  check_exposure = check_exposure, check_rr = check_rr, check_integrals = check_integrals,
+                  is_paf = is_paf) 
   
   #Boostrap pif will be saved here
   .bpif   <- rep(NA, .nboost)
@@ -147,7 +150,7 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
     .bpif[i] <- pif(X = .Xboost, thetahat = .newtheta[i,], rr = rr, cft = cft, .wboost, method = method, 
                     adjust = adjust, n = n, ktype = ktype, bw = bw, 
                     check_exposure = FALSE, check_rr = FALSE,            #Set FALSE to avoid recalculating each time
-                    check_integrals = FALSE)                             
+                    check_integrals = FALSE, is_paf = is_paf)                             
   }
   
   #Get the confidence interval and variance

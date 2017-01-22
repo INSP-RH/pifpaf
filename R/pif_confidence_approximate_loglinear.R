@@ -1,6 +1,6 @@
 #' @title Confidence Intervals for the Potential Impact Fraction when only mean and variance of exposure values is available using loglinear method
 #' 
-#' @description Confidence intervals for the Potential Impact Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
+#' @description Confidence intervals for the Population Attributable Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
 #' 
 #'@param Xmean  Mean value of exposure levels from a cross-sectional.
 #'  
@@ -39,6 +39,8 @@
 #'  
 #'@param check_rr        Check that Relative Risk function \code{rr} equals 
 #'  \code{1} when evaluated at \code{0}.
+#'  
+#' @param is_paf Boolean forcing evaluation of \code{paf}  
 #'  
 #'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
@@ -79,7 +81,8 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
                                                  deriv.method.args = list(), 
                                                  deriv.method = c("Richardson", "complex"),
                                                  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
-                                                 nsim = 1000, confidence = 95, check_thetas = TRUE){
+                                                 nsim = 1000, confidence = 95, check_thetas = TRUE,
+                                                 is_paf = FALSE){
   
   #Get confidence
   check.confidence(confidence)
@@ -112,13 +115,17 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
       rr(X,.theta)
     }
     
-    #Calculate the hessians
-    .hcft  <- hessian(.rr_cft_fun, .Xmean, method = .method, method.args = deriv.method.args)
+    #Calculate the RR
     .hrr   <- hessian(.rr_fun_x,   .Xmean, method = .method, method.args = deriv.method.args)
-    
-    #Estimate weighted sums
-    .R1  <- .rr_cft_fun(.Xmean) + 0.5*sum(.hcft*.Xvar)
     .R0  <- .rr_fun_x(.Xmean)   + 0.5*sum(.hrr*.Xvar)
+    
+    #Estimate counterfactual
+    if (is_paf){
+      .R1    <- 1
+    } else {
+      .hcft  <- hessian(.rr_cft_fun, .Xmean, method = .method, method.args = deriv.method.args)
+      .R1    <- .rr_cft_fun(.Xmean) + 0.5*sum(.hcft*.Xvar)
+    }
     
     return( log(.R1)-log(.R0) )
   }
@@ -127,7 +134,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   .pif      <- pif.approximate(X = .Xmean, Xvar = .Xvar, thetahat = thetahat, rr = rr, cft = cft,
                                deriv.method = deriv.method, deriv.method.args = deriv.method.args,
                                check_exposure = check_exposure, check_rr = check_rr, 
-                               check_integrals = check_integrals)
+                               check_integrals = check_integrals, is_paf = is_paf)
   .inverse  <- 1 - .pif
   
   #Calculate the conditional variance as a function of theta
@@ -141,15 +148,23 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
       Xcft.value  <- cft(X)
       rr(Xcft.value,.theta)
     } 
-    dR1    <- as.matrix(grad(.rr_cft_fun, .Xmean, method = .method, method.args = deriv.method.args))
-    R1     <- rr(cft(.Xmean), .theta)
     
+    #Estimate RR part
     dR0    <- as.matrix(grad(.rr_fun_x, .Xmean,  method = .method, method.args = deriv.method.args))
     R0     <- rr(.Xmean, .theta)
-    
-    .var1  <- t(1/R1*dR1)%*%.Xvar%*%(1/R1*dR1)
     .var0  <- t(1/R0*dR0)%*%.Xvar%*%(1/R0*dR0)
+    
+    #Estimate counterfactual part
+    if (is_paf){
+      .var1  <- 0
+    } else {
+      dR1    <- as.matrix(grad(.rr_cft_fun, .Xmean, method = .method, method.args = deriv.method.args))
+      R1     <- rr(cft(.Xmean), .theta)
+      .var1  <- t(1/R1*dR1)%*%.Xvar%*%(1/R1*dR1)
+    }
+    
     .var   <- .var0 +.var1 
+    
     return(.var)
   }
   
@@ -170,7 +185,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   
   
   #Compute the pif intervals
-  .cipif         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper" = .inverse*exp(-.zqrt) )
+  .cipif         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper" = .inverse*exp(-.zqrt), "Estimated Variance of log(pif)" = .logvarpif)
   
   #Return variance
   return(.cipif)

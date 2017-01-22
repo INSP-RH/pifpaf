@@ -18,6 +18,8 @@
 #' 
 #' @param check_cft  Check if counterfactual function \code{cft} reduces exposure.
 #' 
+#' @param is_paf     Force evaluation of paf
+#' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
@@ -60,7 +62,8 @@
   
 pif.conditional.variance.linear <- function(X, thetahat, rr, 
                                             cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
-                                            weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), check_cft = TRUE){
+                                            weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), check_cft = TRUE,
+                                            is_paf = FALSE){
   
     #Check counterfactual  
     if (check_cft){check.cft(cft,X)}
@@ -73,14 +76,21 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
     s        <- sum(weights)
     s2       <- sum(weights^2)
     
-    #Estimate weighted mean of rr and counterfactual rr
+    #Estimate RR part
     .RO      <- weighted.mean(rr(.X, thetahat), weights)
-    .RC      <- weighted.mean(rr(.cft.X, thetahat), weights)
-    
-    #Calculate weighted variances and covariance
     .varRO   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.X, thetahat) - .RO)^2, weights)
-    .varRC   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.cft.X, thetahat) - .RC)^2, weights)
-    .covRORC <- s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, thetahat))*(rr(.cft.X, thetahat)), weights)-.RO*.RC)
+    
+    #Estimate counterfactual part
+    if (is_paf){
+      .RC      <- 1
+      .varRC   <- 0
+      .covRORC <- 0
+    } else {
+      .RC      <- weighted.mean(rr(.cft.X, thetahat), weights)  
+      .varRC   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.cft.X, thetahat) - .RC)^2, weights)
+      .covRORC <- s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, thetahat))*(rr(.cft.X, thetahat)), weights)-.RO*.RC)
+    }
+    
     
     #Calculate variance
     .Var       <- (1/.RO)^2*((.RC/.RO)^2*.varRO+.varRC-2*(.RC/.RO)*.covRORC)

@@ -1,6 +1,6 @@
-#' @title Confidence Intervals for the Potential Impact Fraction for the approximate method
+#' @title Approximate Confidence Intervals for the Population Attributable Fraction
 #' 
-#' @description Function that calculates confidence intervals of the potential impact fraction for the approximate method
+#' @description Function that calculates approximate confidence intervals to the population attributable fraction
 #' 
 #' @param Xmean     Mean value of exposure levels.
 #' 
@@ -45,7 +45,9 @@
 #'@param check_integrals Check that counterfactual and relative risk's expected 
 #'  values are well defined for this scenario.
 #'  
- #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @param is_paf Force evaluation of paf  
+#'  
+#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
@@ -85,7 +87,8 @@ pif.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                        cft = function(Xmean){matrix(0,ncol = ncol(as.matrix(Xmean)), nrow = nrow(as.matrix(Xmean)))}, 
                                        check_thetas = TRUE, check_cft = TRUE, check_xvar = TRUE, check_rr = TRUE, 
                                        check_integrals = TRUE, check_exposure = TRUE, deriv.method.args = list(), 
-                                       deriv.method = c("Richardson", "complex"), nsim = 1000, confidence = 95){
+                                       deriv.method = c("Richardson", "complex"), nsim = 1000, confidence = 95,
+                                       is_paf = FALSE){
   
   #Check confidence interval
   check.confidence(confidence)
@@ -100,14 +103,14 @@ pif.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
   .ci["Point_Estimate"]     <- pif.approximate(X = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, cft = cft,
                                                deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                                                check_exposure = check_exposure, check_rr = check_rr, 
-                                               check_integrals = check_integrals)
+                                               check_integrals = check_integrals, is_paf = is_paf)
   
   .ci["Estimated_Variance"] <- pif.variance.approximate.linear(Xmean = Xmean, Xvar = Xvar, thetahat = thetahat, 
                                                                thetavar = thetavar, rr = rr, cft = cft, 
                                                                check_thetas = check_thetas, check_cft = check_cft, 
                                                                check_xvar = check_xvar, deriv.method.args = deriv.method.args, 
                                                                check_rr = FALSE, check_integrals = FALSE, check_exposure = FALSE,  #False as pif.approximate already checked them
-                                                               deriv.method = deriv.method, nsim = nsim)
+                                                               deriv.method = deriv.method, nsim = nsim, is_paf = is_paf)
   
   #Get lower and upper ci (asymptotically normal)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])

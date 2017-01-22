@@ -1,6 +1,6 @@
-#' @title Confidence intervals for the Potential Impact Fraction, using the loglinear method
+#' @title Confidence intervals for the Potencial Impact Fraction, using the loglinear method
 #' 
-#' @description Confidence intervals for the potential impact fraction for relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
+#' @description Confidence intervals for the potencial impact Fraction for relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
 #' 
 #' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
 #' 
@@ -28,6 +28,8 @@
 #' @param check_exposure  Check that exposure \code{X} is positive and numeric
 #' 
 #' @param check_cft  Check if counterfactual function \code{cft} reduces exposure.
+#'
+#' @param is_paf Force evaluation of paf
 #'
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
@@ -69,7 +71,7 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
                                      cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},
                                      weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
                                      nsim = 100, confidence = 95, check_thetas = TRUE, check_exposure = TRUE,
-                                     check_cft = TRUE){
+                                     check_cft = TRUE, is_paf = FALSE){
   
   #To matrix
   .X     <- as.matrix(X)
@@ -98,23 +100,41 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
   #Calculate the conditional expected value as a function of theta
   .logpifexp <- function(.theta){
     .RO  <- weighted.mean(rr(.X,.theta), weights)
-    .RC  <- weighted.mean(rr(.cft.X,.theta), weights)
+     if (is_paf){
+       .RC  <- 1
+     } else {
+       .RC  <- weighted.mean(rr(.cft.X,.theta), weights)   
+     }
+    
     return(log(.RC) -log(.RO) )
   }
   
   #Inverse
-  .inverse   <- weighted.mean(rr(.cft.X, thetahat), weights)/weighted.mean(rr(.X,thetahat), weights)
+  if (is_paf){
+    .inverse   <- 1/weighted.mean(rr(.X,thetahat), weights)  
+  } else {
+    .inverse   <- weighted.mean(rr(.cft.X, thetahat), weights)/weighted.mean(rr(.X,thetahat), weights)  
+  }
+  
   
   #Calculate the conditional variance as a function of theta
   .logpifvar <- function(.theta){
     s        <- sum(weights)
     s2       <- sum(weights^2)
-    .RO      <- weighted.mean(rr(.X,.theta), weights)
-    .RC      <- weighted.mean(rr(.cft.X,.theta), weights)
     
+    #Calculate rr
+    .RO      <- weighted.mean(rr(.X,.theta), weights)
     .varRO   <- (1/.RO^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
-    .varRC   <- (1/.RC^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.cft.X,.theta) - .RC)^2, weights)
-    .covRORC <- (1/(.RO*.RC))*s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, .theta))*(rr(.cft.X, .theta)), weights)-.RO*.RC)
+    
+    if (is_paf){
+      .RC      <- 1
+      .varRC   <- 0
+      .covRORC <- 0
+    } else {
+      .RC      <- weighted.mean(rr(.cft.X,.theta), weights)
+      .varRC   <- (1/.RC^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.cft.X,.theta) - .RC)^2, weights)
+      .covRORC <- (1/(.RO*.RC))*s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, .theta))*(rr(.cft.X, .theta)), weights)-.RO*.RC)
+    }
     
     .var     <-  .varRO + .varRC - 2*.covRORC
     return(.var)
@@ -136,7 +156,7 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
   .zqrt       <- .Z*sqrt(.logvarpif)
   
   #Compute the pif intervals
-  .cipif         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper" = .inverse*exp(-.zqrt) )
+  .cipif         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper" = .inverse*exp(-.zqrt), "Variance Estimate of log(pif)" = .logvarpif)
   
   #Return variance
   return(.cipif)

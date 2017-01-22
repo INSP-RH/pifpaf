@@ -28,6 +28,8 @@
 #' 
 #' @param check_exposure Check if exposure > 0
 #' 
+#' @param is_paf Boolean to force paf evaluation.
+#' 
 #' @importFrom MASS mvrnorm 
 #' @importFrom stats weighted.mean
 #' 
@@ -71,7 +73,7 @@
 pif.variance.linear <- function(X, thetahat, thetavar, rr, 
                                 cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), check_thetas = TRUE,  check_cft = TRUE, 
-                                check_exposure = TRUE, nsim = 1000){
+                                check_exposure = TRUE, nsim = 1000, is_paf = FALSE){
   #Set X as matrix
   .X    <- as.matrix(X)
   
@@ -88,14 +90,18 @@ pif.variance.linear <- function(X, thetahat, thetavar, rr,
   #Get the conditional expected pif
   .pifexp <- function(theta){
     R0 <- weighted.mean(rr(.X, theta), weights)
-    RC <- weighted.mean(rr(cft(.X), theta), weights)
+    if (is_paf){
+      RC <- 1
+    } else {
+      RC <- weighted.mean(rr(cft(.X), theta), weights)
+    }
     return(1-RC/R0)
   }
   
   #Get the conditional variance of pif
   .pifvar <- function(theta){
     vr <- pif.conditional.variance.linear(X = .X, thetahat = theta, rr = rr, cft = cft, weights = weights, 
-                                          check_cft = check_cft)
+                                          check_cft = check_cft, is_paf = is_paf)
     return(vr)
   }
   

@@ -5,7 +5,6 @@
 #'   from a cross-sectional sample of the exposure \code{X} with a known 
 #'   Relative Risk function \code{rr} with parameters \code{theta} when only 
 #'   \code{mean(X)} and \code{var(X)} are known.
-
 #'  
 #'@param X      Mean value of exposure levels from a cross-sectional.
 #'  
@@ -37,6 +36,8 @@
 #'  
 #'@param check_rr        Check that Relative Risk function \code{rr} equals 
 #'  \code{1} when evaluated at \code{0}.
+#'  
+#' @param is_paf    Boolean forcing evaluation of paf
 #'  
 #'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
@@ -104,7 +105,8 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
                             cft = function(X){matrix(0,ncol = ncol(as.matrix(X)), nrow = nrow(as.matrix(X)))},
                             deriv.method.args = list(), 
                             deriv.method = c("Richardson", "complex"),
-                            check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
+                            check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+                            is_paf = FALSE){
   
   #Change to matrix
   .Xvar   <- check.xvar(Xvar)
@@ -129,12 +131,15 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
     rr(.xmat, thetahat)
   }
   
-  #Calculate the hessians
-  .hcft  <- hessian(.rr_cft_fun, .X, method = .method, method.args = deriv.method.args)
-  .hrr   <- hessian(.rr_fun_x,   .X, method = .method, method.args = deriv.method.args)
-  
   #Estimate weighted sums
-  .mucft <- .rr_cft_fun(.X) + 0.5*sum(.hcft*.Xvar)
+  if (is_paf){
+    .mucft <- 1
+  } else {
+    .hcft  <- hessian(.rr_cft_fun, .X, method = .method, method.args = deriv.method.args)
+    .mucft <- .rr_cft_fun(.X) + 0.5*sum(.hcft*.Xvar)
+  }
+  
+  .hrr   <- hessian(.rr_fun_x,   .X, method = .method, method.args = deriv.method.args)
   .mux   <- .rr_fun_x(.X)   + 0.5*sum(.hrr*.Xvar)
 
   #Check that integrals make sense

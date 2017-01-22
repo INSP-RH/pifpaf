@@ -16,10 +16,6 @@
 #'   
 #'   **Optional**
 #'   
-#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
-#'   is 0 exposure.
-#'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
 #' @param method    Either \code{empirical} (default), or  \code{kernel}.
@@ -64,14 +60,12 @@
 #'   
 #' @param colors        String vector with colors for plots
 #' 
-#' @param is_paf    Boolean forcing evaluation of paf
-#' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
 #' @import  ggplot2
 #'   
-#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation,
+#' @seealso \code{\link{paf}} for Population Attributable Fraction estimation,
 #'   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual,
 #'   \code{\link{pif.plot}} for a plot of potential impact fraction as a
 #'   function of theta
@@ -84,8 +78,8 @@
 #' X  <- rnorm(250,3)                        #Sample
 #' rr <- function(X,theta){exp(X*theta)}     #Relative risk
 #' theta <- 0.1                              #Estimate of theta
-#' \dontrun{
-#' pif.sensitivity(X, thetahat = theta, rr = rr)
+#' \donttest{
+#' paf.sensitivity(X, thetahat = theta, rr = rr)
 #' }
 #' 
 #' #Save file
@@ -97,17 +91,16 @@
 #' X     <- rbeta(1000, 1, 0.2)
 #' theta <- c(0.12, 1)
 #' rr    <- function(X, theta){X*theta[1] + theta[2]}
-#' cft   <- function(X){X/2}
 #' 
-#' \dontrun{
+#' \donttest{
 #' #Using empirical method
-#' pif.sensitivity(X, thetahat = theta, rr = rr, cft = cft,
+#' paf.sensitivity(X, thetahat = theta, rr = rr, 
 #'                 mremove = 100, nsim = 50, 
 #'                 title = "My Sensitivity Analysis for example 1")
 #' }          
-#' \dontrun{
+#' \donttest{
 #' #Same example with kernel
-#' pif.sensitivity(X, theta, rr = rr, cft = cft,
+#' paf.sensitivity(X, theta, rr = rr, 
 #'                  mremove = 100, nsim = 50, method = "kernel", 
 #'                  title = "Sensitivity Analysis for example 1 using kernel")
 #' }                 
@@ -134,143 +127,42 @@
 #' }
 #' 
 #' 
-#' #Counterfactual of halving the percent of obesity and overweight cases
-#' #to normality
-#' cft <- function(X){
-#' 
-#'    #Find the overweight and obese individuals
-#'    which_obese <- which(X == "Obese")
-#'    which_over  <- which(X == "Overweight")
-#'    
-#'    #Reduce per.over % of overweight and per.obese % of obese
-#'    X[sample(which_obese, length(which_obese)*0.5)] <- "Normal"
-#'    X[sample(which_over,  length(which_over)*0.5)]  <- "Normal"
-#'    
-#'    return(X)
-#' }
 #' 
 #' \dontrun{
-#' pifplot <- pif.sensitivity(X, thetahat = thetahat, rr = rr, cft = cft, 
-#'                            title = "Sensitivity analysis of PIF for excess-weight",
+#' pafplot <- paf.sensitivity(X, thetahat = thetahat, rr = rr, 
+#'                            title = "Sensitivity analysis of PAF for excess-weight",
 #'                            colors = rainbow(4), 
 #'                            legendtitle = "Values", 
 #'                            check_exposure = FALSE, check_rr = FALSE)              
-#' pifplot              
+#' pafplot              
 #' 
-#' #You can edit pifplot as it is a ggplot object
-#' pifplot + theme_classic()
+#' #You can edit pafplot as it is a ggplot object
+#' pafplot + theme_classic()
 #' }
 #' 
 #' @import ggplot2
 #' @export
 
 
-pif.sensitivity <- function(X, thetahat, rr,         
+paf.sensitivity <- function(X, thetahat, rr,         
                             weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                            cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
                             method  = c("empirical", "kernel"),
                             adjust = 1, n = 512,
                             ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
                                        "biweight","cosine", "optcosine"), 
                             bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-                            nsim = 50, mremove = min(nrow(as.matrix(X))/2,100), ylab  = "PIF", 
+                            nsim = 50, mremove = min(nrow(as.matrix(X))/2,100), ylab  = "PAF", 
                             xlab  = "Number of randomly deleted observations for X", 
                             legendtitle = "Sensitivity Analysis",
-                            title = "Potential Impact Fraction (PIF) Sensitivity Analysis",
+                            title = "Population Attributable Fraction (PAF) Sensitivity Analysis",
                             colors = c("red", "deepskyblue", "gray75", "gray25"),
-                            check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
-                            is_paf = FALSE){
+                            check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
-  #Set X as matrix
-  .X       <- as.matrix(X)
-  
-  #Check m and n are correctly defined
-  if(mremove <= 0){
-    stop("m (maximum observations to remove) must be positive")
-  } else if(mremove >= nrow(.X)){
-    stop("m (maximum observations to remove) must be less than the amount of observations")
-  }
-  
-  if(nsim <= 0){
-    stop("n (number of samples) must be positive")
-  } else if(nsim >= 500){
-    warning("n (number of samples) is too big")
-  }
-  
-  #Limit m values
-  .m       <- min(ceiling(mremove), nrow(X))
-  
-  #Check that n is integer
-  .n       <- min(ceiling(nsim), nrow(X))
-  
-  #Create matrix for saving values
-  .pifdata <- matrix(data = NA, nrow = .n, ncol = .m)
-  
-  #Create matrix for saving values 
-  .sumdata <- matrix(data = NA, nrow = .m, ncol = 7)
-  
-  #Get colnames
-  colnames(.sumdata) <- c("Simulation", "Min", "First", "Median", "Mean", "Third", "Max")
-  
-  #Loop reducing i values from the sample and estimating the pif
-  for( .j in 1:.m){
-    
-    #Loop through samples
-    for (.i in 1:.n){
-      
-      #Update X
-      if (.j == 1){
-        
-        .newX <- .X
-        .newW <- weights
-        
-      } else {
-        
-        #Randomly sample elements to remove
-        .todelete <- sample(1:nrow(.X), .j-1, replace = FALSE, prob = weights)
-        
-        #Remove from this sample 
-        .newX <- .X[-.todelete,]  
-        .newW <- weights[-.todelete]
-        .newW <- .newW/sum(.newW)
-      }
-      
-      
-      #Estimate pif and save it matrix
-      .pifdata[.i,.j] <- pif(X = .newX, thetahat = thetahat, rr = rr, cft = cft,
-                             weights = .newW, method = method, adjust = adjust, n = n,
-                             ktype = ktype, bw = bw,check_exposure = check_exposure, 
-                             check_rr = check_rr, check_integrals = check_integrals,
-                             is_paf = is_paf)
-      
-    }
-    
-    #Get summary of simulation for each removal .j
-    .sumdata[.j,] <- c(.m - (.j-1), summary(.pifdata[,.j]))
-    
-  }
-  
-  #Create plot
-  .plot <- ggplot(data.frame(.sumdata), aes(x = .m - .sumdata[,"Simulation"])) +
-    geom_ribbon(aes(ymin = .sumdata[,"Min"], ymax = .sumdata[,"Max"], 
-                    fill = "100% of cases"), alpha = 0.75) +
-    geom_ribbon(aes(ymin = .sumdata[,"First"], ymax = .sumdata[,"Third"], 
-                    fill = "75% of cases"), alpha = 0.75) +
-    geom_line(aes(y  = .sumdata[,"Max"],    color = "100% of cases")) +
-    geom_line(aes(y  = .sumdata[,"Min"],    color = "100% of cases")) +
-    geom_line(aes(y  = .sumdata[,"First"],  color = "75% of cases")) +
-    geom_line(aes(y  = .sumdata[,"Third"],  color = "75% of cases")) +
-    geom_line(aes(y  = .sumdata[,"Median"], color = "Median")) +
-    geom_point(aes(y = .sumdata[,"Mean"],   color = "Mean")) +
-    theme_minimal() + ggtitle(title) + ylab(ylab) + xlab(xlab) + 
-    scale_color_manual(name = legendtitle, 
-                       values = c("Mean" = colors[1],"Median" = colors[2],
-                                  "100% of cases" = colors[3], 
-                                  "75% of cases" = colors[4]),
-                       drop = FALSE) + 
-    scale_fill_manual(values = c("100% of cases" = colors[3], 
-                                 "75% of cases" = colors[4]), guide = FALSE) 
-  
-  return(.plot)
+  pif.sensitivity(X = X, thetahat = thetahat, rr = rr, weights = weights,
+                  method = method, adjust = adjust, n = n, ktype = ktype,
+                  nsim = nsim, mremove = mremove, ylab = ylab, xlab = xlab,
+                  legendtitle = legendtitle, title = title, colors = colors,
+                  check_exposure = check_exposure, check_rr = check_rr,
+                  check_integrals = check_integrals, is_paf = TRUE)
   
 }

@@ -33,6 +33,8 @@
 #'@param check_rr        Check that Relative Risk function \code{rr} equals 
 #'  \code{1} when evaluated at \code{0}
 #'  
+#' @param is_paf    Boolean forcing evaluation of paf
+#'  
 #'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
 #'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'  
@@ -88,7 +90,8 @@
 pif.empirical <- function(X, thetahat, rr, 
                           cft = function(Varx){matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
                           weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                          check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
+                          check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+                          is_paf = FALSE){
   
   #Set X as matrix
   .X  <- as.matrix(X)
@@ -101,7 +104,12 @@ pif.empirical <- function(X, thetahat, rr,
   
   #Estimate weighted sums
   .mux   <- weighted.mean(rr(.X, thetahat), weights)
-  .mucft <- weighted.mean(rr(cft(.X), thetahat), weights)
+  if (is_paf){
+    .mucft <- 1
+  } else {
+    .mucft <- weighted.mean(rr(cft(.X), thetahat), weights)  
+  }
+  
   
   #Check that integrals make sense
   if(check_integrals){ check.integrals(.mux, .mucft) }

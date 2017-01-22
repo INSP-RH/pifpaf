@@ -8,7 +8,6 @@
 #' 
 #' @param rr        Function for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-
 #' 
 #' 
 #' **Optional**
@@ -82,12 +81,13 @@
 #' # Default
 #' paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr)
 #' # One to one
-#' paf.confidence(X = X, thetahat = thetahat, thetalow = 0.45, thetaup = 0.55, rr = rr, confidence_method = "one2one")
+#' paf.confidence(X = X, thetahat = thetahat, thetalow = 0.45, 
+#' thetaup = 0.55, rr = rr, confidence_method = "one2one")
 #' # Approximate 
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)
-#' paf.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, rr = rr,
-#'                 method = "approximate", Xvar = Xvar)
+#' paf.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, 
+#' rr = rr, method = "approximate", Xvar = Xvar)
 #'  
 #' # Example 2: multivariate example
 #'  
@@ -108,10 +108,11 @@
 #'  # Approximate 
 #'  Xmean <- t(as.matrix(colMeans(X)))
 #'  Xvar  <- cov(X)
-#'  paf.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, rr = rr,
-#'                 method = "approximate", Xvar = Xvar)
+#'  paf.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, 
+#'  rr = rr, method = "approximate", Xvar = Xvar)
 #' # One to one
-#' paf.confidence(X = X, thetahat = thetahat, thetalow = c(0.05, 0), thetaup = c(0.15, 0.08), rr = rr, confidence_method = "one2one")
+#' paf.confidence(X = X, thetahat = thetahat, thetalow = c(0.05, 0), 
+#' thetaup = c(0.15, 0.08), rr = rr, confidence_method = "one2one")
 #' 
 #' @export
 
@@ -136,7 +137,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
   confidence_method <- confidence_method[1]
   
   if(confidence_method == "linear" || confidence_method == "loglinear" || confidence_method == "bootstrap" || method == "kernel"){
-    pif.confidence(X, thetahat, thetavar, rr, weights, 
+    pif.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = weights, 
                    nsim    =  nsim, confidence = confidence,
                    confidence_method = confidence_method, method  = method,
                    Xvar    = Xvar, deriv.method.args = deriv.method.args, 
@@ -144,7 +145,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
                    ktype  = ktype,  bw = bw, check_exposure = check_exposure,
                    check_cft = check_cft, check_rr = check_rr,
                    check_xvar = check_xvar, check_integrals = check_integrals,
-                   check_thetas = check_thetas)
+                   check_thetas = check_thetas, is_paf = TRUE)
   }else{
     switch (confidence_method,
             "inverse" ={
