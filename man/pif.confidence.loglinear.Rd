@@ -8,7 +8,7 @@ pif.confidence.loglinear(X, thetahat, thetavar, rr, cft = function(Varx) {
   matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 100,
   confidence = 95, check_thetas = TRUE, check_exposure = TRUE,
-  check_cft = TRUE)
+  check_cft = TRUE, is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -37,6 +37,8 @@ the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposu
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 
 \item{check_cft}{Check if counterfactual function \code{cft} reduces exposure.}
+
+\item{is_paf}{Force evaluation of paf}
 }
 \description{
 Confidence intervals for the potencial impact Fraction for relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.

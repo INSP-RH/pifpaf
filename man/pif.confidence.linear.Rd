@@ -7,7 +7,7 @@
 pif.confidence.linear(X, thetahat, thetavar, rr, cft = function(Varx) {    
   matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
-  nsim = 1000, check_thetas = TRUE)
+  nsim = 1000, check_thetas = TRUE, is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -31,6 +31,8 @@ the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposu
 \item{nsim}{Number of simulations for estimation of variance}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
+
+\item{is_paf}{Boolean forcing evaluation of paf}
 }
 \description{
 Function that calculates approximate confidence intervals to the potential impact fraction.

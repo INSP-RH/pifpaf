@@ -11,7 +11,8 @@ pif.confidence.bootstrap(X, thetahat, thetavar, rr, cft = function(Varx) {
   n = 512, confidence = 95, ktype = c("gaussian", "epanechnikov",
   "rectangular", "triangular", "biweight", "cosine", "optcosine"),
   bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"), check_exposure = TRUE,
-  check_rr = TRUE, check_integrals = TRUE, check_thetas = TRUE)
+  check_rr = TRUE, check_integrals = TRUE, check_thetas = TRUE,
+  is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (vector or matrix) which includes exposure and
@@ -64,6 +65,8 @@ method) from \code{\link[stats]{density}}. Default \code{"SJ"}.}
 values are well defined for this scenario}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
+
+\item{is_paf}{Boolean forcing evaluation of \code{paf}}
 }
 \value{
 pif      Estimate of Potential Impact Fraction

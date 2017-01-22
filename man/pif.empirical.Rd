@@ -8,7 +8,8 @@
 pif.empirical(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
   ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
-  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
+  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+  is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (vector or matrix) which includes exposure and 
@@ -35,6 +36,8 @@ is 0 exposure.}
 
 \item{check_integrals}{Check that counterfactual and relative risk's expected 
 values are well defined for this scenario}
+
+\item{is_paf}{Boolean forcing evaluation of paf}
 }
 \description{
 Function that calculates the potential impact fraction \code{pif}

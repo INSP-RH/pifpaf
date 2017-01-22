@@ -9,7 +9,8 @@ pif.confidence.approximate(Xmean, Xvar, thetahat, thetavar, rr,
   nrow(as.matrix(Xmean))) }, check_thetas = TRUE, check_cft = TRUE,
   check_xvar = TRUE, check_rr = TRUE, check_integrals = TRUE,
   check_exposure = TRUE, deriv.method.args = list(),
-  deriv.method = c("Richardson", "complex"), nsim = 1000, confidence = 95)
+  deriv.method = c("Richardson", "complex"), nsim = 1000, confidence = 95,
+  is_paf = FALSE)
 }
 \arguments{
 \item{Xmean}{Mean value of exposure levels.}
@@ -54,6 +55,8 @@ Don't change this unless you know what you are doing.}
 \item{nsim}{Number of simulations for estimation of variance}
 
 \item{confidence}{Concidence level (0 to 100) default = \code{95} \%}
+
+\item{is_paf}{Force evaluation of paf}
 }
 \description{
 Function that calculates approximate confidence intervals to the population attributable fraction

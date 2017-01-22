@@ -8,7 +8,7 @@ pif.variance.linear(X, thetahat, thetavar, rr, cft = function(Varx) {
   matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
   check_thetas = TRUE, check_cft = TRUE, check_exposure = TRUE,
-  nsim = 1000)
+  nsim = 1000, is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -36,6 +36,8 @@ is 0 exposure.}
 \item{check_exposure}{Check if exposure > 0}
 
 \item{nsim}{Number of simulations for estimation of variance}
+
+\item{is_paf}{Boolean to force paf evaluation.}
 }
 \description{
 Function that calculates approximate variance of the potential impact fraction (linearization).

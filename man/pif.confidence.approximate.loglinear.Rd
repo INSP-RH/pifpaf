@@ -9,7 +9,7 @@ pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, rr,
   nrow(as.matrix(Varx))) }, deriv.method.args = list(),
   deriv.method = c("Richardson", "complex"), check_exposure = TRUE,
   check_rr = TRUE, check_integrals = TRUE, nsim = 1000, confidence = 95,
-  check_thetas = TRUE)
+  check_thetas = TRUE, is_paf = FALSE)
 }
 \arguments{
 \item{Xmean}{Mean value of exposure levels from a cross-sectional.}
@@ -50,6 +50,8 @@ values are well defined for this scenario.}
 \item{confidence}{Concidence level (0 to 100) default = \code{95} \%}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
+
+\item{is_paf}{Boolean forcing evaluation of \code{paf}}
 }
 \description{
 Confidence intervals for the Population Attributable Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.

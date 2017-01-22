@@ -10,7 +10,7 @@ pif.kernel(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
   n = 512, ktype = c("gaussian", "epanechnikov", "rectangular",
   "triangular", "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0",
   "nrd", "ucv", "bcv"), check_exposure = TRUE, check_rr = TRUE,
-  check_integrals = TRUE)
+  check_integrals = TRUE, is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (vector or matrix) which includes exposure and 
@@ -52,6 +52,8 @@ estimated (see \code{\link[stats]{density}}).}
 
 \item{check_integrals}{Check that counterfactual and relative risk's expected 
 values are well defined for this scenario}
+
+\item{is_paf}{Boolean forcing evaluation of paf}
 }
 \value{
 pif      Estimate of Potential Impact Fraction

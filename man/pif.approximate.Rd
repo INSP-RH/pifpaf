@@ -8,7 +8,8 @@
 pif.approximate(X, Xvar, thetahat, rr, cft = function(X) {     matrix(0, ncol
   = ncol(as.matrix(X)), nrow = nrow(as.matrix(X))) },
   deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
-  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
+  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+  is_paf = FALSE)
 }
 \arguments{
 \item{X}{Mean value of exposure levels from a cross-sectional.}
@@ -41,6 +42,8 @@ Don't change this unless you know what you are doing.}
 
 \item{check_integrals}{Check that counterfactual and relative risk's expected 
 values are well defined for this scenario.}
+
+\item{is_paf}{Boolean forcing evaluation of paf}
 }
 \description{
 Function for estimating the Potential Impact Fraction \code{pif}

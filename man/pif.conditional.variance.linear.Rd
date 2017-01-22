@@ -6,7 +6,8 @@
 \usage{
 pif.conditional.variance.linear(X, thetahat, rr, cft = function(Varx) {    
   matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), check_cft = TRUE)
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), check_cft = TRUE,
+  is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -25,6 +26,8 @@ the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposu
 \item{weights}{Survey \code{weights} for the random sample \code{X}.}
 
 \item{check_cft}{Check if counterfactual function \code{cft} reduces exposure.}
+
+\item{is_paf}{Force evaluation of paf}
 }
 \description{
 Function that calculates the conditional variance of the potential impact fraction (linearization).
