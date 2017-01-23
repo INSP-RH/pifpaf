@@ -281,7 +281,7 @@ pif.sensitivity(tobacco_consumption, thetahat, rr, cft = cft)
 
 ### Incomplete data Continuous RR example: Systolic Blood Pressure
 
-Consider the following data on Systolic Blood Pressure (SBP) in females aged 30-44 by world region from [@lawes2006blood]:
+Consider the following data on Systolic Blood Pressure (SBP) in females aged 30-44 by world region from <!--[@lawes2006blood]-->:
 
 ```{r}
 sbp <- data.frame("Region"   = c("Afr D", "Afr E", "Amr A", "Amr B", "Amr D",

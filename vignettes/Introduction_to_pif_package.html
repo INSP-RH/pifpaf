@@ -267,7 +267,7 @@ In order to compute confidence intervals, assume the following covariance matrix
 </div>
 <div id="incomplete-data-continuous-rr-example-systolic-blood-pressure" class="section level3">
 <h3>Incomplete data Continuous RR example: Systolic Blood Pressure</h3>
-<p>Consider the following data on Systolic Blood Pressure (SBP) in females aged 30-44 by world region from <span class="citation">(4)</span>:</p>
+<p>Consider the following data on Systolic Blood Pressure (SBP) in females aged 30-44 by world region from <!--[@lawes2006blood]-->:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sbp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;Region&quot;</span>   =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Afr D&quot;</span>, <span class="st">&quot;Afr E&quot;</span>, <span class="st">&quot;Amr A&quot;</span>, <span class="st">&quot;Amr B&quot;</span>, <span class="st">&quot;Amr D&quot;</span>,
                                  <span class="st">&quot;Emr B&quot;</span>, <span class="st">&quot;Emr D&quot;</span>, <span class="st">&quot;Eur A&quot;</span>, <span class="st">&quot;Eur B&quot;</span>, <span class="st">&quot;Eur C&quot;</span>,
                                  <span class="st">&quot;Sear B&quot;</span>, <span class="st">&quot;Sear D&quot;</span>, <span class="st">&quot;Wpr A&quot;</span>, <span class="st">&quot;Wpr B&quot;</span>), 
@@ -361,7 +361,7 @@ A broader definition of the Population Impact Fraction (which includes both case
 <li>The linear method, that calculates the confidence interval for the linearization of PAF.</li>
 <li>The loglinear method in which the confidence interval for <span class="math inline">\(g(\hat{\theta}) = \text{ln}\left(1 - \widehat{PAF}(\hat{\theta})\right)=\hat{\mu}_n(\theta)\)</span> is calculated and then transformed to get PAF confidence interval.</li>
 <li>The inverse method consists on estimating the confidence intervals for <span class="math inline">\(\hat{\mu}_n(\theta)\)</span> and then inverting.</li>
-<li>The one to one method estimates of conditional confidence intervals for <span class="math inline">\(R_O(\theta)\)</span> (as in the inverse method) are calculated and applied to the lower and upper bounds of <span class="math inline">\(\theta\)</span> to obtain a confidence interval<span class="citation">(5)</span>.</li>
+<li>The one to one method estimates of conditional confidence intervals for <span class="math inline">\(R_O(\theta)\)</span> (as in the inverse method) are calculated and applied to the lower and upper bounds of <span class="math inline">\(\theta\)</span> to obtain a confidence interval<span class="citation">(4)</span>.</li>
 </ol>
 <p>All confidence intervals are constructed assuming asymptotic normality.</p>
 </div>
@@ -719,11 +719,8 @@ cft &lt;-<span class="st"> </span>function(X){
 <div id="ref-barendregt2010categorical">
 <p>3. Barendregt JJ, Veerman JL. Categorical versus continuous risk factors and the calculation of potential impact fractions. <em>Journal of epidemiology and community health</em>. 2010;64(3):209–212. </p>
 </div>
-<div id="ref-lawes2006blood">
-<p>4. Lawes CM, Vander Hoorn S, Law MR, et al. Blood pressure and the global burden of disease 2000. part 1: Estimates of blood pressure levels. <em>Journal of hypertension</em>. 2006;24(3):413–422. </p>
-</div>
 <div id="ref-bar1999confidence">
-<p>5. Bar-Lev SK, Reiser B. On confidence intervals for nonmonotone parametric functions and an application to the squared mean of the normal distribution. <em>Statistical Papers</em>. 1999;40(1):89–98. </p>
+<p>4. Bar-Lev SK, Reiser B. On confidence intervals for nonmonotone parametric functions and an application to the squared mean of the normal distribution. <em>Statistical Papers</em>. 1999;40(1):89–98. </p>
 </div>
 </div>
 </div>
