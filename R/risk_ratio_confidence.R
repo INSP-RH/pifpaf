@@ -168,7 +168,7 @@ risk.ratio.confidence <- function(X, thetahat, thetavar, rr, weights =  rep(1/nr
   .Variance <- function(.theta){
     .s   <- sum(weights)
     .s2  <- sum(weights^2)
-    .var <- ( .s / (.s^2 - .s2) ) * weighted.mean((rr(.X, .theta) - .Risk(.theta))^2, weights) *s2
+    .var <- ( .s / (.s^2 - .s2) ) * weighted.mean((rr(.X, .theta) - .Risk(.theta))^2, weights) * .s2
     return(.var)
   }
   
