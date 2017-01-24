@@ -113,7 +113,8 @@ paf.confidence.one2one <- function(X, thetahat, thetalow, thetaup, rr,
   
   
   #Return
-  .confint <- c("Lower" = .lower["Lower"], "Point" = .point, "Upper" = .upper["Upper"])
+  .confint        <- c(.lower["Lower_CI"], .point, .upper["Upper_CI"])
+  names(.confint) <- c("Lower_CI","Point_Estimate","Upper_CI")
   
   #Return
   return(.confint)

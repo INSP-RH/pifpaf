@@ -164,15 +164,17 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
   
   #Check upper limit < 1 as 1 is a limit case
   #from: THE LOWER CONFIDENCE LIMIT FOR THE MEAN OF POSITIVE RANDOM VARIABLES
-  if (.ci["Upper_CI"] >= 1){
-    
-    #Transform the problem to 0 <= 1 - pif to apply bounded CIs
-    .transf_ci             <- 1 - .ci
-    names(.transf_ci)      <- c("Upper_CI", "Point_Estimate", "Lower_CI", "Estimated_Variance")
-    .transf_ci["Lower_CI"] <- (.transf_ci["Point_Estimate"]^2)/.transf_ci["Upper_CI"]           #Bound 1 - .ci below 
-    .ci["Upper_CI"]        <- 1 - .transf_ci["Lower_CI"]                                        #Transform back
-    
-  }
+  # if (.ci["Upper_CI"] >= 1){
+  #   
+  #   #Transform the problem to 0 <= 1 - pif to apply bounded CIs
+  #   .transf_ci             <- 1 - .ci
+  #   names(.transf_ci)      <- c("Upper_CI", "Point_Estimate", "Lower_CI", "Estimated_Variance")
+  #   .transf_ci["Lower_CI"] <- (.transf_ci["Point_Estimate"]^2)/.transf_ci["Upper_CI"]           #Bound 1 - .ci below 
+  #   .ci["Upper_CI"]        <- 1 - .transf_ci["Lower_CI"]                                        #Transform back
+  #   
+  # }
+  
+  .ci["Upper_CI"] <- min(.ci["Upper_CI"], 1)
   
   #Return ci
   return(.ci)

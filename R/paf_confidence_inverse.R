@@ -114,8 +114,9 @@ paf.confidence.inverse <- function(X, thetahat, thetavar, rr,
   )
   #Compute the PAF intervals
   .cipaf         <- 1-1/rr.CI
-    
-    #Return variance
-    return(.cipaf)
+  names(.cipaf)  <- c("Lower_CI","Point_Estimate","Upper_CI") 
+  
+  #Return ci
+  return(.cipaf)
   
 }

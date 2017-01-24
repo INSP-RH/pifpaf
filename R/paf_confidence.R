@@ -116,8 +116,8 @@
 #' 
 #' @export
 
-paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(thetahat), nrow = length(thetahat)),
-                           thetalow = thetahat, thetaup = thetahat,
+paf.confidence <- function(X, thetahat, rr,  thetavar = NA,
+                           thetalow = NA, thetaup = NA,
                            weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                            nsim    =  100, confidence = 95,
                            confidence_method = c("bootstrap", "inverse", "one2one", "loglinear", "linear"),
@@ -139,6 +139,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
 
   switch (confidence_method,
             "inverse" ={
+              if(is.na(any(thetavar))){stop("Please specify thetavar, variance of thetahat")}
               paf.confidence.inverse(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, 
                                      weights = weights, nsim = nsim, confidence = confidence,
                                      deriv.method.args = deriv.method.args, deriv.method = deriv.method, 
@@ -146,6 +147,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
                                      method = method, Xvar = Xvar)
             },
             "one2one" ={
+              if(is.na(any(thetalow)) || is.na(any(thetaup))){stop("Please specify thetalow and thetaup bounds of thetahat's CI")}
               paf.confidence.one2one(X = X, thetahat = thetahat, thetalow = thetalow, thetaup = thetaup, rr = rr, 
                                      weights =  weights, confidence = confidence,
                                      check_thetas = check_thetas, deriv.method.args = deriv.method.args,
@@ -154,6 +156,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
                                      check_integrals = check_integrals)
             },
             {
+              if(is.na(any(thetavar))){stop("Please specify thetavar, variance of thetahat")}
               pif.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = weights, 
                             nsim    =  nsim, confidence = confidence,
                             confidence_method = confidence_method, method  = method,
