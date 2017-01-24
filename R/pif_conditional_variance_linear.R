@@ -67,6 +67,9 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
   
     #Check counterfactual  
     if (check_cft){check.cft(cft,X)}
+    
+    #Check if expected value is finite in this computer
+    infinite <- FALSE
   
     #Set as counterfactual
     .X     <- as.matrix(X)
@@ -78,7 +81,13 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
     
     #Estimate RR part
     .RO      <- weighted.mean(rr(.X, thetahat), weights)
-    .varRO   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.X, thetahat) - .RO)^2, weights)
+    if ( is.infinite(.RO) ){
+      warning("Expected value of Relative Risk is not finite")
+      infinite <- TRUE
+    } else {
+      .varRO   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.X, thetahat) - .RO)^2, weights)  
+    }
+    
     
     #Estimate counterfactual part
     if (is_paf){
@@ -87,13 +96,24 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
       .covRORC <- 0
     } else {
       .RC      <- weighted.mean(rr(.cft.X, thetahat), weights)  
-      .varRC   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.cft.X, thetahat) - .RC)^2, weights)
-      .covRORC <- s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, thetahat))*(rr(.cft.X, thetahat)), weights)-.RO*.RC)
+      if ( is.infinite(.RC) ){
+        warning("Expected value of Relative Risk under counterfactual is not finite")
+        infinite <- TRUE
+      } else {
+        .varRC   <- s2*(s/(s^2 - s2)) * weighted.mean((rr(.cft.X, thetahat) - .RC)^2, weights)
+        .covRORC <- s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, thetahat))*(rr(.cft.X, thetahat)), weights)-.RO*.RC)  
+      }
+      
     }
     
     
     #Calculate variance
-    .Var       <- (1/.RO)^2*((.RC/.RO)^2*.varRO+.varRC-2*(.RC/.RO)*.covRORC)
+    if (!infinite){
+      .Var       <- (1/.RO)^2*((.RC/.RO)^2*.varRO+.varRC-2*(.RC/.RO)*.covRORC)  
+    } else {
+      .Var       <-Inf
+    }
+    
     
     return(.Var)
   

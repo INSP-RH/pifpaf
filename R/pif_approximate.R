@@ -146,6 +146,9 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
   if(check_integrals){ check.integrals(.mux, .mucft) }
   
   #Calculate PIF
+  if(is.infinite(as.numeric(.mux))){   warning("Expected value of Relative Risk is not finite") }
+  if(is.infinite(as.numeric(.mucft))){ warning("Expected value of Relative Risk under counterfactual is not finite") }
+  
   .pif   <- as.numeric(1 - .mucft/.mux)
   
   return(.pif)

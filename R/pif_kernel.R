@@ -190,6 +190,9 @@ pif.kernel <- function(X, thetahat, rr,
   if(check_integrals){ check.integrals(.mux, .mucft) }
   
   #Calculate pif
+  if(is.infinite(.mux)){   warning("Expected value of Relative Risk is not finite") }
+  if(is.infinite(.mucft)){ warning("Expected value of Relative Risk under counterfactual is not finite") }
+  
   .pif          <- 1 - .mucft/.mux
   
   #Return variance
