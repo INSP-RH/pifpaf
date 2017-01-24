@@ -170,7 +170,9 @@ pif.confidence <- function(X, thetahat, rr, thetavar,
             switch (confidence_method,
                     "linear"    = {
                       pif.confidence.linear(X=X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights, 
-                                            confidence = confidence, check_thetas = check_thetas, is_paf = is_paf)
+                                            confidence = confidence, check_thetas = check_thetas, is_paf = is_paf,
+                                            check_exposure = check_exposure, check_rr = check_rr,
+                                            check_integrals = check_integrals)
                     },
                     "loglinear" = {
                       pif.confidence.loglinear(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,

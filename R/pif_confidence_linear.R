@@ -23,6 +23,14 @@
 #' 
 #' @param check_thetas Checks that theta parameters are correctly inputed
 #' 
+#' @param check_integrals Check that counterfactual and relative risk's expected
+#'   values are well defined for this scenario
+#'   
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#'   
+#' @param check_rr        Check that Relative Risk function \code{rr} equals 
+#'   \code{1} when evaluated at \code{0}
+
 #' @param is_paf    Boolean forcing evaluation of paf
 #' 
 #' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
@@ -64,6 +72,8 @@ pif.confidence.linear <- function(X, thetahat, thetavar, rr,
                                   cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},
                                   weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                                   confidence = 95, nsim = 1000, check_thetas = TRUE,
+                                  check_exposure = TRUE,
+                                  check_rr = TRUE, check_integrals = TRUE,
                                   is_paf = FALSE){
   
   #Check confidence
@@ -83,7 +93,9 @@ pif.confidence.linear <- function(X, thetahat, thetavar, rr,
   Z <- qnorm(1 - ((100-confidence)/200))
   
   #Get the point estimate and variance
-  .ci["Point_Estimate"]     <- pif(X, thetahat, rr, cft, weights = weights, is_paf = is_paf)
+  .ci["Point_Estimate"]     <- pif(X, thetahat, rr, cft, weights = weights, is_paf = is_paf,
+                                   check_exposure = check_exposure, check_rr = check_rr,
+                                   check_integrals = check_integrals)
   .ci["Estimated_Variance"] <- pif.variance.linear(X, thetahat, .thetavar, rr,cft, weights = weights, 
                                                    check_thetas = FALSE, nsim = nsim, is_paf = is_paf)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
