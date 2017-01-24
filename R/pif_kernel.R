@@ -134,7 +134,7 @@ pif.kernel <- function(X, thetahat, rr,
   
   #Check that the number of points in integer > 0
   .n <- max(2, ceiling(n))
-  if(n < 250){
+  if(.n < 250){
     warning("I suggest you should include more points in 'n' for better integration")
   }
   
@@ -151,13 +151,40 @@ pif.kernel <- function(X, thetahat, rr,
   densX <- as.matrix(.fX$x)
   densY <- as.vector(.fX$y)
   
-  #Integrate
-  .mux   <- integrate.xy(densX, densY*rr(densX, thetahat))
-  if (is_paf){
-    .mucft <- 1
-  } else {
-    .mucft <- integrate.xy(densX, densY*rr(cft(densX), thetahat))
+  #Integrate the expected values of the densities, Need to check
+  #that cft is defined for where the counterfactual happened
+  .prod1   <- rr(densX, thetahat)
+  .naprod1 <- which(is.na(.prod1))
+  
+  #Eliminate potential na's
+  if(length(.naprod1) > 0){
+    warning("Under this kernel density some values of rr are NA")
+    densX  <- densX[-.naprod1]
+    densY  <- densY[-.naprod1]
+    .prod1 <- .prod1[-.naprod1]
   }
+  
+  #Estimate the lower integral
+  .mux    <- integrate.xy(densX, densY*.prod1)
+  
+  #Check if we are estimating a PAF or a PIF
+  if (is_paf){
+    .mucft   <- 1
+  } else {
+    .prod2   <- rr(cft(densX), thetahat)
+    .naprod2 <- which(is.na(.prod2))
+    
+    #Eliminate potential na's
+    if(length(.naprod2) > 0){
+      warning("Under this kernel density some values of cft are NA")
+      densX  <- densX[-.naprod2]
+      densY  <- densY[-.naprod2]
+      .prod2 <- .prod1[-.naprod2]
+    }
+    
+    .mucft  <- integrate.xy(densX, densY*.prod2)
+  }
+  
   
   #Check that integrals make sense
   if(check_integrals){ check.integrals(.mux, .mucft) }
