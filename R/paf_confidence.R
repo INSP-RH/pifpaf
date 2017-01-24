@@ -120,7 +120,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
                            thetalow = thetahat, thetaup = thetahat,
                            weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                            nsim    =  100, confidence = 95,
-                           confidence_method = c("inverse", "one2one", "loglinear", "linear", "bootstrap"),
+                           confidence_method = c("bootstrap", "inverse", "one2one", "loglinear", "linear"),
                            method  = c("empirical", "kernel", "approximate"),
                            Xvar    = var(X), 
                            deriv.method.args = list(), 

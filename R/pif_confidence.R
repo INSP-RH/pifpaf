@@ -121,7 +121,7 @@ pif.confidence <- function(X, thetahat, thetavar, rr,
                    cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                    nsim    =  100, confidence = 95,
-                   confidence_method = c( "loglinear", "linear", "bootstrap"),
+                   confidence_method = c( "bootstrap", "linear", "loglinear"),
                    method  = c("empirical", "kernel", "approximate"),
                    Xvar    = var(X), 
                    deriv.method.args = list(), 
