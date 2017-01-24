@@ -8,9 +8,11 @@ paf.plot(X, thetalow, thetaup, rr, weights = rep(1/nrow(as.matrix(X)),
   nrow(as.matrix(X))), method = c("empirical", "kernel", "approximate"),
   adjust = 1, n = 512, mpoints = 100, Xvar = var(X),
   deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
-  ktype = c("gaussian", "epanechnikov", "rectangular", "triangular",
-  "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv",
-  "bcv"), color = "darkslategrey", xlab = "Theta", ylab = "PAF",
+  confidence = 95, confidence_method = c("bootstrap", "linear",
+  "loglinear"), ktype = c("gaussian", "epanechnikov", "rectangular",
+  "triangular", "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0",
+  "nrd", "ucv", "bcv"), colors = c("deepskyblue", "gray25"), xlab = "Theta",
+  ylab = "PAF",
   title = "Population Attributable Fraction (PAF) under different values of theta",
   check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
 }
@@ -48,6 +50,10 @@ method) from \code{\link[stats]{density}}.}
 Don't change this unless you know what you are doing (for
 \code{approximate} method).}
 
+\item{confidence}{Confidence level \% (default 95)}
+
+\item{confidence_method}{Either \code{linear}, \code{loglinear}, \code{bootstrap}}
+
 \item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
@@ -56,7 +62,7 @@ method). Additional information on kernels in \code{\link[stats]{density}}}
 \item{bw}{Smoothing bandwith parameter from density (for \code{kernel}
 method) from \code{\link[stats]{density}}. Default \code{"SJ"}.}
 
-\item{color}{Colour of plot}
+\item{colors}{Colour of plot}
 
 \item{xlab}{Label of x-axis in plot}
 
@@ -84,9 +90,10 @@ Function that plots the PAF under different values of an univariate parameter th
 #Example 1: Exponential Relative Risk empirical method
 #-----------------------------------------------------
 set.seed(18427)
-X <- rnorm(100, 4.2, 1.3)
+X <- rbeta(25, 4.2, 10)
 paf.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
 
+\dontrun{
 #Same example with kernel method
 paf.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
 title = "Kernel method example") 
@@ -96,7 +103,7 @@ Xmean <- mean(X)
 Xvar  <- var(X)
 paf.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
 method = "approximate", Xvar = Xvar, title = "Approximate method example")
-
+}
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}

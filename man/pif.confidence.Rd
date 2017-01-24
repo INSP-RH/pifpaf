@@ -4,31 +4,30 @@
 \alias{pif.confidence}
 \title{Confidence intervals for the Potencial Impact Fraction}
 \usage{
-pif.confidence(X, thetahat, thetavar, rr, cft = function(Varx) {     matrix(0,
+pif.confidence(X, thetahat, rr, thetavar, cft = function(Varx) {     matrix(0,
   ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 100,
-  confidence = 95, confidence_method = c("loglinear", "linear",
-  "bootstrap"), method = c("empirical", "kernel", "approximate"),
-  Xvar = var(X), deriv.method.args = list(),
-  deriv.method = c("Richardson", "complex"), adjust = 1, n = 512,
-  ktype = c("gaussian", "epanechnikov", "rectangular", "triangular",
-  "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv",
-  "bcv"), check_exposure = TRUE, check_cft = TRUE, check_rr = TRUE,
-  check_xvar = TRUE, check_integrals = TRUE, check_thetas = TRUE,
-  is_paf = FALSE)
+  confidence = 95, method = c("empirical", "kernel", "approximate"),
+  confidence_method = c("bootstrap", "linear", "loglinear"), Xvar = var(X),
+  deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
+  adjust = 1, n = 512, ktype = c("gaussian", "epanechnikov",
+  "rectangular", "triangular", "biweight", "cosine", "optcosine"),
+  bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"), check_exposure = TRUE,
+  check_cft = TRUE, check_rr = TRUE, check_xvar = TRUE,
+  check_integrals = TRUE, check_thetas = TRUE, is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
 
-\item{thetavar}{Estimator of variance of thetahat}
-
 \item{rr}{Function for Relative Risk which uses parameter 
   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
+
+\item{thetavar}{Estimator of variance of thetahat}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
 the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure.}
@@ -39,10 +38,10 @@ the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposu
 
 \item{confidence}{Confidence level \% (default 95)}
 
-\item{confidence_method}{Either \code{linear}, \code{loglinear}, \code{bootstrap}}
-
 \item{method}{Either \code{empirical} (default), \code{kernel} or 
 \code{approximate}.}
+
+\item{confidence_method}{Either \code{linear}, \code{loglinear}, \code{bootstrap}}
 
 \item{Xvar}{Variance of exposure levels (for \code{approximate} method)}
 

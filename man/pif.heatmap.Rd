@@ -114,7 +114,7 @@ pif.heatmap(X, theta = theta, rr = rr)
 
 #Change pif estimation method to kernel
 pif.heatmap(X, theta = theta, rr = rr, method = "kernel")
-
+\dontrun{
 #Example 2
 #------------------------------------------------------------------
 X     <- rbeta(100, 1, 0.2)
@@ -193,7 +193,7 @@ pif.heatmap(X, thetahat = thetahat, rr = rr, cft = cft, mina = 0, minb = 0, maxa
             maxb = 1, title = "PIF after reduction of excess-weight",
             xlab = "\% Overweight cases", ylab = "\% Obese cases",
             check_exposure = FALSE, check_rr = FALSE)
-
+}
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}

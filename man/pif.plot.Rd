@@ -12,7 +12,9 @@ pif.plot(X, thetalow, thetaup, rr, cft = function(Varx) {     matrix(0, ncol =
   deriv.method = c("Richardson", "complex"), ktype = c("gaussian",
   "epanechnikov", "rectangular", "triangular", "biweight", "cosine",
   "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-  color = "darkslategrey", xlab = "Theta", ylab = "PIF",
+  confidence_method = c("bootstrap", "linear", "loglinear"),
+  confidence = 95, colors = c("deepskyblue", "gray25"), xlab = "Theta",
+  ylab = "PIF",
   title = "Potential Impact Fraction (PIF) under different values of theta",
   check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
   is_paf = FALSE)
@@ -63,7 +65,11 @@ method). Additional information on kernels in \code{\link[stats]{density}}}
 \item{bw}{Smoothing bandwith parameter from density (for \code{kernel}
 method) from \code{\link[stats]{density}}. Default \code{"SJ"}.}
 
-\item{color}{Colour of plot}
+\item{confidence_method}{Either \code{linear}, \code{loglinear}, \code{bootstrap}}
+
+\item{confidence}{Confidence level \% (default 95)}
+
+\item{colors}{Colours of plot}
 
 \item{xlab}{Label of x-axis in plot}
 
@@ -93,26 +99,30 @@ Function that plots the PIF under different values of an univariate parameter th
 #Example 1: Exponential Relative Risk empirical method
 #-----------------------------------------------------
 set.seed(18427)
-X <- rnorm(100, 4.2, 1.3)
-pif.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
+X <- rbeta(25, 4.2, 10)
+pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)})
 
 #Same example with kernel method
-pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
+\dontrun{
+pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, method = "kernel",
 title = "Kernel method example") 
  
 #Same example for approximate method
 Xmean <- mean(X)
 Xvar  <- var(X)
-pif.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
+pif.plot(Xmean, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, 
 method = "approximate", Xvar = Xvar, title = "Approximate method example")
 
 #Example with counterfactual
-pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)})
+pif.plot(X, thetalow = -10, thetaup = -5, rr = function(X, theta){exp(theta*X)}, 
+cft = function(X){sqrt(X)})
 
 #Example for approximate method with square root counterfactual
-pif.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)},  cft = function(X){sqrt(X)},
- method = "approximate", Xvar = Xvar) 
-
+#Notice how the approximate represents information loss and thus the interval
+#loses precision.
+pif.plot(Xmean, thetalow = -10, thetaup = -5, rr = function(X, theta){exp(theta*X)},  
+cft = function(X){sqrt(X)}, method = "approximate", Xvar = Xvar) 
+}
 }
 \author{
 Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
