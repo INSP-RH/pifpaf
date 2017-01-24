@@ -164,8 +164,14 @@ pif.kernel <- function(X, thetahat, rr,
     .prod1 <- .prod1[-.naprod1]
   }
   
-  #Estimate the lower integral
-  .mux    <- integrate.xy(densX, densY*.prod1)
+  #Check expected value is finite
+  if(any(is.infinite(.prod1))){   
+    warning("Expected value of Relative Risk is not finite") 
+    .mux <- Inf
+  } else {
+    #Estimate the lower integral
+    .mux    <- integrate.xy(densX, densY*.prod1)
+  }
   
   #Check if we are estimating a PAF or a PIF
   if (is_paf){
@@ -182,17 +188,19 @@ pif.kernel <- function(X, thetahat, rr,
       .prod2 <- .prod1[-.naprod2]
     }
     
-    .mucft  <- integrate.xy(densX, densY*.prod2)
-  }
-  
+    #Check expected value is finite
+    if(any(is.infinite(.prod2))){ 
+      warning("Expected value of Relative Risk under counterfactual is not finite") 
+      .mucft <- Inf
+    } else {
+      .mucft <- integrate.xy(densX, densY*.prod2)
+    }
+  }  
   
   #Check that integrals make sense
   if(check_integrals){ check.integrals(.mux, .mucft) }
   
-  #Calculate pif
-  if(is.infinite(.mux)){   warning("Expected value of Relative Risk is not finite") }
-  if(is.infinite(.mucft)){ warning("Expected value of Relative Risk under counterfactual is not finite") }
-  
+  #Get pif
   .pif          <- 1 - .mucft/.mux
   
   #Return variance

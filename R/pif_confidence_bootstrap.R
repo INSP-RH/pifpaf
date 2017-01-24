@@ -154,7 +154,12 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
   }
   
   #Get the confidence interval and variance
-  .quantiles        <<- quantile(.bpif, probs = c(1 - .alpha/2, .alpha/2))
+  if (any(is.na(.bpif))){
+    .quantiles        <- c(NaN, NaN)
+  } else {
+    .quantiles        <- quantile(.bpif, probs = c(1 - .alpha/2, .alpha/2))  
+  }
+  
   names(.quantiles) <- c()        #Delete names
   .variance         <- var(.bpif)
   

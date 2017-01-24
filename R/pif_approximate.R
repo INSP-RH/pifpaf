@@ -141,7 +141,12 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
   
   .hrr   <- hessian(.rr_fun_x,   .X, method = .method, method.args = deriv.method.args)
   .mux   <- .rr_fun_x(.X)   + 0.5*sum(.hrr*.Xvar)
-
+  
+  
+  #Check derivative exists
+  if (is.na(.mux)){   stop("Hessian might not be defined for those values of rr")}
+  if (is.na(.mucft)){ stop("Hessian might not be defined for those values of rr and cft")}
+  
   #Check that integrals make sense
   if(check_integrals){ check.integrals(.mux, .mucft) }
   
