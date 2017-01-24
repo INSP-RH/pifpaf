@@ -96,25 +96,21 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
   #Check exposure levels
   if(check_exposure){check.exposure(.X)}
   
+  #Check expected values are finite
+  infinite <- FALSE
   
   #Calculate the conditional expected value as a function of theta
   .logpifexp <- function(.theta){
-    .RO  <- weighted.mean(rr(.X,.theta), weights)
-     if (is_paf){
-       .RC  <- 1
-     } else {
-       .RC  <- weighted.mean(rr(.cft.X,.theta), weights)   
-     }
-    
-    return(log(.RC) -log(.RO) )
+    .pif <- pif(X = X, thetahat = .theta, rr = rr, cft = cft, weights = weights,
+                method = "empirical", check_exposure = FALSE, check_rr = FALSE,
+                check_integrals = FALSE, is_paf = is_paf)
+    return(1 - .pif)
   }
   
-  #Inverse
-  if (is_paf){
-    .inverse   <- 1/weighted.mean(rr(.X,thetahat), weights)  
-  } else {
-    .inverse   <- weighted.mean(rr(.cft.X, thetahat), weights)/weighted.mean(rr(.X,thetahat), weights)  
-  }
+  #Get inverse for multiplying
+  .inverse   <- 1 - pif(X = X, thetahat = thetahat, rr = rr, cft = cft, weights = weights,
+                        method = "empirical", check_exposure = FALSE, check_rr = FALSE,
+                        check_integrals = FALSE, is_paf = is_paf)
   
   
   #Calculate the conditional variance as a function of theta
@@ -124,7 +120,13 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
     
     #Calculate rr
     .RO      <- weighted.mean(rr(.X,.theta), weights)
-    .varRO   <- (1/.RO^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
+    if (is.infinite(.RO)){
+      warning("Expected value of Relative Risk is not finite")
+      infinite <- TRUE
+    } else {
+      .varRO   <- (1/.RO^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.X,.theta) - .RO)^2, weights)
+    }
+    
     
     if (is_paf){
       .RC      <- 1
@@ -132,11 +134,21 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
       .covRORC <- 0
     } else {
       .RC      <- weighted.mean(rr(.cft.X,.theta), weights)
-      .varRC   <- (1/.RC^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.cft.X,.theta) - .RC)^2, weights)
-      .covRORC <- (1/(.RO*.RC))*s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, .theta))*(rr(.cft.X, .theta)), weights)-.RO*.RC)
+      if (is.infinite(.RC)){
+        warning("Expected value of Relative Risk under counterfactual is not finite")
+        infinite <- TRUE
+      } else {
+        .varRC   <- (1/.RC^2)*s2*( s / (s^2 - s2) ) * weighted.mean((rr(.cft.X,.theta) - .RC)^2, weights)
+        .covRORC <- (1/(.RO*.RC))*s2*s/(s^2 - s2)   * (weighted.mean((rr(.X, .theta))*(rr(.cft.X, .theta)), weights)-.RO*.RC)
+      }  
+    }
+      
+    if (!infinite){
+      .var     <-  .varRO + .varRC - 2*.covRORC  
+    } else {
+      .var     <- Inf
     }
     
-    .var     <-  .varRO + .varRC - 2*.covRORC
     return(.var)
   }
   
@@ -153,10 +165,16 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
   .logvarpif <- var(.logmeanvec) + mean(.logvarvec)
   
   #Create the confidence intervals
-  .zqrt       <- .Z*sqrt(.logvarpif)
+  .zqrt      <- .Z*sqrt(.logvarpif)
   
   #Compute the pif intervals
-  .cipif         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper" = .inverse*exp(-.zqrt), "Variance Estimate of log(pif)" = .logvarpif)
+  .cipif         <- 1 - c("Lower" = .inverse*exp(.zqrt), 
+                          "Point_Estimate" =  .inverse, 
+                          "Upper" = .inverse*exp(-.zqrt), 
+                          "Variance Estimate of log(pif)" = .logvarpif)
+  
+  #Correct if .zqrt is infinite
+  if (is.infinite(.zqrt)){.cipif["Lower"] <- -Inf}
   
   #Return variance
   return(.cipif)
