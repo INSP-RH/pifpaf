@@ -136,18 +136,8 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
   method            <- method[1]
   confidence_method <- confidence_method[1]
   
-  if(confidence_method == "linear" || confidence_method == "loglinear" || confidence_method == "bootstrap" || method == "kernel"){
-    pif.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = weights, 
-                   nsim    =  nsim, confidence = confidence,
-                   confidence_method = confidence_method, method  = method,
-                   Xvar    = Xvar, deriv.method.args = deriv.method.args, 
-                   deriv.method  = deriv.method, adjust = adjust, n = n,
-                   ktype  = ktype,  bw = bw, check_exposure = check_exposure,
-                   check_cft = check_cft, check_rr = check_rr,
-                   check_xvar = check_xvar, check_integrals = check_integrals,
-                   check_thetas = check_thetas, is_paf = TRUE)
-  }else{
-    switch (confidence_method,
+
+  switch (confidence_method,
             "inverse" ={
               paf.confidence.inverse(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, 
                                      weights = weights, nsim = nsim, confidence = confidence,
@@ -163,14 +153,16 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = matrix(0, ncol = length(
                                      check_exposure = check_exposure, check_rr = check_rr, 
                                      check_integrals = check_integrals)
             },
-            {warning("Method of confidence interval estimation defaulted to inverse.")
-              paf.confidence.inverse(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, 
-                                     weights = weights, nsim = nsim, confidence = confidence,
-                                     deriv.method.args = deriv.method.args, deriv.method = deriv.method, 
-                                     force.min = force.min,  check_thetas = check_thetas,
-                                     method = method, Xvar = Xvar)
+            {
+              pif.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = weights, 
+                            nsim    =  nsim, confidence = confidence,
+                            confidence_method = confidence_method, method  = method,
+                            Xvar    = Xvar, deriv.method.args = deriv.method.args, 
+                            deriv.method  = deriv.method, adjust = adjust, n = n,
+                            ktype  = ktype,  bw = bw, check_exposure = check_exposure,
+                            check_cft = check_cft, check_rr = check_rr,
+                            check_xvar = check_xvar, check_integrals = check_integrals,
+                            check_thetas = check_thetas, is_paf = TRUE)
             }
     )
-    
-  }
 }

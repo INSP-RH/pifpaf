@@ -104,7 +104,7 @@
 #' 
 #' #Change pif estimation method to kernel
 #' pif.heatmap(X, theta = theta, rr = rr, method = "kernel")
-#' 
+#' \dontrun{
 #' #Example 2
 #' #------------------------------------------------------------------
 #' X     <- rbeta(100, 1, 0.2)
@@ -183,7 +183,7 @@
 #'             maxb = 1, title = "PIF after reduction of excess-weight",
 #'             xlab = "% Overweight cases", ylab = "% Obese cases",
 #'             check_exposure = FALSE, check_rr = FALSE)
-#' 
+#' }
 #' @import ggplot2
 #' @importFrom grDevices heat.colors
 #' @export

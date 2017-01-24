@@ -17,6 +17,10 @@
 #'   
 #' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}.
 #' 
+#' @param confidence Confidence level \% (default 95)
+#' 
+#' @param confidence_method  Either \code{linear}, \code{loglinear}, \code{bootstrap}
+
 #' @param Xvar      Variance of exposure levels (for \code{approximate} method)
 #'   
 #' @param deriv.method.args \code{method.args} for 
@@ -43,7 +47,7 @@
 #'   
 #' @param mpoints Number of points in plot   
 #' 
-#' @param color Colour of plot
+#' @param colors Colour of plot
 #' 
 #' @param xlab Label of x-axis in plot
 #' 
@@ -72,9 +76,10 @@
 #' #Example 1: Exponential Relative Risk empirical method
 #' #-----------------------------------------------------
 #' set.seed(18427)
-#' X <- rnorm(100, 4.2, 1.3)
+#' X <- rbeta(25, 4.2, 10)
 #' paf.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
 #' 
+#' \dontrun{
 #' #Same example with kernel method
 #' paf.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
 #' title = "Kernel method example") 
@@ -84,7 +89,7 @@
 #' Xvar  <- var(X)
 #' paf.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
 #' method = "approximate", Xvar = Xvar, title = "Approximate method example")
-#' 
+#' }
 #' @export
 
 paf.plot <- function(X, thetalow, thetaup, rr,         
@@ -94,17 +99,20 @@ paf.plot <- function(X, thetalow, thetaup, rr,
                      Xvar    = var(X), 
                      deriv.method.args = list(), 
                      deriv.method      = c("Richardson", "complex"),
+                     confidence = 95,
+                     confidence_method = c("bootstrap", "linear", "loglinear"),
                      ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
                                 "biweight","cosine", "optcosine"), 
                      bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-                     color = "darkslategrey", xlab = "Theta", ylab = "PAF",
+                     colors = c("deepskyblue", "gray25"), xlab = "Theta", ylab = "PAF",
                      title = "Population Attributable Fraction (PAF) under different values of theta",
                      check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
-  pif.plot(X = X, thetalow = thetalow, thetaup = thetaup,rr = rr, weights = weights,
+  pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, weights = weights,
            method = method, adjust = adjust, n = n, mpoints = mpoints, Xvar = Xvar,
            deriv.method.args = deriv.method.args, deriv.method = deriv.method,
-           ktype = ktype, bw = bw, color = color, xlab = xlab, ylab = ylab,
+           confidence = confidence, confidence_method = confidence_method,
+           ktype = ktype, bw = bw, colors = colors, xlab = xlab, ylab = ylab,
            title = title, check_exposure = check_exposure, check_rr = check_rr,
            check_integrals = check_integrals, is_paf = TRUE)
   

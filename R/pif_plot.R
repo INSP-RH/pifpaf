@@ -21,6 +21,10 @@
 #'   
 #' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}.
 #' 
+#' @param confidence Confidence level \% (default 95)
+#' 
+#' @param confidence_method  Either \code{linear}, \code{loglinear}, \code{bootstrap}
+#' 
 #' @param Xvar      Variance of exposure levels (for \code{approximate} method)
 #'   
 #' @param deriv.method.args \code{method.args} for 
@@ -47,7 +51,7 @@
 #'   
 #' @param mpoints Number of points in plot   
 #' 
-#' @param color Colour of plot
+#' @param colors Colours of plot
 #' 
 #' @param xlab Label of x-axis in plot
 #' 
@@ -78,26 +82,30 @@
 #' #Example 1: Exponential Relative Risk empirical method
 #' #-----------------------------------------------------
 #' set.seed(18427)
-#' X <- rnorm(100, 4.2, 1.3)
-#' pif.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
+#' X <- rbeta(25, 4.2, 10)
+#' pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)})
 #' 
 #' #Same example with kernel method
-#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
+#' \dontrun{
+#' pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, method = "kernel",
 #' title = "Kernel method example") 
 #'  
 #' #Same example for approximate method
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)
-#' pif.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
+#' pif.plot(Xmean, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, 
 #' method = "approximate", Xvar = Xvar, title = "Approximate method example")
 #' 
 #' #Example with counterfactual
-#' pif.plot(X, 0, 2, function(X, theta){exp(theta*X)}, cft = function(X){sqrt(X)})
+#' pif.plot(X, thetalow = -10, thetaup = -5, rr = function(X, theta){exp(theta*X)}, 
+#' cft = function(X){sqrt(X)})
 #' 
 #' #Example for approximate method with square root counterfactual
-#' pif.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)},  cft = function(X){sqrt(X)},
-#'  method = "approximate", Xvar = Xvar) 
-#' 
+#' #Notice how the approximate represents information loss and thus the interval
+#' #loses precision.
+#' pif.plot(Xmean, thetalow = -10, thetaup = -5, rr = function(X, theta){exp(theta*X)},  
+#' cft = function(X){sqrt(X)}, method = "approximate", Xvar = Xvar) 
+#' }
 #' @export
 
 pif.plot <- function(X, thetalow, thetaup, rr,         
@@ -111,7 +119,10 @@ pif.plot <- function(X, thetalow, thetaup, rr,
                      ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
                                 "biweight","cosine", "optcosine"), 
                      bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-                     color = "darkslategrey", xlab = "Theta", ylab = "PIF",
+                     confidence_method = c("bootstrap", "linear", "loglinear"),
+                     confidence = 95,
+                     colors = c("deepskyblue", "gray25"), 
+                     xlab = "Theta", ylab = "PIF",
                      title = "Potential Impact Fraction (PIF) under different values of theta",
                      check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
                      is_paf = FALSE){
@@ -121,6 +132,7 @@ pif.plot <- function(X, thetalow, thetaup, rr,
     stop("pif.plot only works for rr with unidimensional theta")
   }
   
+
   #Check that we are able to plot
   if (thetalow >= thetaup){
     stop("Minimum thetalow cannot be equal or greater than maximum thetaup")
@@ -130,8 +142,8 @@ pif.plot <- function(X, thetalow, thetaup, rr,
     .theta <- seq(thetalow, thetaup, length.out = ceiling(mpoints))
     
     #Create data frame for saving values of theta
-    .dat   <- matrix(NA, nrow = mpoints, ncol = 2)
-    colnames(.dat) <- c("Theta","PIF")
+    .dat           <- matrix(NA, nrow = mpoints, ncol = 4)
+    colnames(.dat) <- c("Theta","Lower_CI", "Point_Estimate","Upper_CI")
     
     #Loop through values of theta for plot
     for (i in 1:mpoints){
@@ -140,21 +152,29 @@ pif.plot <- function(X, thetalow, thetaup, rr,
       .dat[i,"Theta"] <- .theta[i]
       
       #Calculate PIF
-      .dat[i,"PIF"]   <- pif(X = X, .theta[i], rr = rr, cft = cft,
-                             weights =  weights, method = method, 
-                             Xvar = Xvar, deriv.method.args = deriv.method.args,
-                             deriv.method = deriv.method,
-                             adjust = adjust, n = n,ktype  = ktype, bw     = bw,
-                             check_exposure = check_exposure, check_rr = check_rr, 
-                             check_integrals = check_integrals, is_paf = is_paf) 
+      .dat[i,c("Lower_CI", "Point_Estimate","Upper_CI")]   <- 
+        pif.confidence(X = X, thetahat = .theta[i], thetavar = 0, rr = rr, 
+                       cft = cft, weights =  weights, 
+                       method = method, Xvar = Xvar, 
+                       deriv.method.args = deriv.method.args,
+                       deriv.method = deriv.method,
+                       confidence = confidence,
+                       confidence_method = confidence_method,
+                       adjust = adjust, n = n, ktype  = ktype, 
+                       bw     = bw, check_exposure = check_exposure, check_rr = check_rr, 
+                       check_integrals = check_integrals, is_paf = is_paf)[1:3] 
       
     }
     
     #Create plot
-    .thetaplot <- ggplot(as.data.frame(.dat)) + 
-                  geom_path(aes(x = .dat[,"Theta"], y = .dat[,"PIF"]), color = color) +
+    .thetaplot <- ggplot(as.data.frame(.dat), aes(x = .dat[,"Theta"])) + 
+                  geom_errorbar(aes(ymin = .dat[,"Lower_CI"], ymax = .dat[,"Upper_CI"], color = "Pointwise Confidence")) +
+                  geom_point(aes(y = .dat[,"Point_Estimate"], color = "Point Estimate")) +
                   xlab(xlab) + theme_bw() + ylab(ylab) +
-                  ggtitle(title)
+                  ggtitle(title) + 
+                  scale_color_manual(name = "", 
+                                     values = c( "Point Estimate" = colors[1], 
+                                                 "Pointwise Confidence" = colors[2])) 
     
     return(.thetaplot)
 

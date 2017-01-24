@@ -117,12 +117,12 @@
 #' 
 #' @export
 
-pif.confidence <- function(X, thetahat, thetavar, rr,         
+pif.confidence <- function(X, thetahat, rr, thetavar, 
                    cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                    nsim    =  100, confidence = 95,
-                   confidence_method = c( "bootstrap", "linear", "loglinear"),
                    method  = c("empirical", "kernel", "approximate"),
+                   confidence_method = c("bootstrap", "linear", "loglinear"),
                    Xvar    = var(X), 
                    deriv.method.args = list(), 
                    deriv.method      = c("Richardson", "complex"),
@@ -134,39 +134,13 @@ pif.confidence <- function(X, thetahat, thetavar, rr,
                    check_xvar = TRUE, check_integrals = TRUE, check_thetas = TRUE,
                    is_paf = FALSE){
   
+  
+  #Choose method
   method            <- method[1]
   confidence_method <- confidence_method[1]
+  
   switch (method,
-          "empirical"   = {
-            switch (confidence_method,
-                    "linear"    = {
-                      pif.confidence.linear(X=X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights, 
-                                            confidence = confidence, check_thetas = check_thetas, is_paf = is_paf)
-                    },
-                    "loglinear" = {
-                      pif.confidence.loglinear(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
-                                               nsim = nsim, check_thetas = check_thetas, check_exposure = check_exposure, 
-                                               check_cft = check_cft, is_paf = is_paf)
-                    },
-                    "bootstrap" = {
-                      pif.confidence.bootstrap(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
-                                               method = "empirical", nboost = nsim, confidence = confidence,
-                                               check_exposure = check_exposure, check_rr = check_rr,
-                                               check_integrals = check_integrals, check_thetas = check_thetas,
-                                               is_paf = is_paf)
-                    },
-                    
-                    {warning("Method of confidence interval estimation defaulted to loglinear.")
-                      pif.confidence.loglinear(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
-                                               nsim = nsim, check_thetas = check_thetas, check_exposure = check_exposure, 
-                                               check_cft = check_cft, is_paf = is_paf)
-                    }
-            )
-          },
           "kernel"      = {
-            if(confidence_method != "bootstrap"){
-              warning("Method of confidence interval estimation defaulted to bootstrap.")
-            }
             pif.confidence.bootstrap(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
                                      method = "kernel", nboost = nsim, adjust = adjust, confidence = confidence,
                                      ktype = ktype, bw = bw, check_exposure = check_exposure, check_rr = check_rr,
@@ -182,14 +156,7 @@ pif.confidence <- function(X, thetahat, thetavar, rr,
                                            deriv.method = deriv.method, nsim = nsim, confidence = confidence,
                                            is_paf = is_paf)
               },
-              "loglinear" = {
-                pif.confidence.approximate.loglinear(Xmean = X, Xvar = Xvar, thetahat = thetahat, thetavar = thetavar, rr = rr,
-                                                     cft = cft, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
-                                                     check_exposure = check_exposure, check_rr = check_rr, check_integrals = check_integrals,
-                                                     nsim = nsim, confidence = confidence, check_thetas = check_thetas,
-                                                     is_paf = is_paf)
-              },
-              {warning("Method of confidence interval estimation defaulted to loglinear.")
+              {
                 pif.confidence.approximate.loglinear(Xmean = X, Xvar = Xvar, thetahat = thetahat, thetavar = thetavar, rr = rr,
                                                      cft = cft, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                                                      check_exposure = check_exposure, check_rr = check_rr, check_integrals = check_integrals,
@@ -199,7 +166,7 @@ pif.confidence <- function(X, thetahat, thetavar, rr,
             )
             
           },
-          {warning("Method of PAF estimation defaulted to empirical")
+          {
             switch (confidence_method,
                     "linear"    = {
                       pif.confidence.linear(X=X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights, 
@@ -210,18 +177,12 @@ pif.confidence <- function(X, thetahat, thetavar, rr,
                                                nsim = nsim, check_thetas = check_thetas, check_exposure = check_exposure, 
                                                check_cft = check_cft, is_paf = is_paf)
                     },
-                    "bootstrap" = {
+                    {
                       pif.confidence.bootstrap(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
                                                method = "empirical", nboost = nsim, confidence = confidence,
                                                check_exposure = check_exposure, check_rr = check_rr,
                                                check_integrals = check_integrals, check_thetas = check_thetas,
                                                is_paf = is_paf)
-                    },
-                    
-                    {warning("Method of confidence interval estimation defaulted to loglinear.")
-                      pif.confidence.loglinear(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
-                                               nsim = nsim, check_thetas = check_thetas, check_exposure = check_exposure, 
-                                               check_cft = check_cft, is_paf = is_paf)
                     }
             )
           }
