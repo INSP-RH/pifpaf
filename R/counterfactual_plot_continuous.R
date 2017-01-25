@@ -153,7 +153,7 @@ counterfactual.plot.continuous <- function(X, cft,
   cft_plot <- ggplot() 
   
   #Check if fill subpopulation activated
-  if(fill & fill_limits[1] < fill_limits[2]){
+  if(fill & fill_limits[1] < fill_limits[2] & fill_limits[1] < max(.dX[,1]) & fill_limits[2] > min(.dX[,1])){
     
     #Create subset between fill limits
     .sub_X    <- subset(.dX$x, .dX[,1] >= fill_limits[1] & .dX[,1] <= fill_limits[2])
