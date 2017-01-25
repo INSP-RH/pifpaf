@@ -14,7 +14,7 @@ pif.heatmap(X, thetahat, rr, weights = rep(1/nrow(as.matrix(X)),
   maxb = 0, nmesh = 10,
   title = "Potential Impact Fraction (PIF) with counterfactual \\n f(X)= aX+b",
   xlab = "a", ylab = "b", cft = function(X, a, b) {     a * X + b },
-  palette = rev(heat.colors(nmesh)), check_exposure = TRUE,
+  colors = rev(heat.colors(nmesh)), check_exposure = TRUE,
   check_rr = TRUE, check_integrals = TRUE)
 }
 \arguments{
@@ -82,7 +82,7 @@ to "b")}
 parameters \code{a} and \code{b}. Default counterfactual is linear:
 \code{aX + b}.}
 
-\item{palette}{Color palette of heatmap}
+\item{colors}{Color colors of heatmap}
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 
@@ -122,14 +122,14 @@ theta <- c(0.12, 1)
 rr    <- function(X,theta){X*theta[1] + theta[2]}
 cft   <- function(X, a, b){sin(a*X)*b}
 pif.heatmap(X, theta = theta, rr = rr, cft = cft, 
-     nmesh = 15, palette = rainbow(30), method = "empirical",
+     nmesh = 15, colors = rainbow(30), method = "empirical",
      title = "PIF with counterfactual cft(X) = sin(a*X)*b")
 
 #Change estimation method to approximate
 Xmean <- mean(X)
 Xvar  <- var(X)
 pif.heatmap(Xmean, Xvar = Xvar, theta = theta, rr = rr, cft = cft, 
-     nmesh = 15, palette = rainbow(30), method = "approximate",
+     nmesh = 15, colors = rainbow(30), method = "approximate",
      title = "PIF with counterfactual cft(X) = sin(a*X)*b")
 
 
@@ -143,7 +143,7 @@ cft     <- function(X, a, b){sqrt(a*X)}   #Leave two variables in it
 pifplot <- pif.heatmap(X, theta = theta, rr = rr, 
  cft = cft, mina = 0, maxa = 1, minb = 0, maxb = 0, 
  legendtitle = "Potential Impact Fraction",
- title ="Univariate counterfactual", ylab = "", palette = topo.colors(10))
+ title ="Univariate counterfactual", ylab = "", colors = topo.colors(10))
 pifplot
 
 #You can also add additional ggplot objects

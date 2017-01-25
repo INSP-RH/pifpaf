@@ -7,7 +7,8 @@
 pif.confidence.linear(X, thetahat, thetavar, rr, cft = function(Varx) {    
   matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
-  nsim = 1000, check_thetas = TRUE, is_paf = FALSE)
+  nsim = 1000, check_thetas = TRUE, check_exposure = TRUE,
+  check_rr = TRUE, check_integrals = TRUE, is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
@@ -31,6 +32,14 @@ the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposu
 \item{nsim}{Number of simulations for estimation of variance}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
+
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+
+\item{check_rr}{Check that Relative Risk function \code{rr} equals 
+\code{1} when evaluated at \code{0}}
+
+\item{check_integrals}{Check that counterfactual and relative risk's expected
+values are well defined for this scenario}
 
 \item{is_paf}{Boolean forcing evaluation of paf}
 }

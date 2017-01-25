@@ -4,12 +4,11 @@
 \alias{paf.confidence}
 \title{Confidence intervals for the Population Attributable Fraction}
 \usage{
-paf.confidence(X, thetahat, rr, thetavar = matrix(0, ncol = length(thetahat),
-  nrow = length(thetahat)), thetalow = thetahat, thetaup = thetahat,
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 100,
-  confidence = 95, confidence_method = c("bootstrap", "inverse", "one2one",
-  "loglinear", "linear"), method = c("empirical", "kernel", "approximate"),
-  Xvar = var(X), deriv.method.args = list(),
+paf.confidence(X, thetahat, rr, thetavar = NA, thetalow = NA,
+  thetaup = NA, weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
+  nsim = 100, confidence = 95, confidence_method = c("bootstrap",
+  "inverse", "one2one", "loglinear", "linear"), method = c("empirical",
+  "kernel", "approximate"), Xvar = var(X), deriv.method.args = list(),
   deriv.method = c("Richardson", "complex"), adjust = 1, n = 512,
   ktype = c("gaussian", "epanechnikov", "rectangular", "triangular",
   "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv",
