@@ -1,30 +1,33 @@
-#' @title Check that counterfactual decreases exposure levels
-#' 
-#' @description Function that checks whether the counterfactual function of \code{\link{pif}} decreases the exposure values
-#' 
+#' @title INTERNAL: Check that expected value of counterfactual decreases exposure levels
+#'   
+#' @description Function that checks whether the counterfactual function of
+#'   \code{\link{pif}} decreases the exposure values \code{X}.
+#'   
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
 #'   is 0 exposure.
-#' 
-#' @param X         Random sample (vector or matrix) which includes exposure and
-#'   covariates. or sample mean.
-#' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#'   
+#' @param X         Random sample (data.frame) which includes exposure and
+#'   covariates or sample mean.
+#'   
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-#' 
+#'   
+#' @return TRUE if counterfactual \code{cft} is well defined.
+#'   
 #' @examples 
 #' #Example 1 
 #' cft <- function(X){0.5*X}
 #' X   <- runif(100, 0,2)
 #' check.cft(cft, X)
 #' 
-#' 
 #' @export
+
 
 check.cft <- function(cft, X){
   
   #Convert to matrix
-  .X <- as.matrix(X)
+  .X <- as.data.frame(X)
   
   #Check rows and columns
   n  <- nrow(.X)
@@ -42,11 +45,13 @@ check.cft <- function(cft, X){
     j <- 1
     while(j <= m && bool){
       if(Cfti[j] > .X[i,j]){
-        warning("Counterfactual function increases some exposure levels, verifiy it is correct.")
+        warning(paste0("Counterfactual function increases some ", 
+                       "exposure levels, verifiy it is correct."))
         bool <- FALSE
       }
       j <- j + 1
     }
-    i <- i+1
+    i <- i + 1
   }
+  return(bool)
 }

@@ -1,16 +1,15 @@
-#' @title Check Exposure values
+#' @title INTERNAL: Check Exposure values
 #' 
 #' @description Function that verifies if all exposure values are greater or equal to zero.
 #' 
-#' @param X     Matrix of exposure that is evaluated in rr
-#' 
+#' @param X     Data frame of exposure that is evaluated in relative risk \code{rr}.
 #' 
 #' @examples 
 #' #Example 1 
 #' X <- matrix(runif(500, 0,1))
 #' check.exposure(X)
 #' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @export
@@ -39,7 +38,8 @@ check.exposure <- function(X){
         .j <- .j + 1
       } else {
         .bool <- FALSE
-        warning(paste("Some exposure values are less than zero, verify this is correct."))
+        warning(paste0("Some exposure values are less than zero, ", 
+                       "verify this is correct."))
       }
     }
     .i <- .i + 1
