@@ -234,7 +234,8 @@ pif.heatmap <-function(X, thetahat, rr,
   
   #Check that minb == maxb to delete its axis
   if(minb == maxb){
-    .plotpif <- .plotpif + theme(axis.text.y  = element_blank(), 
+    .plotpif <- .plotpif + theme(axis.text.y  = element_blank(),
+                                 axis.title.y = element_blank(),
                                  axis.ticks.y = element_blank(),
                                  axis.line.y  = element_blank())
   }
