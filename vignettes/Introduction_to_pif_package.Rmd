@@ -391,7 +391,7 @@ paf_obese      <- paf(problem_data["Obese","Mean"],      0.62, rr = rr_obese,   
 Finally pafs can be combined into the population PAF:
 ```{r}
 #Population PAF
-paf_combine(c(paf_normal, paf_overweight, paf_obese), problem_data$Proportions)
+paf.combine(c(paf_normal, paf_overweight, paf_obese), problem_data$Proportions)
 ```
 If `pif`s are estimated you can use the `pif.combine` function. Notice that in this case, no confidence intervals are available as no information on the correlation between the BMI categories is assumed. 
 
