@@ -71,6 +71,40 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h4 class="author"><em>Dalia Camacho García Formentí &amp; Rodrigo Zepeda Tello</em></h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#quick-start">Quick start</a><ul>
+<li><a href="#continuous-rr-example-ozone-exposure">Continuous RR example: Ozone Exposure</a></li>
+<li><a href="#discrete-rr-example-tobacco-consumption">Discrete RR example: Tobacco consumption</a></li>
+<li><a href="#incomplete-data-continuous-rr-example-systolic-blood-pressure">Incomplete data Continuous RR example: Systolic Blood Pressure</a></li>
+<li><a href="#incomplete-data-categorical-rr-example-body-mass-index">Incomplete data Categorical RR example: Body Mass Index</a></li>
+</ul></li>
+<li><a href="#methods">Methods</a><ul>
+<li><a href="#the-empirical-potential-impact-fraction">The Empirical Potential Impact Fraction</a></li>
+<li><a href="#kernel-based-potential-impact-fraction">Kernel Based Potential Impact Fraction</a></li>
+<li><a href="#approximate-empirical-potential-impact-fraction">Approximate Empirical Potential Impact Fraction</a></li>
+<li><a href="#methods-in-code">Methods in code</a></li>
+<li><a href="#confidence-intervals">Confidence Intervals</a></li>
+</ul></li>
+<li><a href="#advanced-examples">Advanced examples</a><ul>
+<li><a href="#deciding-on-the-estimation-method">Deciding on the estimation method</a></li>
+<li><a href="#deciding-on-the-confidence-interval">Deciding on the confidence interval</a></li>
+<li><a href="#working-with-the-plots">Working with the plots</a></li>
+</ul></li>
+<li><a href="#common-error-messages">Common error messages</a><ul>
+<li><a href="#unused-argument-thetahat">Unused argument (thetahat)</a></li>
+<li><a href="#relative-risk-must-equal-1-when-evaluated-in-0">Relative Risk must equal 1 when evaluated in 0</a></li>
+<li><a href="#some-exposure-values-are-less-than-zero">Some exposure values are less than zero</a></li>
+<li><a href="#counterfactual-is-increasing-the-risk">Counterfactual is increasing the Risk</a></li>
+<li><a href="#expected-value-is-not-finite">Expected value is not finite</a></li>
+<li><a href="#error-in-weighted.mean">Error in weighted.mean</a></li>
+<li><a href="#hessian-might-not-be-defined">Hessian might not be defined</a></li>
+<li><a href="#under-this-density-some-values-are-na">Under this density some values are NA</a></li>
+</ul></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
@@ -325,9 +359,29 @@ afr_var  &lt;-<span class="st"> </span><span class="kw">subset</span>(sbp, Regio
 </div>
 <div id="incomplete-data-categorical-rr-example-body-mass-index" class="section level3">
 <h3>Incomplete data Categorical RR example: Body Mass Index</h3>
-<div style="background-color: red;">
-<p>Create a function that approximates differentiably the counterfactual function in an arbitrary fashion.</p>
-</div>
+<p>Consider the Relative Risk of dying associated to Body Mass Index (BMI) is given by: 1 if BMI is “Normal”, <span class="math inline">\(1.3*BMI/25\)</span> if BMI is “Overweight” and <span class="math inline">\(exp(0.62*BMI/30)\)</span> for “Obese”. Furthermore, assume only the proportion of individuals in each category is known as well as the per-category mean and variance:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">problem_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Proportions   =</span> <span class="kw">c</span>(  <span class="fl">0.56</span>,       <span class="fl">0.21</span>,       <span class="fl">0.23</span>),
+                           <span class="dt">Mean          =</span> <span class="kw">c</span>(  <span class="fl">23.2</span>,       <span class="fl">27.1</span>,       <span class="fl">31.9</span>),
+                           <span class="dt">Variance      =</span> <span class="kw">c</span>(  <span class="fl">1.00</span>,       <span class="fl">0.87</span>,       <span class="fl">1.12</span>))
+
+<span class="kw">rownames</span>(problem_data) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Normal&quot;</span>, <span class="st">&quot;Overweight&quot;</span>, <span class="st">&quot;Obese&quot;</span>)</code></pre></div>
+<p>The <a href="#approximate-empirical-potential-impact-fraction">approximate</a> method <a href="incomplete-data-continuous-rr-example-systolic-blood-pressure">as used in the previous example</a> cannot be directly used as the Relative Risk function is non-differentiable (i.e. it is defined “by parts”). However we can compute the PAF for each category (Normal, Overweight and Obese) and then combine them. For that purpose, we define the Relative Risks for each category:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rr_normal     &lt;-<span class="st"> </span>function(X, theta){theta}
+rr_overweight &lt;-<span class="st"> </span>function(X, theta){theta*X/<span class="dv">25</span>}
+rr_obese      &lt;-<span class="st"> </span>function(X, theta){<span class="kw">exp</span>(theta*X/<span class="dv">30</span>)}</code></pre></div>
+<p>and then compute the pafs:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Subpopulation PAF</span>
+paf_normal     &lt;-<span class="st"> </span><span class="kw">paf</span>(problem_data[<span class="st">&quot;Normal&quot;</span>,<span class="st">&quot;Mean&quot;</span>],     <span class="fl">1.00</span>, <span class="dt">rr =</span> rr_normal    , <span class="dt">check_rr =</span> <span class="ot">FALSE</span>,
+                      <span class="dt">method =</span> <span class="st">&quot;approximate&quot;</span>, <span class="dt">Xvar =</span> problem_data[<span class="st">&quot;Normal&quot;</span>,<span class="st">&quot;Variance&quot;</span>])
+paf_overweight &lt;-<span class="st"> </span><span class="kw">paf</span>(problem_data[<span class="st">&quot;Overweight&quot;</span>,<span class="st">&quot;Mean&quot;</span>], <span class="fl">1.39</span>, <span class="dt">rr =</span> rr_overweight, <span class="dt">check_rr =</span> <span class="ot">FALSE</span>,
+                      <span class="dt">method =</span> <span class="st">&quot;approximate&quot;</span>, <span class="dt">Xvar =</span> problem_data[<span class="st">&quot;Overweight&quot;</span>,<span class="st">&quot;Variance&quot;</span>])
+paf_obese      &lt;-<span class="st"> </span><span class="kw">paf</span>(problem_data[<span class="st">&quot;Obese&quot;</span>,<span class="st">&quot;Mean&quot;</span>],      <span class="fl">0.62</span>, <span class="dt">rr =</span> rr_obese,      <span class="dt">check_rr =</span> <span class="ot">FALSE</span>,
+                      <span class="dt">method =</span> <span class="st">&quot;approximate&quot;</span>, <span class="dt">Xvar =</span> problem_data[<span class="st">&quot;Obese&quot;</span>,<span class="st">&quot;Variance&quot;</span>])</code></pre></div>
+<p>Finally pafs can be combined into the population PAF:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Population PAF</span>
+<span class="kw">paf_combine</span>(<span class="kw">c</span>(paf_normal, paf_overweight, paf_obese), problem_data$Proportions)</code></pre></div>
+<pre><code>## [1] 0.2431135</code></pre>
+<p>If <code>pif</code>s are estimated you can use the <code>pif.combine</code> function. Notice that in this case, no confidence intervals are available as no information on the correlation between the BMI categories is assumed.</p>
 </div>
 </div>
 <div id="methods" class="section level2">
@@ -515,21 +569,16 @@ CHECK FOLLOWING PARAGRAPH IS OK
 <p>For the Population Attributable Fraction additional options are available: <code>&quot;one2one&quot;</code> and <code>&quot;inverse&quot;</code>. These are “smaller” confidence intervals however require additional theoretical considerations. The <code>&quot;inverse&quot;</code> method requires that the expected value of the Relative Risks is injective as a function of <span class="math inline">\(\theta\)</span>. The <code>&quot;one2one&quot;</code> uses theta’s confidence interval <span class="math inline">\([\theta_{\textrm{low}}, \theta_{\textrm{high}}]\)</span>] instead of the variance to generate confidence intervals of at least the same confidence level.</p>
 <div id="force-min" class="section level4">
 <h4>Force min</h4>
-<p>The <code>force.min</code> option of confidence intervals forces the Population Attributable Fraction’s interval to be &gt; 0. This option is not recommended as it artificially reduces the uncertainty around estimates.</p>
+<p>The <code>force.min</code> option of <code>&quot;inverse&quot;</code> confidence method forces the Population Attributable Fraction’s interval to be &gt; 0. This option is not recommended as it artificially reduces the uncertainty around estimates.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>)
 <span class="kw">paf.confidence</span>(X, <span class="fl">0.12</span>, <span class="dt">rr =</span> function(X, theta){<span class="kw">exp</span>(theta*X)}, <span class="dt">thetavar =</span> <span class="fl">0.1</span>, 
                <span class="dt">check_exposure =</span> F, <span class="dt">confidence_method =</span> <span class="st">&quot;inverse&quot;</span>,<span class="dt">force.min =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>##       Lower_CI Point_Estimate       Upper_CI 
 ##     -0.1815005      0.0130266      0.1755260</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paf.confidence</span>(X, <span class="fl">0.12</span>, <span class="dt">rr =</span> function(X, theta){<span class="kw">exp</span>(theta*X)}, <span class="dt">thetavar =</span> <span class="fl">0.1</span>, <span class="dt">check_exposure =</span> F, , <span class="dt">confidence_method =</span> <span class="st">&quot;inverse&quot;</span>, <span class="dt">force.min =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paf.confidence</span>(X, <span class="fl">0.12</span>, <span class="dt">rr =</span> function(X, theta){<span class="kw">exp</span>(theta*X)}, <span class="dt">thetavar =</span> <span class="fl">0.1</span>, <span class="dt">check_exposure =</span> F, <span class="dt">confidence_method =</span> <span class="st">&quot;inverse&quot;</span>, <span class="dt">force.min =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>##       Lower_CI Point_Estimate       Upper_CI 
 ##   0.0007700598   0.0130265998   0.1843683345</code></pre>
-</div>
-<div id="comparison" class="section level4">
-<h4>Comparison</h4>
-<div style="background-color: red">
-CREATE A PLOT COMPARING THE PRECISION AND CONFIDENCE OF THE INTERVALS??
-</div>
+<p>However, there might be cases for which such a confidence interval makes sense.</p>
 </div>
 </div>
 <div id="working-with-the-plots" class="section level3">
