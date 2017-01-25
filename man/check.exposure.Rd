@@ -2,12 +2,12 @@
 % Please edit documentation in R/check_exposure.R
 \name{check.exposure}
 \alias{check.exposure}
-\title{Check Exposure values}
+\title{INTERNAL: Check Exposure values}
 \usage{
 check.exposure(X)
 }
 \arguments{
-\item{X}{Matrix of exposure that is evaluated in rr}
+\item{X}{Data frame of exposure that is evaluated in relative risk \code{rr}.}
 }
 \description{
 Function that verifies if all exposure values are greater or equal to zero.
@@ -19,7 +19,7 @@ check.exposure(X)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }

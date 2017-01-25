@@ -2,24 +2,28 @@
 % Please edit documentation in R/check_confidence.R
 \name{check.confidence}
 \alias{check.confidence}
-\title{Check confidence is between zero and less than a hundred}
+\title{Check confidence (of confidence interval) is between zero and a hundred}
 \usage{
 check.confidence(confidence)
 }
 \arguments{
-\item{confidence}{Confidence level desired}
+\item{confidence}{Confidence level desired with \code{0 < confidence < 100}}
 }
 \value{
-TRUE if Confidence is well defined between zero and a hundred
+TRUE if \code{confidence} is well defined between zero and a hundred
 }
 \description{
-Function that verifies confidence level selected is between zero and less than a hundred
+Function that verifies \code{confidence} level selected is > 0 and < 100
 }
 \examples{
 #Example 1 
 confidence <- 95
 check.confidence(confidence)
 
+}
+\author{
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 

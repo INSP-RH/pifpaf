@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_cft.R
 \name{check.cft}
 \alias{check.cft}
-\title{Check that counterfactual decreases exposure levels}
+\title{INTERNAL: Check that expected value of counterfactual decreases exposure levels}
 \usage{
 check.cft(cft, X)
 }
@@ -11,11 +11,15 @@ check.cft(cft, X)
 the Population Attributable Fraction \code{\link{paf}} where counterfactual
 is 0 exposure.}
 
-\item{X}{Random sample (vector or matrix) which includes exposure and
-covariates. or sample mean.}
+\item{X}{Random sample (data.frame) which includes exposure and
+covariates or sample mean.}
+}
+\value{
+TRUE if counterfactual \code{cft} is well defined.
 }
 \description{
-Function that checks whether the counterfactual function of \code{\link{pif}} decreases the exposure values
+Function that checks whether the counterfactual function of
+  \code{\link{pif}} decreases the exposure values \code{X}.
 }
 \examples{
 #Example 1 
@@ -23,10 +27,9 @@ cft <- function(X){0.5*X}
 X   <- runif(100, 0,2)
 check.cft(cft, X)
 
-
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
