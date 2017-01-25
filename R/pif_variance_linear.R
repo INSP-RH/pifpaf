@@ -112,8 +112,8 @@ pif.variance.linear <- function(X, thetahat, thetavar, rr,
   }
   
   #Get variance of that
-  meanvec <<- .meanvec
-  varvec <<- .varvec
+  meanvec <- .meanvec
+  varvec  <- .varvec
   .varpif <- var(.meanvec) + mean(.varvec)
   
   #Return variance
