@@ -2,7 +2,8 @@
 #' 
 #' @description Confidence intervals for the Population Attributable Fraction for relative risk inyective functions, the PAF is inyective, and intervals can be calculated for the relative risk, and then transformed to PAF CI. 
 #' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.
+#' @param X         Random sample (\code{data.frame}) which includes exposure
+#'   and covariates.
 #' 
 #' @param thetahat  Estimative of \code{theta} for the Relative Risk function
 #' 
@@ -20,9 +21,9 @@
 #' 
 #' @param Xvar      Variance of exposure levels.
 #' 
-#' @param confidence Confidence level \% (default: 95)
+#' @param confidence Confidence level \% (default: \code{95})
 #' 
-#' @param nsim      Number of simulations (default: 1000)
+#' @param nsim      Number of simulations (default: \code{1000})
 #' 
 #' @param force.min Boolean indicating whether to force the \code{rr} to have a 
 #'                  minimum value of 1 instead of 0 (not recommended).
@@ -40,7 +41,7 @@
 #' be used under careful consideration. The confidence interval to acheive such an \code{rr} is based on the paper
 #' by Do Le Minh and Y. .s. Sherif                  
 #' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
@@ -51,17 +52,17 @@
 #' X <- rnorm(100,0.3,.05)
 #' thetahat <- 0.4
 #' thetavar <- 0.1
-#' paf.confidence.inverse(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+#' paf.confidence.inverse(X, thetahat, function(X, theta){exp(theta*X)}, thetavar)
 #' 
 #' #With approximate method
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)
-#' paf.confidence.inverse(Xmean, thetahat, thetavar, 
-#' function(X, theta){exp(theta*X)}, Xvar = Xvar, method = "approximate")
+#' paf.confidence.inverse(Xmean, thetahat, 
+#' function(X, theta){exp(theta*X)}, thetavar, Xvar = Xvar, method = "approximate")
 #' 
 #' #We can force PAF's CI to be >= 0 (only if it is certain)
-#' paf.confidence.inverse(X, thetahat, thetavar, 
-#' function(X, theta){exp(theta*X)}, force.min = TRUE)
+#' paf.confidence.inverse(X, thetahat, 
+#' function(X, theta){exp(theta*X)}, thetavar, force.min = TRUE)
 #' 
 #' #Example 2: Multivariate Relative Risk
 #' #--------------------------------------------
@@ -72,21 +73,25 @@
 #' thetahat <- c(0.12, 0.03)
 #' thetavar <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 #' rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' paf.confidence.inverse(X, thetahat, thetavar, rr) 
+#' paf.confidence.inverse(X, thetahat, rr, thetavar) 
 #' 
 #' #Same example with approximate method
-#' Xmean    <- colMeans(X)
+#' Xmean    <- matrix(colMeans(X), ncol = 2)
 #' Xvar     <- cov(X)
-#'paf.confidence.inverse(Xmean, thetahat, thetavar = thetavar, 
-#'rr=rr, method = "approximate", Xvar = Xvar)
+#'paf.confidence.inverse(Xmean, thetahat, rr=rr, thetavar = thetavar, 
+#'method = "approximate", Xvar = Xvar)
 #' 
+#' @keywords internal
 #' @export
 
-paf.confidence.inverse <- function(X, thetahat, thetavar, rr, 
+paf.confidence.inverse <- function(X, thetahat, rr, thetavar,
                                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                                   nsim = 1000, confidence = 95, deriv.method.args = list(), 
-                                   deriv.method = c("Richardson", "complex"), force.min = FALSE, 
-                                   check_thetas = TRUE, method = c("empirical", "approximate"), Xvar = var(X)){
+                                   method = c("empirical", "approximate"),
+                                   nsim = 1000, confidence = 95, 
+                                   deriv.method.args = list(), 
+                                   deriv.method = c("Richardson", "complex"), 
+                                   force.min = FALSE, 
+                                   check_thetas = TRUE, Xvar = var(X)){
   
   #Get method from vector
   .method   <- as.vector(method)[1]
@@ -104,10 +109,11 @@ paf.confidence.inverse <- function(X, thetahat, thetavar, rr,
             },
           approximate = {
             .Xvar <- check.xvar(Xvar)
-            risk.ratio.approximate.confidence(Xmean = X, Xvar = .Xvar, thetahat = thetahat, 
+            risk.ratio.approximate.confidence(X = X, Xvar = .Xvar, thetahat = thetahat, 
                                               thetavar = .thetavar, rr = rr, nsim = nsim, 
                                               confidence = confidence, force.min = force.min,
-                                              check_thetas = check_thetas, deriv.method = deriv.method,
+                                              check_thetas = check_thetas, 
+                                              deriv.method = deriv.method,
                                               deriv.method.args = deriv.method.args)
           },
           stop("Incorrect method. Please specify 'approximate' or 'empirical'.")

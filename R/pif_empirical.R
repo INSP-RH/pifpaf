@@ -1,21 +1,21 @@
 #'@title Point Estimate of the Potential Impact Fraction via the Empirical 
 #'  Method
 #'  
-#'@description Function that calculates the potential impact fraction \code{pif}
+#'@description Function that calculates the potential impact fraction \code{\link{pif}}
 #'  via the empirical method. That is: for a random sample \code{X}, a relative
 #'  risk function \code{rr(X, thetahat)} with parameters \code{thetahat} the
 #'  empirical estimator is given by:
 #'  
 #'  \deqn{PIF = 1 - 1/\sum rr(X_i; \theta)}
 #'  
-#'@param X         Random sample (vector or matrix) which includes exposure and 
+#'@param X         Random sample (\code{data.frame}) which includes exposure and 
 #'  covariates. or sample mean if approximate method is selected.
 #'  
-#'@param thetahat  Estimator (vector or matrix) of \code{theta} for the Relative
+#'@param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative
 #'  Risk function.
 #'  
 #'@param rr        Function for Relative Risk which uses parameter \code{theta}.
-#'  The order of the parameters shound be \code{rr(X, theta)}.#'
+#'  The order of the parameters shound be \code{rr(X, theta)}.
 #'  
 #'  **Optional**
 #'  
@@ -26,17 +26,17 @@
 #'@param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'  
 #'@param check_integrals Check that counterfactual and relative risk's expected 
-#'  values are well defined for this scenario
+#'  values are well defined for this scenario.
 #'  
-#'@param check_exposure  Check that exposure \code{X} is positive and numeric
+#'@param check_exposure  Check that exposure \code{X} is positive and numeric.
 #'  
 #'@param check_rr        Check that Relative Risk function \code{rr} equals 
-#'  \code{1} when evaluated at \code{0}
+#'  \code{1} when evaluated at \code{0}.
 #'  
-#' @param is_paf    Boolean forcing evaluation of paf
+#' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}.
 #'  
-#'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'  
 #'@note The empirical method converges for relative risk \code{rr} functions 
 #'  that are Lipschitz, convex or concave on \code{thetahat}. For stranger 
@@ -83,18 +83,18 @@
 #' }
 #' pif.empirical(X, thetahat, rr, cft) 
 #' 
-#' 
+#' @keywords internal
 #'@export
 
 
 pif.empirical <- function(X, thetahat, rr, 
-                          cft = function(Varx){matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
+                          cft = NA, 
                           weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
                           check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
                           is_paf = FALSE){
   
-  #Set X as matrix
-  .X  <- as.matrix(X)
+  #Set X as data frame
+  .X  <- as.data.frame(X)
   
   #Check exposure values are greater than zero
   if(check_exposure){ check.exposure(.X) }
@@ -102,21 +102,24 @@ pif.empirical <- function(X, thetahat, rr,
   #Check that rr is 1 when X = 0
   if(check_rr){ check.rr(.X, thetahat, rr) }
   
+  #Check cft exists
+  if(!is.function(cft)){ is_paf <- TRUE}
+  
   #Estimate weighted sums
-  .mux   <- weighted.mean(rr(.X, thetahat), weights)
+  .mux   <- weighted.mean(as.matrix(rr(.X, thetahat)), weights)
   if (is_paf){
     .mucft <- 1
   } else {
-    .mucft <- weighted.mean(rr(cft(.X), thetahat), weights)  
+    .mucft <- weighted.mean(as.matrix(rr(cft(.X), thetahat)), weights)  
   }
-  
   
   #Check that integrals make sense
   if(check_integrals){ check.integrals(.mux, .mucft) }
   
   #Calculate PIF
   if(is.infinite(.mux)){   warning("Expected value of Relative Risk is not finite") }
-  if(is.infinite(.mucft)){ warning("Expected value of Relative Risk under counterfactual is not finite") }
+  if(is.infinite(.mucft)){ warning(paste("Expected value of Relative Risk under", 
+                                         "counterfactual is not finite")) }
   
   .pif   <- 1 - .mucft/.mux
 

@@ -100,7 +100,7 @@
 #' thetahat <- c(0.1, 0.03)
 #' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){
-#'   .X <- matrix(X, ncol = 2)
+#'   .X <- as.matrix(X, ncol = 2)
 #'   exp(theta[1]*.X[,1] + theta[2]*.X[,2])
 #' }
 #' cft <- function(X){0.5*X}
@@ -110,7 +110,7 @@
 #' rr = rr, cft = cft)
 #' 
 #'  # Approximate 
-#'  Xmean <- t(as.matrix(colMeans(X)))
+#'  Xmean <- matrix(colMeans(X), ncol = 2)
 #'  Xvar  <- cov(X)
 #'  pif.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, 
 #'  rr = rr, cft = cft, method = "approximate", Xvar = Xvar)
@@ -118,7 +118,7 @@
 #' @export
 
 pif.confidence <- function(X, thetahat, rr, thetavar, 
-                   cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
+                   cft = NA,
                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                    nsim    =  100, confidence = 95,
                    method  = c("empirical", "kernel", "approximate"),

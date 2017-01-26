@@ -1,10 +1,10 @@
-#' @title Create a plot of the distribution of exposure under counterfactual
+#' @title Create a plot of the distribution of exposure under counterfactual 
 #'   scenario for continuous exposure
 #'   
-#' @description Function that creates a plot of the distribution of exposure 
-#' under counterfactual scenario when exposure is continuous.
+#' @description Function that creates a plot of the distribution of exposure
+#'   \code{X} under counterfactual scenario when exposure is continuous.
 #'   
-#' @param X      Vector with univariate continuous exposure levels.
+#' @param X      Univariate \code{vector} continuous exposure levels.
 #'   
 #' @param cft    Counterfactual function of the exposure \code{cft(X)}
 #'   
@@ -12,7 +12,7 @@
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
-#' @param dnames    String vector indicating the names of the distributions for
+#' @param dnames    String vector indicating the names of the distributions for 
 #'   the legend
 #'   
 #' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
@@ -20,12 +20,14 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
 #'   method). Additional information on kernels in \code{\link[stats]{density}}
 #'   
-#' @param bw        Smoothing bandwith parameter from density from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#' @param bw        Smoothing bandwith parameter from density from
+#'   \code{\link[stats]{density}}. Default \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density from \code{\link[stats]{density}}.
+#' @param adjust    Adjust bandwith parameter from density from
+#'   \code{\link[stats]{density}}.
 #'   
-#' @param n   Number of equally spaced points at which the density is to be estimated (see 
-#'   \code{\link[stats]{density}}).
+#' @param n   Number of equally spaced points at which the density is to be
+#'   estimated (see \code{\link[stats]{density}}).
 #'   
 #' @param check_exposure  Check that exposure \code{X} is positive and numeric
 #'   
@@ -40,22 +42,23 @@
 #'   to "b")
 #'   
 #' @param colors        String vector with colors for plots
-#' 
-#' @param fill          Colour the densities? Default \code{TRUE}
-#' 
-#' @param fill_limits   Vector. Limits of subset of the exposure \code{X} such that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color. 
-#' 
-#' @return cft_plot   ggplot object plotting the shift from actual to
-#'   counterfactual distribution
 #'   
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @param fill          Colour the densities? Default \code{TRUE}
+#'   
+#' @param fill_limits   Vector. Limits of subset of the exposure \code{X} such
+#'   that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.
+#'   
+#' @return cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
+#'   from actual to counterfactual distribution
+#'   
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
 #' @import ggplot2
 #' @importFrom stats density approx
 #'   
-#' @details This function reproduces the classic counterfactual plot from Figure
-#'   25.1 of Vander Hoorn
+#' @note This function reproduces the classic counterfactual plot from Figure 
+#'   25.1 of Vander Hoorn as well as additional plots.
 #'   
 #' @references Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
 #'   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -63,11 +66,11 @@
 #'   global and regional burden of disease attributable to selected major risk 
 #'   factors}. Geneva: World Health Organization, 2129-40.
 #'   
-#' @seealso \code{\link{counterfactual.plot.discrete}} for discrete counterfactual plot
+#' @seealso \code{\link{counterfactual.plot.discrete}} for plotting discrete counterfactuals, 
 #'   \code{\link{pif}} for Potential Impact Fraction estimation, 
 #'   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
 #'   \code{\link{pif.plot}} for a plot of potential impact fraction as a 
-#'   function of theta
+#'   function of the relative risk's parameter \code{theta}.
 #'   
 #' @examples
 #' 
@@ -110,6 +113,7 @@
 #' #Delete fill
 #' counterfactual.plot.continuous(X, cft, ktype = "epanechnikov", bw = "nrd0", fill = FALSE)   
 #'   
+#' @keywords internal
 #' @export
 
 counterfactual.plot.continuous <- function(X, cft,
@@ -128,8 +132,8 @@ counterfactual.plot.continuous <- function(X, cft,
                                   check_exposure = TRUE){
   
   #Set X as matrix
-  .X   <- as.matrix(X)
-  .cX  <- as.matrix(cft(.X))
+  .X     <- as.matrix(X)
+  .cX    <- as.matrix(cft(.X))
   
   #Get kernel parameters
   .ktype <- as.vector(ktype)[1]

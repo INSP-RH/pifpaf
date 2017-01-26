@@ -1,16 +1,17 @@
 #' @title Potential Impact Fraction Sensitivity Analysis plot
 #'   
-#' @description Function that plots a sensitivity analysis for the potential
-#'   impact fraction by checking how estimates vary when reducing the exposure
+#' @description Function that plots a sensitivity analysis for the potential 
+#'   impact fraction by checking how estimates vary when reducing the exposure 
 #'   sample \code{X}.
 #'   
-#' @param X         Random sample (vector or matrix) which includes exposure and
-#'   covariates. or sample mean if approximate method is selected.
+#' @param X         Random sample (\code{data.frame}) which includes exposure 
+#'   and covariates. or sample \code{mean} if \code{"approximate"} method is 
+#'   selected.
 #'   
-#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
-#'   Relative Risk function.
+#' @param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative 
+#'   Risk function.
 #'   
-#' @param rr        Function for Relative Risk which uses parameter 
+#' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #'   
 #'   
@@ -22,60 +23,66 @@
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
-#' @param method    Either \code{empirical} (default), or  \code{kernel}.
+#' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
+#'   \code{"approximate"}.
 #'   
-#' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
+#' @param ktype    \code{"kernel"} type:  \code{"gaussian"}, 
 #'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
 #'   method). Additional information on kernels in \code{\link[stats]{density}}
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for \code{kernel}
-#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#' @param bw        Smoothing bandwith parameter from density (for
+#'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default
+#'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{kernel} 
+#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
-#'   \code{kernel} method) is to be estimated (see 
+#'   \code{"kernel"} method) is to be estimated (see 
 #'   \code{\link[stats]{density}}).
 #'   
 #' @param check_integrals Check that counterfactual and relative risk's expected
-#'   values are well defined for this scenario
+#'   values are well defined for this scenario.
 #'   
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric.
 #'   
 #' @param check_rr        Check that Relative Risk function \code{rr} equals 
-#'   \code{1} when evaluated at \code{0}
+#'   \code{1} when evaluated at \code{0}.
 #'   
 #' @param nsim      Integer with number of samples to include (for each removal)
-#'   in order to conduct sensitivity analysis
+#'   in order to conduct sensitivity analysis.
 #'   
-#' @param mremove   Limit to number of measurements of \code{X} to remove
+#' @param mremove   Limit to number of measurements of \code{X} to remove.
 #'   
-#' @param title     String with plot title
+#' @param title     String with plot title.
 #'   
-#' @param legendtitle   String title for the legend of plot
+#' @param legendtitle   String title for the legend of plot.
 #'   
-#' @param xlab          String label for the X-axis of the plot (corresponding
-#'   to "a")
+#' @param xlab          String label for the X-axis of the plot (corresponding 
+#'   to "a").
 #'   
-#' @param ylab          String label for the Y-axis of the plot (corresponding
-#'   to "b")
+#' @param ylab          String label for the Y-axis of the plot (corresponding 
+#'   to "b").
 #'   
-#' @param colors        String vector with colors for plots
-#' 
-#' @param is_paf    Boolean forcing evaluation of paf
-#' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @param colors        String vector with colors for plots.
+#'   
+#' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}.
+#'   
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
-#' @import  ggplot2
+#' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a
+#'   sensitivity analysis of \code{\link{pif}}
 #'   
-#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation,
-#'   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual,
-#'   \code{\link{pif.plot}} for a plot of potential impact fraction as a
-#'   function of theta
+#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation, 
+#'   \code{\link{pif.heatmap}} for sensitivity analysis of counterfactual, 
+#'   \code{\link{pif.plot}} for a plot of Potential Impact Fraction as a
+#'   function of the relative risk's parameter \code{theta}.
 #'   
+#' @details \code{pif.sensitivity} conducts a sensitivity analysis of the 
+#' \code{\link{pif}} estimate by removing \code{mremove} elements \code{nsim} times.
+#'    
 #' @examples 
 #' 
 #' #Example 1
@@ -89,6 +96,7 @@
 #' }
 #' 
 #' #Save file
+#' #require(ggplot2)
 #' #ggsave("My Potential Impact Fraction Sensitivity Analysis.pdf")
 #' 
 #' #Example 2
@@ -104,8 +112,7 @@
 #' pif.sensitivity(X, thetahat = theta, rr = rr, cft = cft,
 #'                 mremove = 100, nsim = 50, 
 #'                 title = "My Sensitivity Analysis for example 1")
-#' }          
-#' \dontrun{
+#'                 
 #' #Same example with kernel
 #' pif.sensitivity(X, theta, rr = rr, cft = cft,
 #'                  mremove = 100, nsim = 50, method = "kernel", 
@@ -158,6 +165,7 @@
 #' pifplot              
 #' 
 #' #You can edit pifplot as it is a ggplot object
+#' require(ggplot2)
 #' pifplot + theme_classic()
 #' }
 #' 
@@ -166,8 +174,8 @@
 
 
 pif.sensitivity <- function(X, thetahat, rr,         
+                            cft = NA,
                             weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                            cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
                             method  = c("empirical", "kernel"),
                             adjust = 1, n = 512,
                             ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
@@ -182,7 +190,7 @@ pif.sensitivity <- function(X, thetahat, rr,
                             is_paf = FALSE){
   
   #Set X as matrix
-  .X       <- as.matrix(X)
+  .X       <- as.data.frame(X)
   
   #Check m and n are correctly defined
   if(mremove <= 0){

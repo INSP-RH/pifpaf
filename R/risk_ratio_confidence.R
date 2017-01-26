@@ -1,48 +1,50 @@
 #' @title Confidence intervals for the Risk Ratio Integral
-#' 
-#' @description Function that calculates confidence interval for the integral
-#' \deqn{ \int RR(x;\theta)f(x)dx } 
-#' where \eqn{f(x)} is the density function of the exposure X, \eqn{ RR(x;\theta)} the
-#' relative risk of the exposure with associated parameter \eqn{\theta}
-#' 
-#' @param X         Random sample (vector or matrix) which includes exposure and
-#'   covariates. or sample mean if approximate method is selected.
-#' 
-#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
-#'   Relative Risk function \code{rr}
-#' 
+#'   
+#' @description Function that calculates confidence interval for the integral 
+#'   \deqn{ \int RR(x;\theta)f(x)dx } where \eqn{f(x)} is the density function
+#'   of the exposure X, \eqn{ RR(x;\theta)} the relative risk of the exposure
+#'   with associated parameter \eqn{\theta}.
+#'   
+#' @param X         Random sample (\code{data.frame}) which includes exposure 
+#'   and covariates.
+#'   
+#' @param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative 
+#'   Risk function.
+#'   
 #' @param thetavar   Estimator of variance of \code{thetahat}
-#' 
-#' @param rr        Function for Relative Risk which uses parameter 
+#'   
+#' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-#' 
-#' 
-#' **Optional**
-#' 
+#'   
+#'   **Optional**
+#'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
-#'
-#' @param nsim      Number of simulations
-#' 
-#' @param confidence Confidence level \% (default: \code{95})
-#' 
-#' @param check_thetas Checks that \code{theta} parameters are correctly inputed
-#' 
+#'   
+#' @param nsim      Number of simulations.
+#'   
+#' @param confidence Confidence level \% (default: \code{95}).
+#'   
+#' @param check_thetas Checks that \code{theta} parameters are correctly
+#'   inputed.
+#'   
 #' @param force.min Boolean indicating whether to force the \code{rr} to have a 
-#'                  minimum value of 1 instead of 0 (not recommended).
-#'                  
-#' @note The \code{force.min} option forces the relative risk \code{rr} to have a minimum of \code{1} and thus
-#' an \code{rr < 1} is NOT possible. This is only for when absolute certainty is had that \code{rr > 1} and should
-#' be used under careful consideration. The confidence interval to acheive such an \code{rr} is based on the paper
-#' by Do Le Minh and Y. .s. Sherif
-#' 
-#' @seealso \link{risk.ratio.approximate.confidence} for a method when only \code{mean(X)} and \code{var(X)}
-#' are known.
-#' 
-#' @references Sherif, Y. .s. (1989). The lower confidence limit for the mean of positive random variables. Microelectronics Reliability, 29(2), 151-152.
-#' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#'   minimum value of \code{1} instead of \code{0} (not recommended).
+#'   
+#' @note The \code{force.min} option forces the relative risk \code{rr} to have
+#'   a minimum of \code{1} and thus an \code{rr < 1} is NOT possible. This is
+#'   only for when absolute certainty is had that \code{rr > 1} and should be
+#'   used under careful consideration. The confidence interval to acheive such
+#'   an \code{rr} is based on the paper by Do Le Minh and Y. .s. Sherif
+#'   
+#' @seealso \link{risk.ratio.approximate.confidence} for a method when only
+#'   \code{mean(X)} and \code{var(X)} are known.
+#'   
+#' @references Sherif, Y. .s. (1989). The lower confidence limit for the mean of
+#'   positive random variables. Microelectronics Reliability, 29(2), 151-152.
+#'   
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-#' 
+#'   
 #' @examples 
 #' 
 #' #Example 1: Exponential Relative Risk
@@ -52,13 +54,14 @@
 #' thetahat <- 0.1
 #' thetavar <- 0.2
 #' rr       <- function(X, theta){exp(theta*X)}
-#' risk.ratio.confidence(X, thetahat, thetavar, rr)
+#' risk.ratio.confidence(X, thetahat, rr, thetavar)
 #' 
 #' #We can force RR'.s CI to be >= 1.
-#' #This should be done with extra methodological (philosophical) care as RR>= 1 should only 
-#' #be assumed with absolute mathematical certainty
-#' risk.ratio.confidence(X, thetahat, thetavar, rr, force.min = TRUE)
+#' #This should be done with extra methodological (philosophical) care as 
+#' #RR>= 1 should only be assumed with absolute mathematical certainty
+#' risk.ratio.confidence(X, thetahat, rr, thetavar, force.min = TRUE)
 #' 
+#' \dontrun{
 #' #Example 2: Multivariate Relative Risk
 #' #--------------------------------------------
 #' set.seed(18427)
@@ -68,8 +71,8 @@
 #' thetahat  <- c(0.02, 0.01)
 #' thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 #' rr        <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' risk.ratio.confidence(X, thetahat, thetavar, rr) 
-#'
+#' risk.ratio.confidence(X, thetahat, rr, thetavar) 
+#' 
 #' #Example 3: Categorical Relative Risk & Exposure
 #' #--------------------------------------------
 #' set.seed(18427)
@@ -92,7 +95,7 @@
 #'    return(r_risk)
 #' }
 #' 
-#' risk.ratio.confidence(X, thetahat, thetavar, rr)
+#' risk.ratio.confidence(X, thetahat, rr, thetavar)
 #' 
 #' #Example 4: Categorical Relative Risk & continuous exposure
 #' #----------------------------------------------------------
@@ -114,7 +117,7 @@
 #'    return(r_risk)
 #' }
 #' 
-#' risk.ratio.confidence(BMI, thetahat, thetavar, rr)
+#' risk.ratio.confidence(BMI, thetahat, rr, thetavar)
 #' 
 #' #Example 5: Bivariate exposure and rr ("classical rr")
 #' #------------------------------------------------------------------
@@ -134,14 +137,16 @@
 #'    return(r_risk)
 #' }    
 #' 
-#' risk.ratio.confidence(X, thetahat, thetavar, rr)
-#' 
+#' risk.ratio.confidence(X, thetahat, rr, thetavar)
+#' }
 #' @importFrom MASS mvrnorm
 #' @importFrom stats qnorm
 #' @export
 
-risk.ratio.confidence <- function(X, thetahat, thetavar, rr, weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
-                                  nsim = 1000, confidence = 95, check_thetas = TRUE, force.min = FALSE){
+risk.ratio.confidence <- function(X, thetahat, rr, thetavar, 
+                                  weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))),
+                                  nsim = 1000, confidence = 95, 
+                                  check_thetas = TRUE, force.min = FALSE){
   
   #Get confidence
   check.confidence(confidence)
@@ -156,19 +161,22 @@ risk.ratio.confidence <- function(X, thetahat, thetavar, rr, weights =  rep(1/nr
   .nsim  <- max(10, ceiling(nsim))
   
   #To matrix
-  .X     <- as.matrix(X)
+  .X     <- as.data.frame(X)
   
   #Calculate the conditional expected value as a function of theta
   .Risk  <- function(.theta){
-    .RO  <- weighted.mean(rr(.X,.theta), weights)
-    return( .RO )
+    .paf <- paf(X = X, thetahat = .theta, rr = rr, weights = weights, 
+                method = "empirical", check_exposure = FALSE,
+                check_rr = FALSE, check_integrals = FALSE)
+    return( 1/(1-.paf) )
   }
   
   #Calculate the conditional variance as a function of theta
   .Variance <- function(.theta){
     .s   <- sum(weights)
     .s2  <- sum(weights^2)
-    .var <- ( .s / (.s^2 - .s2) ) * weighted.mean((rr(.X, .theta) - .Risk(.theta))^2, weights) *.s2
+    .var <- ( .s / (.s^2 - .s2) ) * weighted.mean((rr(.X, .theta) - 
+                                                     .Risk(.theta))^2, weights) *.s2
     return(.var)
   }
   
@@ -195,7 +203,9 @@ risk.ratio.confidence <- function(X, thetahat, thetavar, rr, weights =  rep(1/nr
   }
   
   #Compute the Risk Ratio intervals
-  .cirisk        <- c("Lower" = .cilow, "Point_Estimate" =  .Risk(thetahat) , "Upper" = .ciup )
+  .cirisk        <- c("Lower_CI"       = .cilow, 
+                      "Point_Estimate" = .Risk(thetahat) , 
+                      "Upper_CI"       = .ciup )
   
   #Return variance
   return(.cirisk)

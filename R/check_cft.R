@@ -1,4 +1,4 @@
-#' @title INTERNAL: Check that expected value of counterfactual decreases exposure levels
+#' @title Check that expected value of counterfactual decreases exposure levels
 #'   
 #' @description Function that checks whether the counterfactual function of
 #'   \code{\link{pif}} decreases the exposure values \code{X}.
@@ -13,13 +13,20 @@
 #' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
+#' @seealso \code{\link{check.confidence}}, \code{\link{check.thetas}}, 
+#'   \code{\link{check.xvar}}, \code{\link{check.rr}}, 
+#'   \code{\link{check.exposure}}, \code{\link{check.integrals}}
+#'      
 #' @return TRUE if counterfactual \code{cft} is well defined.
 #'   
 #' @examples 
+#' 
 #' #Example 1 
 #' cft <- function(X){0.5*X}
 #' X   <- runif(100, 0,2)
 #' check.cft(cft, X)
+#' 
+#' @keywords internal
 #' 
 #' @export
 

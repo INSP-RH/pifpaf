@@ -1,23 +1,33 @@
-#' @title Check thetas against method
-#' 
-#' @description Function for checking that the thetas are .correctly specified according to chosen method
-#' 
-#' @param thetavar  Variance of theta
-#' 
-#' @param thetahat  Point estimate of theta
-#' 
-#' @param thetalow  Lower bound of theta's CI
-#' 
-#' @param thetaup   Upper bound of theta's CI
-#' 
-#' @param method    Method of CI's 
-#' 
-#' @return bool     Boolean variable indicating if hypothesis are matched
-#' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @title Check theta parameters for confidence intervals
+#'   
+#' @description Function for checking that the theta parameters are correctly
+#'   specified according to chosen \code{pif.confidence} and
+#'   \code{paf.confidence} \code{confidence_method}.
+#'   
+#' @param thetavar  Variance of \code{thetahat}.
+#'   
+#' @param thetahat  Point estimate of theta.
+#'   
+#' @param thetalow  Lower bound of theta's CI.
+#'   
+#' @param thetaup   Upper bound of theta's CI.
+#'   
+#' @param method    Method of CI's of  \code{pif.confidence} (resp. \code{paf.confidence})
+#'   
+#' @return bool     Boolean variable indicating if hypothesis are matched.
+#'   
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#'   
+#' @seealso \code{\link{check.confidence}}, \code{\link{check.xvar}}, 
+#'   \code{\link{check.cft}}, \code{\link{check.rr}}, 
+#'   \code{\link{check.exposure}}, \code{\link{check.integrals}}
+#'   
+#' @importFrom matrixcalc is.positive.semi.definite is.symmetric.matrix
+#'   is.square.matrix
 #' 
-#' @importFrom matrixcalc is.positive.semi.definite is.symmetric.matrix is.square.matrix
+#' @keywords internal
+#'     
 #' @export
 
 check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
@@ -35,7 +45,8 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
            
            #Check that thetalow and thetaup exist
            if (is.na(thetalow) || is.na(thetaup)){
-             stop("You have not .correctly specified the bounds of the interval of confidence of theta")
+             stop(paste0("You have not .correctly specified the bounds", 
+                         "of the interval of confidence of theta"))
            }
           .thetalow <- as.matrix(thetalow)
           .thetaup  <- as.matrix(thetaup)
@@ -49,10 +60,12 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
           .correct <- TRUE
           .i       <- 1
           while(.correct && .i <= length(.thetahat)){
-            if (.thetaup[.i] < .thetahat[.i] || .thetalow[.i] > .thetahat[.i] || .thetaup[.i] < .thetahat[.i]){
+            if (.thetaup[.i] < .thetahat[.i] || .thetalow[.i] > .thetahat[.i] || 
+                .thetaup[.i] < .thetahat[.i]){
               .correct <- FALSE
-              stop(paste0("Thetas do not comply the inequality: 'thetaup > thetahat > thetalow'.", 
-                   "Please check that you correctly specified the interval of confidence of theta"))
+              stop(paste0("Thetas do not comply the inequality: 'thetaup > thetahat >", 
+                          "thetalow'. Please check that you correctly specified the", 
+                          " interval of confidence of theta"))
             }
             .i <- .i + 1
             

@@ -1,94 +1,93 @@
-#' @title  Graphical sensitivity analysis of PIF's counterfactual
+#' @title  Graphical Sensitivity Analysis of PIF's Counterfactual
 #'   
 #' @description Provides a graphic sensitivity analysis for \code{\link{pif}} by
 #'   varying the parameters of a bivariate counterfactual function \code{cft}.
 #'   
-#' @param X         Random sample (vector or matrix) which includes exposure and
-#'   covariates. or sample mean if approximate method is selected.
+#' @param X         Random sample (\code{data.frame}) which includes exposure
+#'   and covariates. or sample \code{mean} if \code{"approximate"} method is
+#'   selected.
 #'   
-#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
-#'   Relative Risk function.
+#' @param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative
+#'   Risk function.
 #'   
-#' @param rr        Function for Relative Risk which uses parameter 
+#' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #'   
 #'   **Optional**
-#'   
-#' @param weights   Normalized survey \code{weights} for the sample \code{X}.
-#'   
-#' @param method    Either \code{empirical} (default), \code{kernel} or 
-#'   \code{approximate}.
-#'   
-#' @param Xvar      Variance of exposure levels (for \code{approximate} method)
-#'   
-#' @param deriv.method.args \code{method.args} for 
-#'   \code{\link[numDeriv]{hessian}} (for \code{approximate} method).
-#'   
-#' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
-#'   Don't change this unless you know what you are doing (for 
-#'   \code{approximate} method).
-#'   
-#' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
-#'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
-#'   method). Additional information on kernels in \code{\link[stats]{density}}
-#'   
-#' @param bw        Smoothing bandwith parameter from density (for \code{kernel}
-#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
-#'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{kernel} 
-#'   method) from \code{\link[stats]{density}}.
-#'   
-#' @param n   Number of equally spaced points at which the density (for 
-#'   \code{kernel} method) is to be estimated (see 
-#'   \code{\link[stats]{density}}).
-#'   
-#' @param check_integrals Check that counterfactual and relative risk's expected
-#'   values are well defined for this scenario
-#'   
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric
-#'   
-#' @param check_rr        Check that Relative Risk function \code{rr} equals 
-#'   \code{1} when evaluated at \code{0}
-#'   
 #'   
 #' @param cft       Function \code{cft(X, a, b)} for counterfactual dependent on
 #'   parameters \code{a} and \code{b}. Default counterfactual is linear:
 #'   \code{aX + b}.
 #'   
-#' @param legendtitle   String title for the legend of plot
+#' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
-#' @param mina          Minimum for parameter \code{a} for the counterfactual
+#' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
+#'   \code{"approximate"}.
 #'   
-#' @param minb          Minimum for parameter \code{b} for the counterfactual
+#' @param Xvar      Variance of exposure levels (for \code{"approximate"} method)
 #'   
-#' @param maxa          Maximum for parameter \code{a} for the counterfactual
+#' @param deriv.method.args \code{method.args} for 
+#'   \code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).
 #'   
-#' @param maxb          Maximum for parameter \code{b} for the counterfactual
+#' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
+#'   Don't change this unless you know what you are doing (for
+#'   \code{"approximate"} method).
 #'   
-#' @param nmesh         Number of tiles in plot (default \code{10})
+#' @param ktype    \code{"kernel"} type:  \code{"gaussian"}, 
+#'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
+#'   method). Additional information on kernels in \code{\link[stats]{density}}
 #'   
-#' @param title         String title for the plot
+#' @param bw        Smoothing bandwith parameter from density (for \code{"kernel"}
+#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#'   
+#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"}
+#'   method) from \code{\link[stats]{density}}.
+#'   
+#' @param n   Number of equally spaced points at which the density (for
+#'   \code{"kernel"} method) is to be estimated (see
+#'   \code{\link[stats]{density}}).
+#'   
+#' @param check_integrals Check that counterfactual and relative risk's expected
+#'   values are well defined for this scenario.
+#'   
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric.
+#'   
+#' @param check_rr        Check that Relative Risk function \code{rr} equals 
+#'   \code{1} when evaluated at \code{0}.
+#'   
+#' @param legendtitle   String title for the legend of plot.
+#'   
+#' @param mina          Minimum for parameter \code{a} for the counterfactual.
+#'   
+#' @param minb          Minimum for parameter \code{b} for the counterfactual.
+#'   
+#' @param maxa          Maximum for parameter \code{a} for the counterfactual.
+#'   
+#' @param maxb          Maximum for parameter \code{b} for the counterfactual.
+#'   
+#' @param nmesh         Number of tiles in plot (default \code{10}).
+#'   
+#' @param title         String title for the plot.
 #'   
 #' @param xlab          String label for the X-axis of the plot (corresponding
-#'   to "a")
+#'   to "a").
 #'   
 #' @param ylab          String label for the Y-axis of the plot (corresponding
-#'   to "b")
+#'   to "b").
 #'   
-#' @param colors       Color colors of heatmap
-#'   
+#' @param colors       Colors of heatmap.
 #'   
 #' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a heatmap
 #'   with sensitivity analysis
 #'   
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
 #' @seealso \code{\link{pif}} for Potential Impact Fraction estimation,
 #'   \code{\link{pif.sensitivity}} for data-driven for sensitivity analysis of
-#'   empirical process,  \code{\link{pif.plot}} for a plot of potential impact
-#'   fraction as a function of theta
+#'   empirical process,  \code{\link{pif.plot}} for a plot of Potential Impact
+#'   Fraction as a function of the relative risk's parameter \code{theta}.
 #'   
 #' @examples 
 #' 
@@ -100,11 +99,13 @@
 #' pif.heatmap(X, theta = theta, rr = rr)
 #' 
 #' #Save file
+#' #require(ggplot2)
 #' #ggsave("My Potential Impact Fraction Analysis.pdf")
 #' 
 #' #Change pif estimation method to kernel
-#' pif.heatmap(X, theta = theta, rr = rr, method = "kernel")
 #' \dontrun{
+#' pif.heatmap(X, theta = theta, rr = rr, method = "kernel")
+#' 
 #' #Example 2
 #' #------------------------------------------------------------------
 #' X     <- rbeta(100, 1, 0.2)
@@ -137,6 +138,7 @@
 #' pifplot
 #' 
 #' #You can also add additional ggplot objects
+#' require(ggplot2)
 #' pifplot + annotate("text", x = 0.25, y = 0.4, label = "10yr scenario") + 
 #' geom_vline(aes(xintercept = 0.5), linetype = "dashed") +
 #' geom_segment(aes(x = 0.25, y = 0.38, xend = 0.5, yend = 0.3), 
@@ -162,7 +164,6 @@
 #'    
 #'    return(r_risk)
 #' }
-#' 
 #' 
 #' #Counterfactual of reducing a certain percent of obesity and overweight cases
 #' #to normality
@@ -195,16 +196,23 @@ pif.heatmap <-function(X, thetahat, rr,
                         Xvar    = var(X), 
                         deriv.method.args = list(), 
                         deriv.method      = c("Richardson", "complex"),
-                        adjust = 1, n = 512,
-                        ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
-                                   "biweight","cosine", "optcosine"), 
-                        bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
+                        adjust  = 1, 
+                        n       = 512,
+                        ktype   = c("gaussian", "epanechnikov", "rectangular", "triangular", 
+                                    "biweight","cosine", "optcosine"), 
+                        bw      = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
                         legendtitle = "PIF",
-                        mina = 0, maxa = 1, minb = -1, maxb = 0, nmesh = 10,
-                        title = "Potential Impact Fraction (PIF) with counterfactual \n f(X)= aX+b",
-                        xlab = "a", ylab = "b", 
-                        cft = function(X, a, b){a*X + b},
-                        colors = rev(heat.colors(nmesh)),
+                        mina    = 0, 
+                        maxa    = 1, 
+                        minb    = -1, 
+                        maxb    = 0, 
+                        nmesh   = 10,
+                        title   = paste0("Potential Impact Fraction (PIF) with counterfactual", 
+                                         "\nf(X)= aX+b"),
+                        xlab    = "a", 
+                        ylab    = "b", 
+                        cft     = function(X, a, b){a*X + b},
+                        colors  = rev(heat.colors(nmesh)),
                         check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
   #Create a mesh of all possible a and b values

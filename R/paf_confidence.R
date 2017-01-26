@@ -62,13 +62,14 @@
 #'
 #' @param check_integrals Check that counterfactual and relative risk's expected
 #'   values are well defined for this scenario
+#'   
 #' @param check_rr        Check that Relative Risk function \code{rr} equals 
 #'   \code{1} when evaluated at \code{0}
 #'   
 #' @param force.min Boolean indicating whether to force the \code{rr} to have a 
 #'                  minimum value of 1 instead of 0 (not recommended).
 #'
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
@@ -97,7 +98,7 @@
 #' thetahat <- c(0.1, 0.03)
 #' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){
-#'   .X <- matrix(X, ncol = 2)
+#'   .X <- as.matrix(X, ncol = 2)
 #'   exp(theta[1]*.X[,1] + theta[2]*.X[,2])
 #' }
 #' cft <- function(X){0.5*X}
@@ -106,10 +107,11 @@
 #' paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr)
 #' 
 #'  # Approximate 
-#'  Xmean <- t(as.matrix(colMeans(X)))
+#'  Xmean <- matrix(colMeans(X), ncol = 2)
 #'  Xvar  <- cov(X)
 #'  paf.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, 
 #'  rr = rr, method = "approximate", Xvar = Xvar)
+#'  
 #' # One to one
 #' paf.confidence(X = X, thetahat = thetahat, thetalow = c(0.05, 0), 
 #' thetaup = c(0.15, 0.08), rr = rr, confidence_method = "one2one")

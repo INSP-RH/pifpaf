@@ -1,10 +1,10 @@
 #' @title Create a plot of the distribution of exposure under counterfactual 
 #'   scenario
 #'   
-#' @description Function that creates a plot of the distribution of exposure 
-#'   under counterfactual scenario.
+#' @description Function that creates a plot of the distribution of exposure
+#'   \code{X} under counterfactual scenario \code{cft}.
 #'   
-#' @param X      Vector with exposure levels.
+#' @param X      One dimensional \code{vector} with exposure levels.
 #'   
 #' @param cft    Counterfactual function of the exposure \code{cft(X)}
 #'   
@@ -16,52 +16,52 @@
 #'   or \code{"discrete"} if distribution is discrete.
 #'   
 #' @param ktype    \code{kernel} type for \code{"continuous"} case: 
-#'   \code{"gaussian"}, \code{"epanechnikov"}, \code{"rectangular"},
+#'   \code{"gaussian"}, \code{"epanechnikov"}, \code{"rectangular"}, 
 #'   \code{"triangular"}, \code{"biweight"}, \code{"cosine"}, \code{"optcosine"}
-#'   (for \code{kernel} method). Additional information on kernels in
+#'   (for \code{kernel} method). Additional information on kernels in 
 #'   \code{\link[stats]{density}}
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for
-#'   \code{"continuous"} case) from \code{\link[stats]{density}}. Default
+#' @param bw        Smoothing bandwith parameter from density (for 
+#'   \code{"continuous"} case) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for
+#' @param adjust    Adjust bandwith parameter from density (for 
 #'   \code{"continuous"} case) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
 #'   \code{"continuous"} case) is to be estimated (see 
 #'   \code{\link[stats]{density}}).
 #'   
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric 
 #'   (if \code{"continuous"})
 #'   
 #' @param dnames    String vector indicating the names of the distributions for 
-#'   the legend
+#'   the legend.
 #'   
-#' @param title     String with plot title
+#' @param title     String with plot title.
 #'   
-#' @param legendtitle   String title for the legend of plot
+#' @param legendtitle   String title for the legend of plot.
 #'   
 #' @param xlab          String label for the X-axis of the plot (corresponding 
-#'   to "a")
+#'   to "a").
 #'   
 #' @param ylab          String label for the Y-axis of the plot (corresponding 
-#'   to "b")
+#'   to "b").
 #'   
-#' @param colors        String vector with colors for plots
+#' @param colors        String vector with colors for plots.
 #'   
-#' @param x_axis_order  Order of names in xaxis for plot (\code{"discrete"}
+#' @param x_axis_order  Order of names in xaxis for plot (\code{"discrete"}. 
 #'   case)
 #'   
-#' @param fill          Colour the densities? Default \code{TRUE}
+#' @param fill          Colour the densities? Default \code{TRUE}.
 #'   
-#' @param fill_limits   Vector. Limits of subset of the exposure \code{X} such
+#' @param fill_limits   Vector. Limits of subset of the exposure \code{X} such 
 #'   that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.
 #'   
-#' @return cft_plot   ggplot object plotting the shift from actual to 
-#'   counterfactual distribution
+#' @return cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
+#'   from observed to counterfactual distribution
 #'   
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
 #' @import ggplot2
@@ -72,17 +72,17 @@
 #'   global and regional burden of disease attributable to selected major risk 
 #'   factors}. Geneva: World Health Organization, 2129-40.
 #'   
-#' @details The function automatically tries to distinguish between
-#'   \code{"continuous"} and \code{"discrete"} distribution inputs. By
-#'   \code{"continuous"} we meen a vector of real numbers; by \code{"discrete"} 
+#' @details The function automatically tries to distinguish between 
+#'   \code{"continuous"} and \code{"discrete"} distribution inputs. By 
+#'   \code{"continuous"} we mean a vector of real numbers; by \code{"discrete"} 
 #'   a vector of strings or factor variables.
 #'   
 #' @seealso \code{\link{pif}} for Potential Impact Fraction estimation, 
 #'   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
-#'   \code{\link{pif.plot}} for a plot of potential impact fraction as a 
-#'   function of theta.
+#'   \code{\link{pif.plot}} for a plot of \code{pif} as a function of its
+#'   parameter \code{theta}.
 #'   
-#' @note This function is a wrapper for
+#' @note This function is a wrapper for 
 #'   \code{\link{counterfactual.plot.continuous}} and 
 #'   \code{\link{counterfactual.plot.discrete}}
 #'   
@@ -105,6 +105,7 @@
 #' }  
 #' counterfactual.plot(X, cft)
 #'   
+#' \dontrun{   
 #' #Example 2: Multivariate discrete
 #' #--------------------------------------------------------
 #' set.seed(2783569)
@@ -147,6 +148,7 @@
 #' #Objects returned are ggplot objects and you can play with them
 #' require(ggplot2)
 #' cftplot + coord_flip() + theme_grey()
+#' }
 #' 
 #' #Example 3: Normal distribution and linear counterfactual
 #' #--------------------------------------------------------
@@ -186,11 +188,13 @@
 counterfactual.plot <- function(X, cft,
                                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                                 adjust  = 1, n = 512,
-                                ktype   = c("gaussian", "epanechnikov", "rectangular", "triangular", 
-                                            "biweight","cosine", "optcosine"), 
+                                ktype   = c("gaussian", "epanechnikov", "rectangular", 
+                                            "triangular", "biweight","cosine", "optcosine"), 
                                 bw      = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-                                title = "Exposure distribution under current and counterfactual scenarios",
-                                dnames = c("Current distribution", "Counterfactual distribution"),
+                                title   = paste0("Exposure distribution under current and ", 
+                                                 "counterfactual scenarios"),
+                                dnames  = c("Current distribution", 
+                                            "Counterfactual distribution"),
                                 exposure.type = NA,
                                 legendtitle = "Scenario",
                                 xlab = "Exposure", ylab = "Density",
@@ -218,16 +222,19 @@ counterfactual.plot <- function(X, cft,
   
   switch(.type,
          continuous = {
-           .plot <- counterfactual.plot.continuous(X = .X, cft = cft, weights = weights, adjust = adjust, n = n,
-                                                    ktype   = ktype, bw = bw, title = title, dnames = dnames, 
-                                                    legendtitle = legendtitle, xlab = xlab, ylab = ylab, 
-                                                    colors = colors, fill_limits = fill_limits, fill = fill, 
-                                                    check_exposure = check_exposure)
+           .plot <- counterfactual.plot.continuous(X = .X, cft = cft, weights = weights, 
+                                                   adjust = adjust, n = n, ktype   = ktype, 
+                                                   bw = bw, title = title, dnames = dnames, 
+                                                   legendtitle = legendtitle, xlab = xlab, 
+                                                   ylab = ylab, colors = colors, fill = fill, 
+                                                   fill_limits = fill_limits, 
+                                                   check_exposure = check_exposure)
          },
          discrete   = {
-           .plot <- counterfactual.plot.discrete(X = .X, cft = cft, weights = weights, title = title, 
-                                                  dnames = dnames, legendtitle = legendtitle, xlab = xlab, 
-                                                  ylab = ylab, colors = colors, x_axis_order = x_axis_order)
+           .plot <- counterfactual.plot.discrete(X = .X, cft = cft, weights = weights, 
+                                                 title = title, dnames = dnames,  xlab = xlab, 
+                                                 legendtitle = legendtitle, ylab = ylab, 
+                                                 colors = colors, x_axis_order = x_axis_order)
          },
          {
            stop("Could not identify X type please select 'continuous' or 'discrete'")

@@ -1,10 +1,10 @@
 #' @title Create a plot of the distribution of exposure under counterfactual
 #'   scenario for discrete exposure
 #'   
-#' @description Function that creates a plot of the distribution of exposure 
-#' under counterfactual scenario when exposure is discrete.
+#' @description Function that creates a plot of the distribution of exposure
+#'   \code{X} under counterfactual scenario \code{cft} for discrete exposures
 #' 
-#' @param X      Vector with univariate discrete exposure levels.
+#' @param X      One dimensional \code{vector} with exposure levels.
 #'   
 #' @param cft    Counterfactual function of the exposure \code{cft(X)}
 #'   
@@ -29,10 +29,10 @@
 #' 
 #' @param x_axis_order  Order of names in xaxis for plot
 #'   
-#' @return cft_plot   ggplot object plotting the shift from actual to
+#' @return cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift from actual to
 #'   counterfactual distribution
 #'   
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
 #' @import ggplot2
@@ -47,7 +47,7 @@
 #'   \code{\link{pif}} for Potential Impact Fraction estimation, 
 #'   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
 #'   \code{\link{pif.plot}} for a plot of potential impact fraction as a 
-#'   function of theta.
+#'   function of the relative risk's parameter \code{theta}.
 #'   
 #' @examples
 #' 
@@ -58,11 +58,11 @@
 #' cft <- function(X){
 #' 
 #'      #Find which indivuals are exposed
-#'      exposed    <- which(X == "Exposed")
+#'      exposed      <- which(X == "Exposed")
 #'      
 #'      #Change 1/3 of exposed to unexposed
-#'      reduced    <- sample(exposed, length(exposed)/3)
-#'      X[reduced] <- "Unexposed"
+#'      reduced      <- sample(exposed, length(exposed)/3)
+#'      X[reduced]   <- "Unexposed"
 #'      
 #'      return(X)
 #' }  
@@ -105,7 +105,7 @@
 #' #Create plot of counterfactual distribution
 #' counterfactual.plot.discrete(X, cft, x_axis_order = c("Underweight","Normal","Obese","Overweight")) 
 #' 
-#'   
+#' @keywords internal 
 #' @export
 
 counterfactual.plot.discrete <- function(X, cft,
@@ -120,7 +120,7 @@ counterfactual.plot.discrete <- function(X, cft,
   #Set X as matrix
   .X  <- as.matrix(X)
   .cX <- cbind(as.matrix(cft(.X)), dnames[2])
-  .X  <- cbind(as.matrix(.X),      dnames[1])
+  .X  <- cbind(.X,                 dnames[1])
   
   #Create a kernel density plot
   .dens_data         <- as.data.frame(rbind(.X,.cX))

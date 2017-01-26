@@ -1,32 +1,33 @@
-#'@title Point Estimate of the Potential Impact Fraction via the approximate
+#'@title Point Estimate of the Potential Impact Fraction via the approximate 
 #'  method.
 #'  
-#' @description Function for estimating the Potential Impact Fraction \code{pif}
-#'   from a cross-sectional sample of the exposure \code{X} with a known 
-#'   Relative Risk function \code{rr} with parameters \code{theta} when only 
-#'   \code{mean(X)} and \code{var(X)} are known.
+#'@description Function for estimating the Potential Impact Fraction
+#'  \code{\link{pif}} from a cross-sectional sample of the exposure \code{X}
+#'  with a known Relative Risk function \code{rr} with parameters \code{theta}
+#'  when only \code{mean(X)} and \code{var(X)} are known.
 #'  
-#'@param X      Mean value of exposure levels from a cross-sectional.
+#'@param X      Mean value of exposure levels from a cross-sectional random 
+#'  sample. If multivariate, this should be a \code{matrix} with 1 row and as 
+#'  many columns as covariates
 #'  
 #'@param Xvar   Variance of the exposure levels.
 #'  
-#'@param thetahat  Estimator (vector or matrix) of \code{theta} for the Relative
+#'@param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative 
 #'  Risk function.
 #'  
-#'@param rr        Function for Relative Risk which uses parameter \code{theta}.
-#'  The order of the parameters shound be \code{rr(X, theta)}.
-#'  
+#'@param rr        \code{function} for Relative Risk which uses parameter 
+#'  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #'  
 #'  **Optional**
 #'  
-#'@param cft       Differentiable function \code{cft(X)} for counterfactual. Leave empty for 
-#'  the Population Attributable Fraction \code{\link{paf}} where counterfactual 
-#'  is 0 exposure.
+#'@param cft       Twice differentiable function \code{cft(X)} for
+#'  counterfactual. Leave empty for the Population Attributable Fraction
+#'  \code{\link{paf}} where counterfactual is 0 exposure.
 #'  
-#'@param deriv.method.args \code{method.args} for
+#'@param deriv.method.args \code{method.args} for 
 #'  \code{\link[numDeriv]{hessian}}.
 #'  
-#'@param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}.
+#'@param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
 #'  Don't change this unless you know what you are doing.
 #'  
 #'@param check_integrals Check that counterfactual and relative risk's expected 
@@ -37,22 +38,23 @@
 #'@param check_rr        Check that Relative Risk function \code{rr} equals 
 #'  \code{1} when evaluated at \code{0}.
 #'  
-#' @param is_paf    Boolean forcing evaluation of paf
+#'@param is_paf    Boolean forcing evaluation of \code{\link{paf}}.
 #'  
-#'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-#'
-#' @note \code{\link{pif.approximate}} method should be the last choice for the case when
-#'   no information on the exposure (except for mean and standard deviation) are
-#'   given. In practice \code{\link{pif.empirical}} should be prefered.
-#'   
-#' @seealso \code{\link{pif}} which is a wrapper for all pif methods
-#'   (\code{\link{pif.empirical}}, \code{\link{pif.approximate}},
-#'   \code{\link{pif.kernel}}). 
-#'   
-#'   For estimation of the Population Attributable
-#'   Fraction see \code{\link{paf}}.
-#'   
+#'  
+#'@note \code{pif.approximate} method should be the last choice for the case
+#'  when no information on the exposure \code{X} (except for mean and standard
+#'  deviation) are given. In practice \code{\link{pif.empirical}} should be
+#'  prefered.
+#'  
+#'@seealso \code{\link{pif}} which is a wrapper for all pif methods 
+#'  (\code{\link{pif.empirical}}, \code{\link{pif.approximate}}, 
+#'  \code{\link{pif.kernel}}).
+#'  
+#'  For estimation of the Population Attributable Fraction see
+#'  \code{\link{paf}}.
+#'  
 #'@examples 
 #'
 #'#Example 1
@@ -88,7 +90,7 @@
 #' X1       <- rnorm(1000,3,.5)
 #' X2       <- rnorm(1000,4,1)
 #' X        <- cbind(X1,X2)
-#' Xmean    <- colMeans(X)
+#' Xmean    <- matrix(colMeans(X), ncol = 2)
 #' Xvar     <- var(X)
 #' thetahat <- c(0.12, 0.17)
 #' thetavar <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
@@ -97,12 +99,14 @@
 #' pif.approximate(Xmean, Xvar, thetahat, rr, cft)
 #' 
 #'@importFrom numDeriv hessian
-#'  
+#'
+#'@keywords internal
+#'    
 #'@export
 
 
 pif.approximate <- function(X, Xvar, thetahat, rr, 
-                            cft = function(X){matrix(0,ncol = ncol(as.matrix(X)), nrow = nrow(as.matrix(X)))},
+                            cft = NA,
                             deriv.method.args = list(), 
                             deriv.method = c("Richardson", "complex"),
                             check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
@@ -110,7 +114,7 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
   
   #Change to matrix
   .Xvar   <- check.xvar(Xvar)
-  .X      <- matrix(X, ncol = ncol(.Xvar))
+  .X      <- as.matrix(X, ncol = ncol(.Xvar)) #Matrix for hessian
   
   #Get derivative method
   .method <- as.vector(deriv.method)[1]
@@ -120,6 +124,9 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
   
   #Check that rr is 1 when X = 0
   if(check_rr){ check.rr(.X, thetahat, rr) }
+  
+  #Check if counterfactual is given
+  if(!is.function(cft)){is_paf <- TRUE}
   
   #Rewrite rr and counterfactual functions as functions of X only for 
   #numerical derivatives
@@ -151,9 +158,12 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
   if(check_integrals){ check.integrals(.mux, .mucft) }
   
   #Calculate PIF
-  if(is.infinite(as.numeric(.mux))){   warning("Expected value of Relative Risk is not finite") }
-  if(is.infinite(as.numeric(.mucft))){ warning("Expected value of Relative Risk under counterfactual is not finite") }
+  if(is.infinite(as.numeric(.mux))){   warning(paste("Expected value of Relative Risk", 
+                                                "is not finite")) }
+  if(is.infinite(as.numeric(.mucft))){ warning(paste("Expected value of Relative Risk", 
+                                                "under counterfactual is not finite")) }
   
+  #Construct pif
   .pif   <- as.numeric(1 - .mucft/.mux)
   
   return(.pif)

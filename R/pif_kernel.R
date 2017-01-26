@@ -1,13 +1,13 @@
 #'@title Kernel-based estimate of Potential Impact Fraction
 #'  
-#'@description Function for estimating the Potential Impact Fraction \code{pif} 
+#'@description Function for estimating the Potential Impact Fraction \code{\link{pif}}
 #'  from a cross-sectional sample of the exposure \code{X} with a known Relative
 #'  Risk function \code{rr} with parameters \code{theta} using kernels.
 #'  
-#'@param X         Random sample (vector or matrix) which includes exposure and 
+#'@param X         Random sample (\code{data.frame}) which includes exposure and 
 #'  covariates. or sample mean if approximate method is selected.
 #'  
-#'@param thetahat  Estimator (vector or matrix) of \code{theta} for the Relative
+#'@param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative
 #'  Risk function.
 #'  
 #'@param rr        Function for Relative Risk which uses parameter \code{theta}.
@@ -36,20 +36,20 @@
 #'@param n   Number of equally spaced points at which the density is to be 
 #'  estimated (see \code{\link[stats]{density}}).
 #'  
-#'@param check_integrals Check that counterfactual and relative risk's expected 
-#'  values are well defined for this scenario
+#' @param check_integrals Check that counterfactual and relative risk's expected
+#'   values are well defined for this scenario.
+#'   
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric.
+#'   
+#' @param check_rr        Check that Relative Risk function \code{rr} equals 
+#'   \code{1} when evaluated at \code{0}.
 #'  
-#'@param check_exposure  Check that exposure \code{X} is positive and numeric
-#'  
-#'@param check_rr        Check that Relative Risk function \code{rr} equals 
-#'  \code{1} when evaluated at \code{0}
-#'  
-#' @param is_paf    Boolean forcing evaluation of paf
+#' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}.
 #'  
 #'@return pif      Estimate of Potential Impact Fraction
 #'  
-#'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'  
 #'@note In practice \code{\link{pif.empirical}} should be prefered as
 #'  convergence is faster than \code{\link{pif.kernel}} for most functions. In
@@ -84,7 +84,6 @@
 #' 
 #' #Without counterfactual estimates PAF
 #' pif.kernel(X, thetahat, rr) 
-#' 
 #'  
 #' #Example 2: Linear relative risk
 #' #--------------------------------------------
@@ -107,11 +106,12 @@
 #' pif.kernel(X, thetahat, rr, cft) 
 #' 
 #'@importFrom sfsmisc integrate.xy
+#'@keywords internal
 #'@export
 
 
 pif.kernel <- function(X, thetahat, rr, 
-                       cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},
+                       cft = NA,
                        weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                        adjust = 1, n = 512,
                        ktype = c("gaussian", "epanechnikov", "rectangular", "triangular", "biweight","cosine", "optcosine"), 
@@ -125,6 +125,9 @@ pif.kernel <- function(X, thetahat, rr,
   #Get values for ktype and bw
   .ktype  <- as.vector(ktype)[1]
   .bw     <- as.vector(bw)[1]
+  
+  #Check if counterfactual is defined
+  if (!is.function(cft)){ is_paf <- TRUE}
   
   #Check exposure values are greater than zero
   if(check_exposure){ check.exposure(.X) }
@@ -144,7 +147,8 @@ pif.kernel <- function(X, thetahat, rr,
   }
   
   #Get the kernel density of X
-  #http://stats.stackexchange.com/questions/14061/area-under-the-pdf-in-kernel-density-estimation-in-r
+  #http://stats.stackexchange.com/questions/14061
+  #/area-under-the-pdf-in-kernel-density-estimation-in-r
   .fX <- density(.X, bw = .bw, adjust = adjust, kernel = .ktype, weights = weights, n = .n)
   
   #Get x value of density as matrix

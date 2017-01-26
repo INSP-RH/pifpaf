@@ -1,35 +1,39 @@
-#' @title Confidence Intervals for the Potential Impact Fraction when only mean and variance of exposure values is available using loglinear method
-#' 
-#' @description Confidence intervals for the Population Attributable Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
-#' 
+#'@title Confidence Intervals for the Potential Impact Fraction when only mean
+#'  and variance of exposure values is available using loglinear method
+#'  
+#'@description Confidence intervals for the Population Attributable Fraction for
+#'  the approximate method where only mean and variance from a previous study is
+#'  available.For relative risk inyective functions, the pif is inyective, and
+#'  intervals can be calculated for log(pif), and then transformed to pif CI.
+#'  
 #'@param Xmean  Mean value of exposure levels from a cross-sectional.
 #'  
 #'@param Xvar   Variance of the exposure levels.
-#' 
-#' @param thetahat  Estimator (vector or matrix) of \code{theta} for the 
-#'   Relative Risk function \code{rr}
-#' 
-#' @param thetavar   Estimator of variance of \code{thetahat}
-#' 
-#' @param rr        Function for Relative Risk which uses parameter 
-#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-#' 
-#' 
-#' **Optional**
-#'@param cft       Differentiable function \code{cft(X)} for counterfactual. Leave empty for 
-#'  the Population Attributable Fraction \code{\link{paf}} where counterfactual 
-#'  is 0 exposure.
-#' 
-#' @param confidence Concidence level (0 to 100) default = \code{95} \%
-#' 
-#' @param nsim      Number of simulations for estimation of variance
-#' 
-#' @param check_thetas Checks that theta parameters are correctly inputed
-#' 
-#'@param deriv.method.args \code{method.args} for
+#'  
+#'@param thetahat  Estimator (vector or matrix) of \code{theta} for the Relative
+#'  Risk function \code{rr}
+#'  
+#'@param thetavar   Estimator of variance of \code{thetahat}
+#'  
+#'@param rr        Function for Relative Risk which uses parameter \code{theta}.
+#'  The order of the parameters shound be \code{rr(X, theta)}.
+#'  
+#'  
+#'  **Optional**
+#'@param cft       Differentiable function \code{cft(X)} for counterfactual.
+#'  Leave empty for the Population Attributable Fraction \code{\link{paf}} where
+#'  counterfactual is 0 exposure.
+#'  
+#'@param confidence Concidence level (0 to 100) default = \code{95} \%
+#'  
+#'@param nsim      Number of simulations for estimation of variance
+#'  
+#'@param check_thetas Checks that theta parameters are correctly inputed
+#'  
+#'@param deriv.method.args \code{method.args} for 
 #'  \code{\link[numDeriv]{hessian}}.
 #'  
-#'@param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}.
+#'@param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
 #'  Don't change this unless you know what you are doing.
 #'  
 #'@param check_integrals Check that counterfactual and relative risk's expected 
@@ -40,11 +44,11 @@
 #'@param check_rr        Check that Relative Risk function \code{rr} equals 
 #'  \code{1} when evaluated at \code{0}.
 #'  
-#' @param is_paf Boolean forcing evaluation of \code{paf}  
+#'@param is_paf Boolean forcing evaluation of \code{paf}
 #'  
-#'@author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-#' 
+#'  
 #' @examples 
 #' 
 #' #Example 1: Exponential Relative Risk
@@ -72,12 +76,13 @@
 #'pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, 
 #'rr, cft = function(X){0.8*X}, nsim = 100)
 #' 
-#' @importFrom MASS mvrnorm
-#' @importFrom numDeriv hessian grad
-#' @export
+#'@importFrom MASS mvrnorm
+#'@importFrom numDeriv hessian grad
+#'@keywords internal
+#'@export
 
 pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar, rr,
-                                                 cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))}, 
+                                                 cft = NA, 
                                                  deriv.method.args = list(), 
                                                  deriv.method = c("Richardson", "complex"),
                                                  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
@@ -103,6 +108,8 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   .Xmean  <- as.matrix(Xmean)
   .Xvar   <- as.matrix(Xvar)
   
+  if(!is.function(cft)){ is_paf <- TRUE }
+  
   #Calculate the conditional expected value as a function of theta
   .logpifexp <- function(.theta){
     
@@ -116,7 +123,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
     }
     
     #Calculate the RR
-    .hrr   <- hessian(.rr_fun_x,   .Xmean, method = .method, method.args = deriv.method.args)
+    .hrr   <- hessian(.rr_fun_x, .Xmean, method = .method, method.args = deriv.method.args)
     .R0  <- .rr_fun_x(.Xmean)   + 0.5*sum(.hrr*.Xvar)
     
     #Estimate counterfactual

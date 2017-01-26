@@ -1,96 +1,108 @@
-#' @title Plot of Potential Impact Fraction under different values of theta (univariate)
-#' 
-#' @description Function that plots the PIF under different values of an univariate parameter theta. 
-#' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
-#' 
-#' @param thetalow  Minimum of theta (parameter of relative risk \code{rr}) for plot
-#' 
-#' @param thetaup   Maximum of theta (parameter of relative risk \code{rr}) for plot
-#' 
-#' @param rr        Function for Relative Risk which uses parameter 
+#' @title Plot of Potential Impact Fraction under different values of Relative 
+#'   Risk's parameter theta (univariate)
+#'   
+#' @description Function that plots the \code{\link{pif}} under different values
+#'   of an univariate parameter theta of the relative risk function \code{rr} 
+#'   which depends on the exposure \code{X} and a \code{theta} parameter 
+#'   (\code{rr(X, theta)})
+#'   
+#' @param X         Random sample (\code{data.frame}) which includes exposure 
+#'   and covariates.
+#'   
+#' @param thetalow  Minimum of \code{theta} (parameter of relative risk 
+#'   \code{rr}) for plot.
+#'   
+#' @param thetaup   Maximum of \code{theta} (parameter of relative risk 
+#'   \code{rr}) for plot.
+#'   
+#' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-#' 
-#' **Optional**
-#' 
-#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
-#'   is 0 exposure.
+#'   
+#'   **Optional**
+#'   
+#' @param cft       \code{function} \code{cft(X)} for counterfactual. Leave 
+#'   empty for the Population Attributable Fraction \code{\link{paf}} where 
+#'   counterfactual is 0 exposure.
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
-#' @param method    Either \code{empirical} (default), \code{kernel} or \code{approximate}.
-#' 
-#' @param confidence Confidence level \% (default 95)
-#' 
-#' @param confidence_method  Either \code{linear}, \code{loglinear}, \code{bootstrap}
-#' 
-#' @param Xvar      Variance of exposure levels (for \code{approximate} method)
+#' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
+#'   \code{"approximate"}.
+#'   
+#' @param confidence Confidence level \% (default \code{95})
+#'   
+#' @param confidence_method  Either \code{"linear"}, \code{"loglinear"}, 
+#'   \code{"bootstrap"}
+#'   
+#' @param Xvar      Variance of exposure levels (for \code{"approximate"} 
+#'   method)
 #'   
 #' @param deriv.method.args \code{method.args} for 
-#'   \code{\link[numDeriv]{hessian}} (for \code{approximate} method).
+#'   \code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).
 #'   
 #' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
-#'   Don't change this unless you know what you are doing (for
-#'   \code{approximate} method).
+#'   Don't change this unless you know what you are doing (for 
+#'   \code{"approximate"} method).
 #'   
-#' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
+#' @param ktype    \code{"kernel"} type:  \code{"gaussian"}, 
 #'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for \code{kernel}
-#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#' @param bw        Smoothing bandwith parameter from density (for 
+#'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
+#'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{kernel}
+#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
-#' @param n   Number of equally spaced points at which the density (for
-#'   \code{kernel} method) is to be estimated (see
+#' @param n   Number of equally spaced points at which the density (for 
+#'   \code{"kernel"} method) is to be estimated (see 
 #'   \code{\link[stats]{density}}).
 #'   
-#' @param mpoints Number of points in plot   
-#' 
-#' @param colors Colours of plot
-#' 
-#' @param xlab Label of x-axis in plot
-#' 
-#' @param ylab Label of y-axis in plot
-#' 
-#' @param title Title of plot
+#' @param mpoints Number of points in plot.
 #'   
-#' @param check_integrals Check that counterfactual and relative risk's expected
-#'   values are well defined for this scenario
+#' @param colors Colours of plot.
 #'   
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#' @param xlab Label of x-axis in plot.
+#'   
+#' @param ylab Label of y-axis in plot.
+#'   
+#' @param title Title of plot.
+#'   
+#' @param check_integrals Check that counterfactual of theoretical minimum risk 
+#'   exposure and relative risk's expected values are well defined for this 
+#'   scenario.
+#'   
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric.
 #'   
 #' @param check_rr        Check that Relative Risk function \code{rr} equals 
-#'   \code{1} when evaluated at \code{0}
-#' 
-#' @param is_paf    Boolean forcing evaluation of paf
-#' 
-#' @return pif.plot       \code{\link[ggplot2]{ggplot}} object with plot of Potential Impact Fraction 
-#' as function of \code{theta}
+#'   \code{1} when evaluated at \code{0}.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}
+#'   
+#' @return pif.plot       \code{\link[ggplot2]{ggplot}} object with plot of 
+#'   Potential Impact Fraction as function of \code{theta}
+#'   
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-#' 
+#'   
 #' @import ggplot2
-#' 
+#'   
 #' @examples 
 #' 
 #' #Example 1: Exponential Relative Risk empirical method
 #' #-----------------------------------------------------
+#' \dontrun{
 #' set.seed(18427)
 #' X <- rbeta(25, 4.2, 10)
 #' pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)})
 #' 
 #' #Same example with kernel method
-#' \dontrun{
 #' pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, method = "kernel",
 #' title = "Kernel method example") 
 #'  
-#' #Same example for approximate method
+#' #Same example for approximate method. Notice that approximate method has more uncertainty
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)
 #' pif.plot(Xmean, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, 
@@ -106,10 +118,16 @@
 #' pif.plot(Xmean, thetalow = -10, thetaup = -5, rr = function(X, theta){exp(theta*X)},  
 #' cft = function(X){sqrt(X)}, method = "approximate", Xvar = Xvar) 
 #' }
+#' 
+#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation with
+#'   confidence intervals \code{\link{pif.confidence}}.
+#'   
+#'   \code{\link{paf.plot}} for same plot with Population Attributable Fraction.
+#'   
 #' @export
 
 pif.plot <- function(X, thetalow, thetaup, rr,         
-                     cft = function(Varx){matrix(0,ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx)))},  #Counterfactual
+                     cft = NA,
                      weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                      method  = c("empirical", "kernel", "approximate"),
                      adjust = 1, n = 512, mpoints = 100,
@@ -132,7 +150,6 @@ pif.plot <- function(X, thetalow, thetaup, rr,
     stop("pif.plot only works for rr with unidimensional theta")
   }
   
-
   #Check that we are able to plot
   if (thetalow >= thetaup){
     stop("Minimum thetalow cannot be equal or greater than maximum thetaup")
@@ -168,7 +185,8 @@ pif.plot <- function(X, thetalow, thetaup, rr,
     
     #Create plot
     .thetaplot <- ggplot(as.data.frame(.dat), aes(x = .dat[,"Theta"])) + 
-                  geom_errorbar(aes(ymin = .dat[,"Lower_CI"], ymax = .dat[,"Upper_CI"], color = "Pointwise Confidence")) +
+                  geom_errorbar(aes(ymin = .dat[,"Lower_CI"], ymax = .dat[,"Upper_CI"], 
+                                    color = "Pointwise Confidence")) +
                   geom_point(aes(y = .dat[,"Point_Estimate"], color = "Point Estimate")) +
                   xlab(xlab) + theme_bw() + ylab(ylab) +
                   ggtitle(title) + 

@@ -1,6 +1,6 @@
-#' @title INTERNAL: Check Exposure values
+#' @title Check Exposure values
 #' 
-#' @description Function that verifies if all exposure values are greater or equal to zero.
+#' @description Function that verifies if all exposure values are greater or equal than zero.
 #' 
 #' @param X     Data frame of exposure that is evaluated in relative risk \code{rr}.
 #' 
@@ -11,6 +11,12 @@
 #' 
 #' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#'   
+#' @seealso \code{\link{check.confidence}}, \code{\link{check.thetas}}, 
+#'   \code{\link{check.cft}}, \code{\link{check.xvar}}, 
+#'   \code{\link{check.rr}}, \code{\link{check.integrals}}
+#' 
+#' @keywords internal
 #' 
 #' @export
 
@@ -32,7 +38,7 @@ check.exposure <- function(X){
     while(.j <= .n & .bool){
       
       #Check that is positive numeric
-      if(is.numeric(X[.i, .j]) & X[.i, .j] >= 0){
+      if(is.numeric(X[.i, .j]) & as.numeric(X[.i, .j]) >= 0){
         .j <- .j + 1
       } else if (is.character(X[.i, .j]) || is.factor(X[.i, .j])){
         .j <- .j + 1

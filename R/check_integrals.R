@@ -2,11 +2,11 @@
 #' 
 #' @description Function for checking that the integrals of \code{\link{pif}} make sense.
 #' 
-#' @param meancft Mean of relative risk with counterfactual
+#' @param meancft Mean of relative risk \code{rr} with counterfactual
 #' 
-#' @param meanrr  Mean of relative risk without counterfactual
+#' @param meanrr  Mean of relative risk \code{rr} without counterfactual
 #' 
-#' @return bool   TRUE if as desired
+#' @return bool   \code{TRUE} if as desired
 #' 
 #' @examples 
 #' check.integrals(1,0)
@@ -16,9 +16,14 @@
 #' check.integrals(1,-1)
 #' }
 #' 
-#' @author Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-
+#'   
+#' @seealso \code{\link{check.confidence}}, \code{\link{check.thetas}}, 
+#'   \code{\link{check.cft}}, \code{\link{check.xvar}}, 
+#'   \code{\link{check.rr}}, \code{\link{check.exposure}}
+#' 
+#' @keywords internal
 #' 
 #' @export
 
@@ -42,7 +47,8 @@ check.integrals <- function(meanrr, meancft){
   #Check that counterfactual is reducing the risk on average
   if (meanrr < meancft){
     .bool <- FALSE
-    warning("Counterfactual is increasing the Risk. Are you sure you are specifying it correctly?")
+    warning(paste0("Counterfactual is increasing the Risk. Are you sure you",
+                   " are specifying it correctly?"))
   }
   
   return(.bool)
