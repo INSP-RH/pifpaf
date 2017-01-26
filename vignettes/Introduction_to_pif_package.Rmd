@@ -722,20 +722,20 @@ thetahat <- c(1.2, 7)
 
 #RR defined for each category
 rr       <- function(X, theta){
-  Xnew <- rep(1, length(X))
-  Xnew[which(X == "Exposed")]      <- theta[1]
-  Xnew[which(X == "Very exposed")] <- theta[2]
+  Xnew <- matrix(1, ncol = ncol(X), nrow = nrow(X))
+  Xnew[which(X[,1] == "Exposed"),1]      <- theta[1]
+  Xnew[which(X[,1] == "Very exposed"),1] <- theta[2]
   return(Xnew)
 }
 
 #Counterfactual of stopping the very exposed
 cft      <- function(X){
-  Xcft                             <- X
-  Xcft[which(X == "Very exposed")] <- "Unexposed"
+  Xcft                                   <- X
+  Xcft[which(X[,1] == "Very exposed"),] <- "Unexposed"
   return(Xcft)
 }
 
-
+#Sensitivity analysis takes some time. 
 pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft = cft)
 ```
 
