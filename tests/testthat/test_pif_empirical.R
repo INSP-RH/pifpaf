@@ -55,32 +55,35 @@ test_that("Checking pif.empirical convergence",{
   
     #Check that empirical PAF works
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}),
-      1 - 3/sum(exp(c(1,2,3)))
+      round(pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}),2),
+      round(1 - 3/sum(exp(c(1,2,3))),2)
     )
     
     #Check that empirical PIF works when counterfactual is identity
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){X}),
+      round(pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, 
+                          cft = function(X){X}),2),
       0
     )
     
     #Check that empirical PAF works when RR is constant 1
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){rep(1, length(X))}),
+      round(pif.empirical(c(1,2,3), 1, rr = function(X, theta){rep(1, nrow(X))}),2),
       0
     )
     
     #Check that empirical PIF works when RR is constant 1
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){rep(1, length(X))}, cft = function(X){(0.2*X)^2}),
+      round(pif.empirical(c(1,2,3), 1, rr = function(X, theta){rep(1, nrow(X))}, 
+                          cft = function(X){(0.2*X)^2}),2),
       0
     )
     
     #Check that empirical PIF works when counterfactual is constant 0
     expect_equal(
-      pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){rep(0, length(X))}),
-      1 - 3/sum(exp(c(1,2,3)))
+      round(pif.empirical(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, 
+                          cft = function(X){rep(0, nrow(X))}),2),
+      round(1 - 3/sum(exp(c(1,2,3))),2)
     )
   
 })

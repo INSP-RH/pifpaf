@@ -59,27 +59,27 @@ test_that("Checking pif.kernel function warnings",{
 test_that("Checiking pif.kernel convergence",{
   
   #Check that empirical PAF works
-  X <- rnorm(10000, 1, sd = 0.001)
+  X <- rnorm(10000, 1, sd = 0.0001)
   expect_equal(
-    pif.kernel(X, 0.1, rr = function(X, theta){exp(theta*X)}),
-    pif.empirical(X, 0.1, rr = function(X, theta){exp(theta*X)})
+    round(pif.kernel(X, 0.1, rr = function(X, theta){exp(theta*X)}),2),
+    round(pif.empirical(X, 0.1, rr = function(X, theta){exp(theta*X)}),2)
   )
   
   #Check that empirical PIF works when counterfactual is identity
   expect_equal(
-    pif.kernel(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){X}),
+    round(pif.kernel(c(1,2,3), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){X}),2),
     0
   )
   
   #Check that empirical PAF works when RR is constant 1
   expect_equal(
-    pif.kernel(c(1,2,3), 1, rr = function(X, theta){1}),
+    round(pif.kernel(c(1,2,3), 1, rr = function(X, theta){1}),2),
     0
   )
   
   #Check that empirical PIF works when RR is constant 1
   expect_equal(
-    pif.kernel(c(1,2,3), 1, rr = function(X, theta){1}, cft = function(X){(0.4*X)^2}),
+    round(pif.kernel(c(1,2,3), 1, rr = function(X, theta){1}, cft = function(X){(0.4*X)^2}),2),
     0
   )
   
