@@ -2,38 +2,40 @@
 % Please edit documentation in R/pif_variance_approximate_linear.R
 \name{pif.variance.approximate.linear}
 \alias{pif.variance.approximate.linear}
-\title{Approximate Variance for the Potential Impact Fraction using the approximate method}
+\title{Approximate Variance for the Potential Impact Fraction using the 
+ approximate method}
 \usage{
-pif.variance.approximate.linear(Xmean, Xvar, thetahat, thetavar, rr,
-  cft = function(Xmean) {     matrix(0, ncol = ncol(as.matrix(Xmean)), nrow =
-  nrow(as.matrix(Xmean))) }, check_thetas = TRUE, check_cft = TRUE,
-  check_xvar = TRUE, check_rr = TRUE, check_integrals = TRUE,
-  check_exposure = TRUE, deriv.method.args = list(),
-  deriv.method = c("Richardson", "complex"), nsim = 1000, is_paf = FALSE)
+pif.variance.approximate.linear(X, thetahat, rr, thetavar, Xvar, cft = NA,
+  check_thetas = TRUE, check_cft = TRUE, check_xvar = TRUE,
+  check_rr = TRUE, check_integrals = TRUE, check_exposure = TRUE,
+  deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
+  nsim = 1000, is_paf = FALSE)
 }
 \arguments{
-\item{Xmean}{Mean value of exposure levels.}
+\item{X}{Mean value of exposure levels from a cross-sectional random 
+sample.}
 
-\item{Xvar}{Variance of exposure levels.}
+\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+Risk function.}
 
-\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the 
-Relative Risk function \code{rr}}
-
-\item{thetavar}{Estimator of variance of \code{thetahat}}
-
-\item{rr}{Function for Relative Risk which uses parameter 
-  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\item{rr}{Function for Relative Risk which uses parameter \code{theta}.
+The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
+\item{thetavar}{Estimator of variance of \code{thetahat}}
+
+\item{Xvar}{Variance of exposure levels.}
+
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{\link{paf}} where counterfactual
+the Population Attributable Fraction \code{\link{paf}} where counterfactual 
 is 0 exposure.}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
 
-\item{check_cft}{Check if counterfactual function \code{cft} reduces exposure.}
+\item{check_cft}{Check if counterfactual function \code{cft} reduces 
+exposure.}
 
 \item{check_xvar}{Check if it is covariance matrix.}
 
@@ -45,10 +47,10 @@ values are well defined for this scenario.}
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 
-\item{deriv.method.args}{\code{method.args} for
+\item{deriv.method.args}{\code{method.args} for 
 \code{\link[numDeriv]{hessian}}.}
 
-\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}.
+\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}. 
 Don't change this unless you know what you are doing.}
 
 \item{nsim}{Number of simulations for estimation of variance}
@@ -56,39 +58,45 @@ Don't change this unless you know what you are doing.}
 \item{is_paf}{Force evaluation as paf}
 }
 \description{
-Function that calculates approximate variance to the potential impact fraction.
+Function that calculates approximate variance to the potential 
+ impact fraction.
 }
 \examples{
 
 #Example 1: Exponential Relative risk
 #--------------------------------------------
 set.seed(46987)
-rr      <- function(X,theta){exp(X*theta)}
-cft     <- function(X){0.5*X}
-X       <- rnorm(3)
-Xmean   <- mean(X)
-Xvar    <- var(X)
-theta   <- 1.2
+rr       <- function(X,theta){exp(X*theta)}
+cft      <- function(X){0.5*X}
+X        <- rbeta(100, 2, 3)
+Xmean    <- mean(X)
+Xvar     <- var(X)
+theta    <- 1.2
 thetavar <- 0.15
-pif.variance.approximate.linear(Xmean, Xvar, theta, thetavar, rr, cft) 
+pif.variance.approximate.linear(Xmean, theta, rr, thetavar, Xvar, cft) 
 
 #Example 2: Multivariate example
 #--------------------------------------------
 X1       <- rnorm(1000,3,.5)
 X2       <- rnorm(1000,4,1)
 X        <- as.matrix(cbind(X1,X2))
-Xmean    <- colMeans(X)
+Xmean    <- matrix(colMeans(X), ncol = 2)
 Xvar     <- cov(X)
 theta    <- c(0.12, 0.17)
 thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-pif.variance.approximate.linear(Xmean,Xvar, theta, thetavar, rr, 
+pif.variance.approximate.linear(Xmean, theta, rr, thetavar, Xvar,
 cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\seealso{
+\code{\link{pif.variance.linear}} for \code{\link{pif}} variance and 
+ \code{\link{pif.confidence}} for confidence intervals of \code{\link{pif}}
+}
+\keyword{internal}
 

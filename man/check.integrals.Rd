@@ -7,12 +7,12 @@
 check.integrals(meanrr, meancft)
 }
 \arguments{
-\item{meanrr}{Mean of relative risk without counterfactual}
+\item{meanrr}{Mean of relative risk \code{rr} without counterfactual}
 
-\item{meancft}{Mean of relative risk with counterfactual}
+\item{meancft}{Mean of relative risk \code{rr} with counterfactual}
 }
 \value{
-bool   TRUE if as desired
+bool   \code{TRUE} if as desired
 }
 \description{
 Function for checking that the integrals of \code{\link{pif}} make sense.
@@ -27,8 +27,14 @@ check.integrals(1,-1)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\seealso{
+\code{\link{check.confidence}}, \code{\link{check.thetas}}, 
+  \code{\link{check.cft}}, \code{\link{check.xvar}}, 
+  \code{\link{check.rr}}, \code{\link{check.exposure}}
+}
+\keyword{internal}
 

@@ -2,29 +2,31 @@
 % Please edit documentation in R/pif_confidence_loglinear.R
 \name{pif.confidence.loglinear}
 \alias{pif.confidence.loglinear}
-\title{Confidence intervals for the Potencial Impact Fraction, using the loglinear method}
+\title{Confidence intervals for the Potencial Impact Fraction, using the
+  loglinear method}
 \usage{
-pif.confidence.loglinear(X, thetahat, thetavar, rr, cft = function(Varx) {    
-  matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
+pif.confidence.loglinear(X, thetahat, thetavar, rr, cft = NA,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 100,
   confidence = 95, check_thetas = TRUE, check_exposure = TRUE,
   check_cft = TRUE, is_paf = FALSE)
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (can be vector or matrix) which includes
+exposure and covariates.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
 
 \item{thetavar}{Estimator of variance of thetahat}
 
 \item{rr}{Function for Relative Risk which uses parameter 
-  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure.}
+the Population Attributable Fraction \code{PAF} where counterfactual is 0
+exposure.}
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}.}
 
@@ -36,12 +38,15 @@ the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposu
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 
-\item{check_cft}{Check if counterfactual function \code{cft} reduces exposure.}
+\item{check_cft}{Check if counterfactual function \code{cft} reduces
+exposure.}
 
 \item{is_paf}{Force evaluation of paf}
 }
 \description{
-Confidence intervals for the potencial impact Fraction for relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
+Confidence intervals for the Potencial Impact Fraction for
+  relative risk inyective functions, the pif is inyective, and intervals can
+  be calculated for log(pif), and then transformed to pif CI.
 }
 \examples{
 
@@ -52,7 +57,7 @@ X        <- rnorm(100,5,1)
 thetahat <- 0.4
 thetavar <- 0.1
 cft      <- function(X){sqrt(X)}
-pif.confidence.loglinear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft)
+pif.confidence.loglinear(X, thetahat, thetavar, rr = function(X, theta){exp(theta*X)}, cft)
 
 #Same example with linear counterfactual
 a    <- 0.5
@@ -68,15 +73,16 @@ X         <- as.matrix(cbind(X1,X2))
 thetahat  <- c(0.12, 0.03)
 thetavar  <- matrix(c(0.01, 0, 0, 0.04), byrow = TRUE, nrow = 2)
 rr        <- function(X, theta){
-           .X <- matrix(X, ncol = 2)
+           .X <- as.matrix(X, ncol = 2)
            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
            }
 pif.confidence.loglinear(X, thetahat, thetavar, rr) 
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\keyword{internal}
 

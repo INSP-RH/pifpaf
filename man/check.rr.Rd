@@ -7,30 +7,37 @@
 check.rr(X, thetahat, rr, tol = 1e-08)
 }
 \arguments{
-\item{X}{Random sample (vector or matrix) which includes exposure and
+\item{X}{Random sample (data.frame) which includes exposure and
 covariates. or sample mean if approximate method is selected.}
 
 \item{thetahat}{Estimator (vector or matrix) of \code{theta} for the 
 Relative Risk function.}
 
 \item{rr}{Function for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.}
+\code{theta}. The order of the parameters should be \code{rr(X, theta)}.}
 
 \item{tol}{Tolerance for concluding numeric equality.}
 }
 \value{
-boolean Indicating \code{TRUE} if relative risk is as desired.
+boolean Indicating \code{TRUE} if relative risk \code{rr} is as desired.
 }
 \description{
-Function for checking that relative risk equals 1 when evaluated in 0.
+Function for checking that Relative Risk \code{rr} equals
+  \code{1} when evaluated in \code{0}.
 }
 \examples{
 check.rr(as.matrix(rnorm(100)), 1, function(X, theta){exp(X*theta)})
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\seealso{
+\code{\link{check.confidence}}, \code{\link{check.thetas}}, 
+  \code{\link{check.cft}}, \code{\link{check.xvar}}, 
+  \code{\link{check.exposure}}, \code{\link{check.integrals}}
+}
+\keyword{internal}
 

@@ -5,21 +5,19 @@
 \title{Point Estimate of the Potential Impact Fraction via the Empirical 
  Method}
 \usage{
-pif.empirical(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
-  ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
-  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
-  is_paf = FALSE)
+pif.empirical(X, thetahat, rr, cft = NA, weights = rep(1/nrow(as.matrix(X)),
+  nrow(as.matrix(X))), check_exposure = TRUE, check_rr = TRUE,
+  check_integrals = TRUE, is_paf = FALSE)
 }
 \arguments{
-\item{X}{Random sample (vector or matrix) which includes exposure and 
+\item{X}{Random sample (\code{data.frame}) which includes exposure and 
 covariates. or sample mean if approximate method is selected.}
 
-\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative
 Risk function.}
 
 \item{rr}{Function for Relative Risk which uses parameter \code{theta}.
-The order of the parameters shound be \code{rr(X, theta)}.#'
+The order of the parameters shound be \code{rr(X, theta)}.
 
 **Optional**}
 
@@ -29,18 +27,18 @@ is 0 exposure.}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
 
 \item{check_rr}{Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}}
+\code{1} when evaluated at \code{0}.}
 
 \item{check_integrals}{Check that counterfactual and relative risk's expected 
-values are well defined for this scenario}
+values are well defined for this scenario.}
 
-\item{is_paf}{Boolean forcing evaluation of paf}
+\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}.}
 }
 \description{
-Function that calculates the potential impact fraction \code{pif}
+Function that calculates the potential impact fraction \code{\link{pif}}
  via the empirical method. That is: for a random sample \code{X}, a relative
  risk function \code{rr(X, thetahat)} with parameters \code{thetahat} the
  empirical estimator is given by:
@@ -86,10 +84,9 @@ cft  <- function(X){
 }
 pif.empirical(X, thetahat, rr, cft) 
 
-
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
@@ -101,4 +98,5 @@ Dalia Camacho García Formentí \email{daliaf172@gmail.com}
  For estimation of the Population Attributable Fraction see
  \code{\link{paf}}.
 }
+\keyword{internal}
 

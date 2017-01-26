@@ -2,10 +2,11 @@
 % Please edit documentation in R/paf_confidence_one_to_one.R
 \name{paf.confidence.one2one}
 \alias{paf.confidence.one2one}
-\title{Approximate Confidence Intervals for the Population Attributable
-  Fraction with one to one RR function, only for unidimensional theta values}
+\title{Approximate Confidence Intervals for the Population Attributable 
+  Fraction with one to one expected value of RR function, and unidimensional
+  theta values}
 \usage{
-paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr,
+paf.confidence.one2one(X, thetahat, rr, thetalow, thetaup,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
   check_thetas = TRUE, deriv.method.args = list(),
   deriv.method = c("Richardson", "complex"), method = c("empirical",
@@ -13,14 +14,10 @@ paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr,
   check_integrals = TRUE)
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes
-exposure and covariates.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure
+and covariates.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
-
-\item{thetalow}{Lower bound of the confidence interval (vector)}
-
-\item{thetaup}{Upper band of the confidence interval (vector)}
 
 \item{rr}{Function for Relative Risk which uses parameter 
 \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -28,21 +25,26 @@ exposure and covariates.}
 
 **Optional**}
 
+\item{thetalow}{Lower bound of the confidence interval.}
+
+\item{thetaup}{Upper bound of the confidence interval.}
+
 \item{weights}{Survey \code{weights} for the random sample \code{X}.}
 
-\item{confidence}{Confidence level \% (default: 95)}
+\item{confidence}{Confidence level \% (default: \code{95})}
 
 \item{check_thetas}{Check that thetas are correctly specified}
 
-\item{deriv.method.args}{\code{method.args} for
+\item{deriv.method.args}{\code{method.args} for 
 \code{\link[numDeriv]{hessian}}.}
 
-\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}.
+\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}. 
 Don't change this unless you know what you are doing.}
 
-\item{method}{Either \code{empirical} (default) or \code{approximate}.}
+\item{method}{Either \code{"empirical"} (default) or \code{"approximate"}.}
 
-\item{Xvar}{Variance of exposure levels.}
+\item{Xvar}{Variance of exposure levels (for \code{"approximate"}
+method).}
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 
@@ -54,8 +56,8 @@ values are well defined for this scenario}
 }
 \description{
 Function that calculates approximate confidence intervals of the
-  Population Attributable Fraction considering a one to one Relative Risk
-  with unidimensional theta values.
+  Population Attributable Fraction \code{\link{paf}} considering a one to one
+  Relative Risk \code{rr} with unidimensional \code{theta} parameter values
 }
 \examples{
 
@@ -66,12 +68,12 @@ X <- rnorm(1000, 3,.7)
 thetahat <- 0.4
 thetalow <- 0.1
 thetaup  <- 0.7
-paf.confidence.one2one(X, thetahat, thetalow, thetaup, function(X, theta){exp(theta*X)})
+paf.confidence.one2one(X, thetahat, function(X, theta){exp(theta*X)}, thetalow, thetaup)
 
 #Approximate method:
 Xmean <- mean(X)
 Xvar  <- var(X)
-paf.confidence.one2one(Xmean, thetahat, thetalow, thetaup, function(X, theta){exp(theta*X)}, 
+paf.confidence.one2one(Xmean, thetahat, function(X, theta){exp(theta*X)}, thetalow, thetaup, 
 Xvar = Xvar, method = "approximate")
 
 #Example 2: Multivariate example
@@ -84,19 +86,21 @@ thetahat <- c(0.12, 0.03)
 thetalow <- c(0.05, 0.01)
 thetaup  <- c(0.25, 0.06)
 rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-paf.confidence.one2one(X, thetahat, thetalow, thetaup, rr) 
+paf.confidence.one2one(X, thetahat, rr, thetalow, thetaup) 
 
 #Approximate method:
-Xmean <- colMeans(X)
+Xmean <- matrix(colMeans(X), ncol = 2)
 Xvar  <- var(X)
-paf.confidence.one2one(Xmean, thetahat, thetalow, thetaup, 
+paf.confidence.one2one(Xmean, thetahat, 
 function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}, 
+thetalow, thetaup, 
 Xvar = Xvar, method = "approximate")
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\keyword{internal}
 

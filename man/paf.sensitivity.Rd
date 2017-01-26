@@ -11,26 +11,28 @@ paf.sensitivity(X, thetahat, rr, weights = rep(1/nrow(as.matrix(X)),
   "nrd", "ucv", "bcv"), nsim = 50, mremove = min(nrow(as.matrix(X))/2, 100),
   ylab = "PAF", xlab = "Number of randomly deleted observations for X",
   legendtitle = "Sensitivity Analysis",
-  title = "Population Attributable Fraction (PAF) Sensitivity Analysis",
-  colors = c("red", "deepskyblue", "gray75", "gray25"),
-  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
+  title = paste0("Population Attributable Fraction (PAF) ",
+  "Sensitivity Analysis"), colors = c("red", "deepskyblue", "gray75",
+  "gray25"), check_exposure = TRUE, check_rr = TRUE,
+  check_integrals = TRUE)
 }
 \arguments{
-\item{X}{Random sample (vector or matrix) which includes exposure and
-covariates. or sample mean if approximate method is selected.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure 
+and covariates. or sample \code{mean} if \code{"approximate"} method is 
+selected.}
 
-\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the 
-Relative Risk function.}
+\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative 
+Risk function.}
 
-\item{rr}{Function for Relative Risk which uses parameter 
+\item{rr}{\code{function} for Relative Risk which uses parameter 
 \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-
 
 **Optional**}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{method}{Either \code{empirical} (default), or  \code{kernel}.}
+\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
+\code{"approximate"}.}
 
 \item{adjust}{Adjust bandwith parameter from density (for \code{kernel} 
 method) from \code{\link[stats]{density}}.}
@@ -48,21 +50,21 @@ method). Additional information on kernels in \code{\link[stats]{density}}}
 method) from \code{\link[stats]{density}}. Default \code{"SJ"}.}
 
 \item{nsim}{Integer with number of samples to include (for each removal)
-in order to conduct sensitivity analysis}
+in order to conduct sensitivity analysis.}
 
-\item{mremove}{Limit to number of measurements of \code{X} to remove}
+\item{mremove}{Limit to number of measurements of \code{X} to remove.}
 
-\item{ylab}{String label for the Y-axis of the plot (corresponding
-to "b")}
+\item{ylab}{String label for the Y-axis of the plot (corresponding 
+to "b").}
 
-\item{xlab}{String label for the X-axis of the plot (corresponding
-to "a")}
+\item{xlab}{String label for the X-axis of the plot (corresponding 
+to "a").}
 
-\item{legendtitle}{String title for the legend of plot}
+\item{legendtitle}{String title for the legend of plot.}
 
-\item{title}{String with plot title}
+\item{title}{String with plot title.}
 
-\item{colors}{String vector with colors for plots}
+\item{colors}{String vector with colors for plots.}
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 
@@ -72,10 +74,18 @@ to "a")}
 \item{check_integrals}{Check that counterfactual and relative risk's expected
 values are well defined for this scenario}
 }
+\value{
+plotpaf      \code{\link[ggplot2]{ggplot}} object plotting a
+  sensitivity analysis of \code{\link{paf}}
+}
 \description{
-Function that plots a sensitivity analysis for the potential
-  impact fraction by checking how estimates vary when reducing the exposure
+Function that plots a sensitivity analysis for the potential 
+  impact fraction by checking how estimates vary when reducing the exposure 
   sample \code{X}.
+}
+\details{
+\code{paf.sensitivity} conducts a sensitivity analysis of the 
+\code{\link{paf}} estimate by removing \code{mremove} elements \code{nsim} times.
 }
 \examples{
 
@@ -85,11 +95,12 @@ set.seed(3284)
 X  <- rnorm(250,3)                        #Sample
 rr <- function(X,theta){exp(X*theta)}     #Relative risk
 theta <- 0.1                              #Estimate of theta
-\donttest{
+\dontrun{
 paf.sensitivity(X, thetahat = theta, rr = rr)
 }
 
 #Save file
+#require(ggplot2)
 #ggsave("My Potential Impact Fraction Sensitivity Analysis.pdf")
 
 #Example 2
@@ -99,13 +110,12 @@ X     <- rbeta(1000, 1, 0.2)
 theta <- c(0.12, 1)
 rr    <- function(X, theta){X*theta[1] + theta[2]}
 
-\donttest{
+\dontrun{
 #Using empirical method
 paf.sensitivity(X, thetahat = theta, rr = rr, 
                 mremove = 100, nsim = 50, 
                 title = "My Sensitivity Analysis for example 1")
-}          
-\donttest{
+                
 #Same example with kernel
 paf.sensitivity(X, theta, rr = rr, 
                  mremove = 100, nsim = 50, method = "kernel", 
@@ -133,8 +143,6 @@ rr <- function(X, theta){
    return(r_risk)
 }
 
-
-
 \dontrun{
 pafplot <- paf.sensitivity(X, thetahat = thetahat, rr = rr, 
                            title = "Sensitivity analysis of PAF for excess-weight",
@@ -144,19 +152,19 @@ pafplot <- paf.sensitivity(X, thetahat = thetahat, rr = rr,
 pafplot              
 
 #You can edit pafplot as it is a ggplot object
+require(ggplot2)
 pafplot + theme_classic()
 }
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
-\code{\link{paf}} for Population Attributable Fraction estimation,
-  \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual,
-  \code{\link{pif.plot}} for a plot of potential impact fraction as a
-  function of theta
+\code{\link{paf}} for Population Attributable Fraction estimation, 
+  \code{\link{paf.plot}} for a plot of Population Attributable Fraction as a
+  function of the relative risk's parameter \code{theta}.
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/paf_linear.R
 \name{paf.linear}
 \alias{paf.linear}
-\title{Population Attributable Fraction with linear relative risk function}
+\title{Population Attributable Fraction with Linear Relative Risk Function}
 \usage{
 paf.linear(X, thetahat, weights = rep(1/nrow(as.matrix(X)),
   nrow(as.matrix(X))), method = c("empirical", "kernel", "approximate"),
@@ -13,67 +13,72 @@ paf.linear(X, thetahat, weights = rep(1/nrow(as.matrix(X)),
   "bcv"), check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
 }
 \arguments{
-\item{X}{Random sample (vector or matrix) which includes exposure and
-covariates or sample mean if approximate method is selected.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure
+and covariates or sample mean if approximate method is selected.}
 
-\item{thetahat}{Estimator (vector) of \code{theta} for the 
-Relative Risk function (including intercept).
+\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative
+Risk function \code{rr} (including intercept).
 
 **Optional**}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{method}{Either \code{empirical} (default), \code{kernel} or 
-\code{approximate}.}
+\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
+\code{"approximate"}.}
 
-\item{Xvar}{Variance of exposure levels (for \code{approximate} method)}
+\item{Xvar}{Variance of exposure levels (for \code{"approximate"}
+method)}
 
 \item{deriv.method.args}{\code{method.args} for 
-\code{\link[numDeriv]{hessian}} (for \code{approximate} method).}
+\code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).}
 
 \item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}. 
 Don't change this unless you know what you are doing (for 
-\code{approximate} method).}
+\code{"approximate"} method).}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{kernel} 
+\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
-\code{kernel} method) is to be estimated (see 
+\code{"kernel"} method) is to be estimated (see 
 \code{\link[stats]{density}}).}
 
-\item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
+\item{ktype}{\code{"kernel"} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
 method). Additional information on kernels in \code{\link[stats]{density}}}
 
-\item{bw}{Smoothing bandwith parameter from density (for \code{kernel}
-method) from \code{\link[stats]{density}}. Default \code{"SJ"}.}
+\item{bw}{Smoothing bandwith parameter from density (for
+\code{"kernel"} method) from \code{\link[stats]{density}}. Default
+\code{"SJ"}.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
 
 \item{check_rr}{Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}}
+\code{1} when evaluated at \code{0}.}
 
-\item{check_integrals}{Check that counterfactual and relative risk's expected
-values are well defined for this scenario}
+\item{check_integrals}{Check that counterfactual of theoretical minimum risk 
+exposure and relative risk's expected values are well defined for this 
+scenario.}
 }
 \value{
-paf      Estimate of Population Attributable Fraction with linear relative risk
+paf      Estimate of Population Attributable Fraction with linear
+  relative risk
 }
 \description{
-Function that calculates the Population Attributable Fraction with linear relative risk function
-given by
-\deqn{RR(X; \theta) = \theta_0 + \sum \theta_i X_i}
+Function that calculates the Population Attributable Fraction
+  \code{\link{paf}} with linear relative risk function \code{rr} given by 
+  \deqn{RR(X; \theta) = \theta_0 + \sum \theta_i X_i}
 }
 \note{
-\code{approximate} method should be the last choice. In practice 
-\code{empirical} should be prefered as convergence is faster than 
-\code{kernel} for most functions. In addition, the scope of \code{kernel} 
-is limited as it does not work with multivariate exposure data \code{X}.
+\code{"approximate"} method should be the last choice. In practice 
+  \code{"empirical"} should be prefered as convergence is faster than 
+  \code{"kernel"} for most functions. In addition, the scope of
+  \code{"kernel"} is limited as it does not work with multivariate exposure
+  data \code{X}.
 
-\code{\link{paf.linear}} is a wrapper for \code{\link{paf}} with
-linear relative risk
+\code{\link{paf.linear}} is a wrapper for \code{\link{paf}} with linear
+  relative risk.
 }
 \examples{
 
@@ -83,6 +88,9 @@ set.seed(18427)
 X <- rnorm(100,3,.5)
 thetahat <- c(1, 0.12)   #Linear risk given by 1 + 0.12*X
 paf.linear(X, thetahat)
+
+#This is the same as doing:
+paf(X, thetahat, rr = function(X, theta){X*theta[2] + theta[1]})
 
 #Same example with kernel method
 paf.linear(X, thetahat,  method = "kernel")
@@ -109,7 +117,7 @@ paf.linear(matX,theta) #Polynomial risk: 1 + 0.3*X + 0.1*X^2 + 0.4*X^3
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
@@ -121,11 +129,13 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   factors}. Geneva: World Health Organization, 2129-40.
 }
 \seealso{
-\code{\link{paf}} for Population Attributable Fraction
-\code{\link{pif}} for Potential Impact Fraction estimation, 
+\code{\link{paf}} for Population Attributable Fraction (with
+  arbitrary relative risk) \code{\link{pif}} for Potential Impact Fraction
+  estimation.
   
- See \code{\link{paf.exponential}} for PAF with ready-to-use exponential relative risk function.
+  See \code{\link{paf.exponential}} for PAF with ready-to-use exponential
+  relative risk function.
   
- For more information on kernels see \code{\link[stats]{density}}
+  For more information on kernels see \code{\link[stats]{density}}.
 }
 

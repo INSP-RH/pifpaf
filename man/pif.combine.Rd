@@ -2,22 +2,27 @@
 % Please edit documentation in R/pif_combine.R
 \name{pif.combine}
 \alias{pif.combine}
-\title{Combine point estimates of PIF of same exposure for exclusive subpopulations}
+\title{Combine point estimates of PIF of same exposure for exclusive
+  subpopulations}
 \usage{
 pif.combine(pif_vector, paf_vector, proportions)
 }
 \arguments{
-\item{pif_vector}{Vector of the \code{pif} for each specific subpopulation.}
+\item{pif_vector}{Vector of the \code{\link{pif}} for each specific
+subpopulation.}
 
-\item{paf_vector}{Vector of the \code{paf} for each specific subpopulation.}
+\item{paf_vector}{Vector of the \code{\link{paf}} for each specific
+subpopulation.}
 
-\item{proportions}{Vector establishing the proportion of individuals in each subpopulation of \code{paf_vector}.}
+\item{proportions}{Vector establishing the proportion of individuals in each
+subpopulation of \code{pif_vector}.}
 }
 \value{
 An overall point-estimate of \code{pif} combining all subpopulations.
 }
 \description{
-Function for fast-computing an overall PIF from subpopulation PIFs and PAFs
+Function for fast-computing an overall \code{\link{pif}} from
+  subpopulation \code{\link{pif}}s and \code{\link{paf}}s
 }
 \note{
 To combine \code{pif}s both \code{pif}s and \code{paf}s are required.
@@ -26,10 +31,21 @@ To combine \code{pif}s both \code{pif}s and \code{paf}s are required.
 
 #Example 1
 #-------------
-pif   <- c("Men" = 0.23, "Women" = 0.19)
-paf   <- c("Men" = 0.47, "Women" = 0.51)
-props <- c("Men" = 0.45, "Women" = 0.55)
-pif.combine(pif, paf, props)  #total PAF
+
+#Estimate PAF for each subpopulation
+pafmen   <- paf(X = 2.7, thetahat = 0.12, rr = function(X, theta){X*theta + 1},
+                Xvar = 0.11, method = "approximate")
+pafwomen <- paf(X = 3.1, thetahat = 0.12, rr = function(X, theta){exp(X*theta/3)},
+                Xvar = 0.17, method = "approximate")
+
+#Estimate PIF for each subpopulation
+pifmen   <- pif(X = 2.7, thetahat = 0.12, rr = function(X, theta){X*theta + 1}, 
+                cft = function(X){X/2}, Xvar = 0.11, method = "approximate")
+pifwomen <- pif(X = 3.1, thetahat = 0.12, rr = function(X, theta){exp(X*theta/3)},
+                cft = function(X){X/2}, Xvar = 0.17, method = "approximate")
+
+#Combine estimates
+pif.combine(c(pifmen, pifwomen), c(pafmen, pafwomen), c(0.45, 0.55))  
 
 
 }
@@ -37,5 +53,10 @@ pif.combine(pif, paf, props)  #total PAF
 Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+}
+\seealso{
+\code{\link{paf}} for Population Attributable Fraction estimation, 
+  \code{\link{pif}} for Population Impact Fraction estimation, and 
+  \code{\link{paf.combine}} for combining several PAF
 }
 

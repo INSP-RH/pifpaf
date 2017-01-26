@@ -4,44 +4,49 @@
 \alias{pif.conditional.variance.linear}
 \title{Conditional Variance for the Potential Impact Fraction}
 \usage{
-pif.conditional.variance.linear(X, thetahat, rr, cft = function(Varx) {    
-  matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
+pif.conditional.variance.linear(X, thetahat, rr, cft = NA,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), check_cft = TRUE,
   is_paf = FALSE)
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure and
+covariates.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
+\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative 
+Risk function.}
 
-\item{rr}{Function for Relative Risk which uses parameter 
-  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\item{rr}{\code{function} for Relative Risk which uses parameter 
+\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure.}
+the Population Attributable Fraction \code{PAF} where counterfactual is 0
+exposure.}
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}.}
 
-\item{check_cft}{Check if counterfactual function \code{cft} reduces exposure.}
+\item{check_cft}{Check if counterfactual function \code{cft} reduces
+exposure.}
 
-\item{is_paf}{Force evaluation of paf}
+\item{is_paf}{Force evaluation of \code{\link{paf}}}
 }
 \description{
-Function that calculates the conditional variance of the potential impact fraction (linearization).
+Function that calculates the conditional variance of the
+ potential impact fraction \code{\link{pif}} (linearization).
 }
 \examples{
 
 #Example 1: Exponential Relative risk
 #--------------------------------------------
 set.seed(18427)
-X <- rnorm(100,3,.5)
+X        <- rnorm(100,3,.5)
 thetahat <- 0.12
+rr       <- function(X, theta){exp(theta*X)}
 
 #When no counterfactual is specified calculates PAF
-pif.conditional.variance.linear(X, thetahat,  rr = function(X, theta){exp(theta*X)})
+pif.conditional.variance.linear(X, thetahat,  rr)
 
 #Example with linear counterfactual
 cft      <- function(X){0.3*X}
@@ -53,9 +58,9 @@ set.seed(18427)
 X1 <- rnorm(100, 3,.5)
 X2 <- runif(100, 1, 1.5)
 X  <- as.matrix(cbind(X1,X2))
-thetahat <- c(0.1, 0.03)
+thetahat  <- c(0.1, 0.03)
 rr        <- function(X, theta){
-           .X <- matrix(X, ncol = 2)
+           .X <- as.matrix(X, ncol = 2)
            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
            }
 cft <- function(X){0.5*X}
@@ -63,11 +68,14 @@ pif.conditional.variance.linear(X, thetahat, rr, cft)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
-\code{pif.variance.linear} for \code{pif} variance without conditioning on \code{theta}  and \code{pif.variance.loglinear} for variance of \code{log(pif)}
+\code{pif.variance.linear} for \code{pif} variance without
+ conditioning on \code{theta}  and \code{pif.variance.loglinear} for variance
+ of \code{log(pif)}
 }
+\keyword{internal}
 

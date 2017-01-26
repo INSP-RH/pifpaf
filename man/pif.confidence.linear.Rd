@@ -2,36 +2,39 @@
 % Please edit documentation in R/pif_confidence_linear.R
 \name{pif.confidence.linear}
 \alias{pif.confidence.linear}
-\title{Approximate Confidence Intervals for the Potential Impact Fraction}
+\title{Confidence Intervals for the Potential Impact Fraction 
+using Delta Method}
 \usage{
-pif.confidence.linear(X, thetahat, thetavar, rr, cft = function(Varx) {    
-  matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
+pif.confidence.linear(X, thetahat, rr, thetavar, cft = NA,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
   nsim = 1000, check_thetas = TRUE, check_exposure = TRUE,
   check_rr = TRUE, check_integrals = TRUE, is_paf = FALSE)
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure and
+covariates.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
+\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative 
+Risk function.}
 
-\item{thetavar}{Estimator of variance of thetahat}
+\item{rr}{\code{function} for Relative Risk which uses parameter 
+\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.}
 
-\item{rr}{Function for relative risk
-
+\item{thetavar}{Estimator of variance of \code{thetahat}
 
 **Optional**}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposure}
+the Population Attributable Fraction \code{PAF} where 
+counterfactual is 0 exposure}
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}}
 
-\item{confidence}{Confidence level \% (default 95)}
+\item{confidence}{Confidence level \% (default \code{95})}
 
 \item{nsim}{Number of simulations for estimation of variance}
 
-\item{check_thetas}{Checks that theta parameters are correctly inputed}
+\item{check_thetas}{Check that theta parameters are correctly inputed}
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 
@@ -41,10 +44,11 @@ the Population Attributable Fraction \code{PAF} where counterfactual is 0 exposu
 \item{check_integrals}{Check that counterfactual and relative risk's expected
 values are well defined for this scenario}
 
-\item{is_paf}{Boolean forcing evaluation of paf}
+\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}.}
 }
 \description{
-Function that calculates approximate confidence intervals to the potential impact fraction.
+Function that calculates approximate confidence intervals 
+to the potential impact fraction.
 }
 \examples{
 
@@ -53,30 +57,35 @@ set.seed(18427)
 X <- rnorm(100,3,.5)
 thetahat <- 0.12
 thetavar <- 0.1
-pif.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+pif.confidence.linear(X, thetahat, function(X, theta){exp(theta*X)}, 
+                      thetavar, nsim = 100)
 
 #Example with linear counterfactual
 cft      <- function(X){0.3*X}
-pif.confidence.linear(X, thetahat, thetavar, function(X, theta){exp(theta*X)}, cft)
+pif.confidence.linear(X, thetahat, function(X, theta){exp(theta*X)}, 
+                     thetavar, cft, nsim = 100)
 
 #Example with theta and X multivariate
+\dontrun{
 set.seed(18427)
 X1 <- rnorm(100, 3,.5)
 X2 <- rnorm(100,3,.5)
 X  <- as.matrix(cbind(X1,X2))
 thetahat <- c(0.1, 0.03)
 thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
-rr        <- function(X, theta){
-           .X <- matrix(X, ncol = 2)
+rr       <- function(X, theta){
+           .X <- as.matrix(X, ncol = 2)
            exp(theta[1]*.X[,1] + theta[2]*.X[,2])
            }
-cft <- function(X){0.5*X}#' cft <- function(X){0.5*X}
-pif.confidence.linear(X, thetahat, thetavar, rr, cft) 
+cft <- function(X){0.5*X}
+pif.confidence.linear(X, thetahat, rr, thetavar, cft) 
+}
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí
+Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\keyword{internal}
 

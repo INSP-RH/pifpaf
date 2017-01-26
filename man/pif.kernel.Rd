@@ -4,19 +4,18 @@
 \alias{pif.kernel}
 \title{Kernel-based estimate of Potential Impact Fraction}
 \usage{
-pif.kernel(X, thetahat, rr, cft = function(Varx) {     matrix(0, ncol =
-  ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), adjust = 1,
-  n = 512, ktype = c("gaussian", "epanechnikov", "rectangular",
-  "triangular", "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0",
-  "nrd", "ucv", "bcv"), check_exposure = TRUE, check_rr = TRUE,
-  check_integrals = TRUE, is_paf = FALSE)
+pif.kernel(X, thetahat, rr, cft = NA, weights = rep(1/nrow(as.matrix(X)),
+  nrow(as.matrix(X))), adjust = 1, n = 512, ktype = c("gaussian",
+  "epanechnikov", "rectangular", "triangular", "biweight", "cosine",
+  "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
+  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+  is_paf = FALSE)
 }
 \arguments{
-\item{X}{Random sample (vector or matrix) which includes exposure and 
+\item{X}{Random sample (\code{data.frame}) which includes exposure and 
 covariates. or sample mean if approximate method is selected.}
 
-\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative
 Risk function.}
 
 \item{rr}{Function for Relative Risk which uses parameter \code{theta}.
@@ -45,21 +44,21 @@ estimated (see \code{\link[stats]{density}}).}
 \item{bw}{Smoothing bandwith parameter from density from 
 \code{\link[stats]{density}}. Default \code{"SJ"}}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
 
 \item{check_rr}{Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}}
+\code{1} when evaluated at \code{0}.}
 
-\item{check_integrals}{Check that counterfactual and relative risk's expected 
-values are well defined for this scenario}
+\item{check_integrals}{Check that counterfactual and relative risk's expected
+values are well defined for this scenario.}
 
-\item{is_paf}{Boolean forcing evaluation of paf}
+\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}.}
 }
 \value{
 pif      Estimate of Potential Impact Fraction
 }
 \description{
-Function for estimating the Potential Impact Fraction \code{pif} 
+Function for estimating the Potential Impact Fraction \code{\link{pif}}
  from a cross-sectional sample of the exposure \code{X} with a known Relative
  Risk function \code{rr} with parameters \code{theta} using kernels.
 }
@@ -88,7 +87,6 @@ bw = "nrd", adjust = 0.5, n = 1100)
 
 #Without counterfactual estimates PAF
 pif.kernel(X, thetahat, rr) 
-
  
 #Example 2: Linear relative risk
 #--------------------------------------------
@@ -112,7 +110,7 @@ pif.kernel(X, thetahat, rr, cft)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
@@ -126,4 +124,5 @@ Dalia Camacho García Formentí \email{daliaf172@gmail.com}
  
  For more information on kernels see \code{\link[stats]{density}}
 }
+\keyword{internal}
 

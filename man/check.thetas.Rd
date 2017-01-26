@@ -2,30 +2,38 @@
 % Please edit documentation in R/check_thetas.R
 \name{check.thetas}
 \alias{check.thetas}
-\title{Check thetas against method}
+\title{Check theta parameters for confidence intervals}
 \usage{
 check.thetas(thetavar, thetahat, thetalow, thetaup, method)
 }
 \arguments{
-\item{thetavar}{Variance of theta}
+\item{thetavar}{Variance of \code{thetahat}.}
 
-\item{thetahat}{Point estimate of theta}
+\item{thetahat}{Point estimate of theta.}
 
-\item{thetalow}{Lower bound of theta's CI}
+\item{thetalow}{Lower bound of theta's CI.}
 
-\item{thetaup}{Upper bound of theta's CI}
+\item{thetaup}{Upper bound of theta's CI.}
 
-\item{method}{Method of CI's}
+\item{method}{Method of CI's of  \code{pif.confidence} (resp. \code{paf.confidence})}
 }
 \value{
-bool     Boolean variable indicating if hypothesis are matched
+bool     Boolean variable indicating if hypothesis are matched.
 }
 \description{
-Function for checking that the thetas are .correctly specified according to chosen method
+Function for checking that the theta parameters are correctly
+  specified according to chosen \code{pif.confidence} and
+  \code{paf.confidence} \code{confidence_method}.
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\seealso{
+\code{\link{check.confidence}}, \code{\link{check.xvar}}, 
+  \code{\link{check.cft}}, \code{\link{check.rr}}, 
+  \code{\link{check.exposure}}, \code{\link{check.integrals}}
+}
+\keyword{internal}
 

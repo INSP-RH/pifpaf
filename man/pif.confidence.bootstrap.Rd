@@ -4,8 +4,7 @@
 \alias{pif.confidence.bootstrap}
 \title{Pivotal Boostrap Confidence Intervals for Potential Impact Fraction}
 \usage{
-pif.confidence.bootstrap(X, thetahat, thetavar, rr, cft = function(Varx) {    
-  matrix(0, ncol = ncol(as.matrix(Varx)), nrow = nrow(as.matrix(Varx))) },
+pif.confidence.bootstrap(X, thetahat, thetavar, rr, cft = NA,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
   method = c("empirical", "kernel"), nboost = 10000, adjust = 1,
   n = 512, confidence = 95, ktype = c("gaussian", "epanechnikov",
@@ -18,8 +17,8 @@ pif.confidence.bootstrap(X, thetahat, thetavar, rr, cft = function(Varx) {
 \item{X}{Random sample (vector or matrix) which includes exposure and
 covariates.}
 
-\item{thetahat}{Maximum Likelihood estimator (vector or matrix) of \code{theta} for the 
-Relative Risk function.}
+\item{thetahat}{Maximum Likelihood estimator (vector or matrix) of
+\code{theta} for the Relative Risk function.}
 
 \item{thetavar}{Estimator of variance of \code{thetahat}}
 
@@ -39,18 +38,18 @@ is 0 exposure.}
 
 \item{nboost}{Number of samples in Bootstrap}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{kernel}
+\item{adjust}{Adjust bandwith parameter from density (for \code{kernel} 
 method) from \code{\link[stats]{density}}.}
 
-\item{n}{Number of equally spaced points at which the density (for
-\code{kernel} method) is to be estimated (see
+\item{n}{Number of equally spaced points at which the density (for 
+\code{kernel} method) is to be estimated (see 
 \code{\link[stats]{density}}).}
 
 \item{confidence}{Concidence level (0 to 100) default = \code{95} \%}
 
 \item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-\code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
+\code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
 method). Additional information on kernels in \code{\link[stats]{density}}}
 
 \item{bw}{Smoothing bandwith parameter from density (for \code{kernel}
@@ -72,8 +71,8 @@ values are well defined for this scenario}
 pif      Estimate of Potential Impact Fraction
 }
 \description{
-Estimates a 1 - alpha pivotal confidence interval for the potential impact
-fraction \code{pif} using a boostrap approximation.
+Estimates a 1 - alpha pivotal confidence interval for the
+  potential impact fraction \code{pif} using a boostrap approximation.
 }
 \examples{
 #Example 1: Exponential Relative Risk
@@ -91,23 +90,25 @@ pif.confidence.bootstrap(X, thetahat, thetavar, function(X, theta){exp(theta*X)}
 
 #Example 2: Multivariate example
 #----------------------------------------
+\dontrun{
 set.seed(18427)
-X1 <- rnorm(100, 3,.5)
-X2 <- rnorm(100,3,.5)
+X1 <- rnorm(100, 1, 0.05)
+X2 <- rnorm(100, 1, 0.05)
 X  <- as.matrix(cbind(X1,X2))
-thetahat <- c(0.1, 0.03)
+thetahat <- c(2, 0.03)
 thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 rr        <- function(X, theta){
-  .X <- matrix(X, ncol = 2)
+  .X <- as.matrix(X, ncol = 2)
   exp(theta[1]*.X[,1] + theta[2]*.X[,2])
 }
-cft <- function(X){0.5*X}#' cft <- function(X){0.5*X}
+cft <- function(X){0.5*X}#' cft <- function(X){0.95*X}
 pif.confidence.bootstrap(X, thetahat, thetavar, rr, cft) 
-
+}
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\keyword{internal}
 

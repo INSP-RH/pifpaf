@@ -2,37 +2,36 @@
 % Please edit documentation in R/pif_approximate.R
 \name{pif.approximate}
 \alias{pif.approximate}
-\title{Point Estimate of the Potential Impact Fraction via the approximate
+\title{Point Estimate of the Potential Impact Fraction via the approximate 
  method.}
 \usage{
-pif.approximate(X, Xvar, thetahat, rr, cft = function(X) {     matrix(0, ncol
-  = ncol(as.matrix(X)), nrow = nrow(as.matrix(X))) },
-  deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
-  check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
-  is_paf = FALSE)
+pif.approximate(X, Xvar, thetahat, rr, cft = NA, deriv.method.args = list(),
+  deriv.method = c("Richardson", "complex"), check_exposure = TRUE,
+  check_rr = TRUE, check_integrals = TRUE, is_paf = FALSE)
 }
 \arguments{
-\item{X}{Mean value of exposure levels from a cross-sectional.}
+\item{X}{Mean value of exposure levels from a cross-sectional random 
+sample. If multivariate, this should be a \code{matrix} with 1 row and as 
+many columns as covariates}
 
 \item{Xvar}{Variance of the exposure levels.}
 
-\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative 
 Risk function.}
 
-\item{rr}{Function for Relative Risk which uses parameter \code{theta}.
-The order of the parameters shound be \code{rr(X, theta)}.
-
+\item{rr}{\code{function} for Relative Risk which uses parameter 
+\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 **Optional**}
 
-\item{cft}{Differentiable function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{\link{paf}} where counterfactual 
-is 0 exposure.}
+\item{cft}{Twice differentiable function \code{cft(X)} for
+counterfactual. Leave empty for the Population Attributable Fraction
+\code{\link{paf}} where counterfactual is 0 exposure.}
 
-\item{deriv.method.args}{\code{method.args} for
+\item{deriv.method.args}{\code{method.args} for 
 \code{\link[numDeriv]{hessian}}.}
 
-\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}.
+\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}. 
 Don't change this unless you know what you are doing.}
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
@@ -43,18 +42,19 @@ Don't change this unless you know what you are doing.}
 \item{check_integrals}{Check that counterfactual and relative risk's expected 
 values are well defined for this scenario.}
 
-\item{is_paf}{Boolean forcing evaluation of paf}
+\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}.}
 }
 \description{
-Function for estimating the Potential Impact Fraction \code{pif}
-  from a cross-sectional sample of the exposure \code{X} with a known 
-  Relative Risk function \code{rr} with parameters \code{theta} when only 
-  \code{mean(X)} and \code{var(X)} are known.
+Function for estimating the Potential Impact Fraction
+ \code{\link{pif}} from a cross-sectional sample of the exposure \code{X}
+ with a known Relative Risk function \code{rr} with parameters \code{theta}
+ when only \code{mean(X)} and \code{var(X)} are known.
 }
 \note{
-\code{\link{pif.approximate}} method should be the last choice for the case when
-  no information on the exposure (except for mean and standard deviation) are
-  given. In practice \code{\link{pif.empirical}} should be prefered.
+\code{pif.approximate} method should be the last choice for the case
+ when no information on the exposure \code{X} (except for mean and standard
+ deviation) are given. In practice \code{\link{pif.empirical}} should be
+ prefered.
 }
 \examples{
 
@@ -91,7 +91,7 @@ pif.approximate(X, Xvar, thetahat, rr, cft)
 X1       <- rnorm(1000,3,.5)
 X2       <- rnorm(1000,4,1)
 X        <- cbind(X1,X2)
-Xmean    <- colMeans(X)
+Xmean    <- matrix(colMeans(X), ncol = 2)
 Xvar     <- var(X)
 thetahat <- c(0.12, 0.17)
 thetavar <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
@@ -101,16 +101,17 @@ pif.approximate(Xmean, Xvar, thetahat, rr, cft)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
-\code{\link{pif}} which is a wrapper for all pif methods
-  (\code{\link{pif.empirical}}, \code{\link{pif.approximate}},
-  \code{\link{pif.kernel}}). 
-  
-  For estimation of the Population Attributable
-  Fraction see \code{\link{paf}}.
+\code{\link{pif}} which is a wrapper for all pif methods 
+ (\code{\link{pif.empirical}}, \code{\link{pif.approximate}}, 
+ \code{\link{pif.kernel}}).
+ 
+ For estimation of the Population Attributable Fraction see
+ \code{\link{paf}}.
 }
+\keyword{internal}
 

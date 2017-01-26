@@ -4,23 +4,24 @@
 \alias{risk.ratio.approximate.confidence}
 \title{Approximate Confidence intervals for the Risk Ratio Integral}
 \usage{
-risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, thetavar, rr,
+risk.ratio.approximate.confidence(X, Xvar, thetahat, rr, thetavar,
   nsim = 1000, confidence = 95, deriv.method.args = list(),
   deriv.method = c("Richardson", "complex"), check_thetas = TRUE,
   force.min = FALSE)
 }
 \arguments{
-\item{Xmean}{Mean value of exposure levels.}
+\item{X}{Mean value of exposure levels from a cross-sectional random 
+sample.}
 
 \item{Xvar}{Variance of exposure levels.}
 
-\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the 
-Relative Risk function \code{rr}}
+\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+Risk function.}
 
-\item{thetavar}{Estimator of variance of \code{thetahat}}
+\item{rr}{Function for Relative Risk which uses parameter \code{theta}.
+The order of the parameters shound be \code{rr(X, theta)}.}
 
-\item{rr}{Function for Relative Risk which uses parameter 
-  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\item{thetavar}{Estimator of variance of \code{thetahat}
 
 **Optional**}
 
@@ -28,32 +29,33 @@ Relative Risk function \code{rr}}
 
 \item{confidence}{Confidence level \% (default: \code{95})}
 
-\item{deriv.method.args}{\code{method.args} for
+\item{deriv.method.args}{\code{method.args} for 
 \code{\link[numDeriv]{hessian}}.}
 
-\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}.
+\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}. 
 Don't change this unless you know what you are doing.}
 
-\item{check_thetas}{Checks that \code{theta} parameters are correctly inputed}
+\item{check_thetas}{Checks that \code{theta} parameters are correctly inputed.}
 
 \item{force.min}{Boolean indicating whether to force the \code{rr} to have a 
-minimum value of 1 instead of 0 (not recommended).}
+minimum value of \code{1} instead of \code{0} (not recommended).}
 }
 \description{
-Function that approximates the confidence interval for the integral
-\deqn{ \int RR(x;\theta)f(x)dx } 
-where \eqn{f(x)} is the density function of the exposure X, \eqn{ RR(x;\theta)} the
-relative risk of the exposure with associated parameter \eqn{\theta}. In particular
-this is an approximation when only mean and variance of exposure known
+Function that approximates the confidence interval for the 
+ integral \deqn{ \int RR(x;\theta)f(x)dx } where \eqn{f(x)} is the density 
+ function of the exposure X, \eqn{ RR(x;\theta)} the relative risk of the 
+ exposure with associated parameter \eqn{\theta}. In particular this is an 
+ approximation when only mean and variance of exposure known
 }
 \note{
-When a sample of the exposure \code{X} is available the method \link{risk.ratio.confidence} should
-be prefered.
+When a sample of the exposure \code{X} is available the method 
+ \link{risk.ratio.confidence} should be prefered.
 
-The \code{force.min} option forces the relative risk \code{rr} to have a minimum of \code{1} and thus
-an \code{rr < 1} is NOT possible. This is only for when absolute certainty is had that \code{rr > 1} and should
-be used under careful consideration. The confidence interval to acheive such an \code{rr} is based on the paper
-by Do Le Minh and Y. .s. Sherif
+The \code{force.min} option forces the relative risk \code{rr} to have a
+ minimum of \code{1} and thus an \code{rr < 1} is NOT possible. This is only 
+ for when absolute certainty is had that \code{rr > 1} and should be used 
+ under careful consideration. The confidence interval to acheive such an 
+ \code{rr} is based on the paper by Do Le Minh and Y. .s. Sherif
 }
 \examples{
 
@@ -66,36 +68,38 @@ thetavar <- 0.2
 Xmean    <- mean(X)
 Xvar     <- var(X)
 rr      <- function(X,theta){exp(X*theta)}
-risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, thetavar, rr = rr)
+risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, rr, thetavar)
 
 #We can force RR'.s CI to be >= 1.
-#This should be done with extra methodological (philosophical) care as RR>= 1 should only 
-#be assumed with absolute mathematical certainty
-risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, thetavar, rr, force.min = TRUE)
+#This should be done with extra methodological (philosophical) care as 
+#RR>= 1 should only be assumed with absolute mathematical certainty
+risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, rr, thetavar, force.min = TRUE)
 
 #Example 2: Multivariate Relative Risk
 #--------------------------------------------
 set.seed(18427)
 X1        <- rnorm(1000)
 X2        <- runif(1000)
-Xmean     <- colMeans(cbind(X1,X2))
+X     <- colMeans(cbind(X1,X2))
 Xvar      <- cov(cbind(X1,X2))
 thetahat  <- c(0.02, 0.01)
 thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 rr        <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, thetavar, rr) 
+risk.ratio.approximate.confidence(X, Xvar, thetahat, rr, thetavar) 
 
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 \references{
-Sherif, Y. .s. (1989). The lower confidence limit for the mean of positive random variables. Microelectronics Reliability, 29(2), 151-152.
+Sherif, Y. .s. (1989). The lower confidence limit for the mean of 
+ positive random variables. Microelectronics Reliability, 29(2), 151-152.
 }
 \seealso{
-\link{risk.ratio.confidence} for a method when there is a sample of the exposure.
+\link{risk.ratio.confidence} for a method when there is a sample of 
+ the exposure.
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/counterfactual_plot_continuous.R
 \name{counterfactual.plot.continuous}
 \alias{counterfactual.plot.continuous}
-\title{Create a plot of the distribution of exposure under counterfactual
+\title{Create a plot of the distribution of exposure under counterfactual 
   scenario for continuous exposure}
 \usage{
 counterfactual.plot.continuous(X, cft, weights = rep(1/nrow(as.matrix(X)),
@@ -16,7 +16,7 @@ counterfactual.plot.continuous(X, cft, weights = rep(1/nrow(as.matrix(X)),
   "tomato3"), check_exposure = TRUE)
 }
 \arguments{
-\item{X}{Vector with univariate continuous exposure levels.}
+\item{X}{Univariate \code{vector} continuous exposure levels.}
 
 \item{cft}{Counterfactual function of the exposure \code{cft(X)}
 
@@ -24,21 +24,23 @@ counterfactual.plot.continuous(X, cft, weights = rep(1/nrow(as.matrix(X)),
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{adjust}{Adjust bandwith parameter from density from \code{\link[stats]{density}}.}
+\item{adjust}{Adjust bandwith parameter from density from
+\code{\link[stats]{density}}.}
 
-\item{n}{Number of equally spaced points at which the density is to be estimated (see 
-\code{\link[stats]{density}}).}
+\item{n}{Number of equally spaced points at which the density is to be
+estimated (see \code{\link[stats]{density}}).}
 
 \item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
 method). Additional information on kernels in \code{\link[stats]{density}}}
 
-\item{bw}{Smoothing bandwith parameter from density from \code{\link[stats]{density}}. Default \code{"SJ"}.}
+\item{bw}{Smoothing bandwith parameter from density from
+\code{\link[stats]{density}}. Default \code{"SJ"}.}
 
 \item{title}{String with plot title}
 
-\item{dnames}{String vector indicating the names of the distributions for
+\item{dnames}{String vector indicating the names of the distributions for 
 the legend}
 
 \item{legendtitle}{String title for the legend of plot}
@@ -49,7 +51,8 @@ to "a")}
 \item{ylab}{String label for the Y-axis of the plot (corresponding 
 to "b")}
 
-\item{fill_limits}{Vector. Limits of subset of the exposure \code{X} such that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.}
+\item{fill_limits}{Vector. Limits of subset of the exposure \code{X} such
+that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.}
 
 \item{fill}{Colour the densities? Default \code{TRUE}}
 
@@ -58,16 +61,16 @@ to "b")}
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric}
 }
 \value{
-cft_plot   ggplot object plotting the shift from actual to
-  counterfactual distribution
+cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
+  from actual to counterfactual distribution
 }
 \description{
-Function that creates a plot of the distribution of exposure 
-under counterfactual scenario when exposure is continuous.
+Function that creates a plot of the distribution of exposure
+  \code{X} under counterfactual scenario when exposure is continuous.
 }
-\details{
-This function reproduces the classic counterfactual plot from Figure
-  25.1 of Vander Hoorn
+\note{
+This function reproduces the classic counterfactual plot from Figure 
+  25.1 of Vander Hoorn as well as additional plots.
 }
 \examples{
 
@@ -112,7 +115,7 @@ counterfactual.plot.continuous(X, cft, ktype = "epanechnikov", bw = "nrd0", fill
   
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
@@ -124,10 +127,11 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   factors}. Geneva: World Health Organization, 2129-40.
 }
 \seealso{
-\code{\link{counterfactual.plot.discrete}} for discrete counterfactual plot
+\code{\link{counterfactual.plot.discrete}} for plotting discrete counterfactuals, 
   \code{\link{pif}} for Potential Impact Fraction estimation, 
   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
   \code{\link{pif.plot}} for a plot of potential impact fraction as a 
-  function of theta
+  function of the relative risk's parameter \code{theta}.
 }
+\keyword{internal}
 

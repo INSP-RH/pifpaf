@@ -2,7 +2,8 @@
 % Please edit documentation in R/paf_plot.R
 \name{paf.plot}
 \alias{paf.plot}
-\title{Plot of Potential Impact Fraction under different values of theta (univariate)}
+\title{Plot of Population Attributable Fraction under different values of
+  Relative Risk's parameter theta (univariate)}
 \usage{
 paf.plot(X, thetalow, thetaup, rr, weights = rep(1/nrow(as.matrix(X)),
   nrow(as.matrix(X))), method = c("empirical", "kernel", "approximate"),
@@ -17,83 +18,95 @@ paf.plot(X, thetalow, thetaup, rr, weights = rep(1/nrow(as.matrix(X)),
   check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure
+and covariates.}
 
-\item{thetalow}{Minimum of theta (parameter of relative risk \code{rr}) for plot}
+\item{thetalow}{Minimum of \code{theta} (parameter of relative risk 
+\code{rr}) for plot.}
 
-\item{thetaup}{Maximum of theta (parameter of relative risk \code{rr}) for plot}
+\item{thetaup}{Maximum of \code{theta} (parameter of relative risk 
+\code{rr}) for plot.}
 
-\item{rr}{Function for Relative Risk which uses parameter 
-  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\item{rr}{\code{function} for Relative Risk which uses parameter 
+\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
 **Optional**}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{method}{Either \code{empirical} (default), \code{kernel} or \code{approximate}.}
+\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
+\code{"approximate"}.}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{kernel}
+\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
 
-\item{n}{Number of equally spaced points at which the density (for
-\code{kernel} method) is to be estimated (see
+\item{n}{Number of equally spaced points at which the density (for 
+\code{"kernel"} method) is to be estimated (see 
 \code{\link[stats]{density}}).}
 
-\item{mpoints}{Number of points in plot}
+\item{mpoints}{Number of points in plot.}
 
-\item{Xvar}{Variance of exposure levels (for \code{approximate} method)}
+\item{Xvar}{Variance of exposure levels (for \code{"approximate"} 
+method)}
 
 \item{deriv.method.args}{\code{method.args} for 
-\code{\link[numDeriv]{hessian}} (for \code{approximate} method).}
+\code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).}
 
 \item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}. 
-Don't change this unless you know what you are doing (for
-\code{approximate} method).}
+Don't change this unless you know what you are doing (for 
+\code{"approximate"} method).}
 
-\item{confidence}{Confidence level \% (default 95)}
+\item{confidence}{Confidence level \% (default \code{95})}
 
-\item{confidence_method}{Either \code{linear}, \code{loglinear}, \code{bootstrap}}
+\item{confidence_method}{Either \code{"linear"}, \code{"loglinear"}, 
+\code{"bootstrap"}}
 
-\item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
+\item{ktype}{\code{"kernel"} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-\code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
+\code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 method). Additional information on kernels in \code{\link[stats]{density}}}
 
-\item{bw}{Smoothing bandwith parameter from density (for \code{kernel}
-method) from \code{\link[stats]{density}}. Default \code{"SJ"}.}
+\item{bw}{Smoothing bandwith parameter from density (for 
+\code{"kernel"} method) from \code{\link[stats]{density}}. Default 
+\code{"SJ"}.}
 
-\item{colors}{Colour of plot}
+\item{colors}{Colours of plot.}
 
-\item{xlab}{Label of x-axis in plot}
+\item{xlab}{Label of x-axis in plot.}
 
-\item{ylab}{Label of y-axis in plot}
+\item{ylab}{Label of y-axis in plot.}
 
-\item{title}{Title of plot}
+\item{title}{Title of plot.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
 
 \item{check_rr}{Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}}
+\code{1} when evaluated at \code{0}.}
 
-\item{check_integrals}{Check that counterfactual and relative risk's expected
-values are well defined for this scenario}
+\item{check_integrals}{Check that counterfactual of theoretical minimum risk 
+exposure and relative risk's expected values are well defined for this 
+scenario.}
 }
 \value{
-paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of Potential Impact Fraction 
-as function of \code{theta}
+paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of 
+  Population Attributable Fraction as function of \code{theta}
 }
 \description{
-Function that plots the PAF under different values of an univariate parameter theta.
+Function that plots the \code{\link{paf}} under different values
+  of an univariate parameter theta of the relative risk function \code{rr}
+  which depends on the exposure \code{X} and a \code{theta} parameter
+  (\code{rr(X, theta)})
 }
 \examples{
 
+\dontrun{
 #Example 1: Exponential Relative Risk empirical method
 #-----------------------------------------------------
 set.seed(18427)
 X <- rbeta(25, 4.2, 10)
 paf.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
 
-\dontrun{
+
 #Same example with kernel method
 paf.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
 title = "Kernel method example") 
@@ -104,10 +117,17 @@ Xvar  <- var(X)
 paf.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
 method = "approximate", Xvar = Xvar, title = "Approximate method example")
 }
+
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+}
+\seealso{
+\code{\link{paf}} for Population Attributable Fraction estimation
+  with confidence intervals \code{\link{paf.confidence}}.
+  
+  \code{\link{pif.plot}} for same plot with Potential Impact Fraction.
 }
 

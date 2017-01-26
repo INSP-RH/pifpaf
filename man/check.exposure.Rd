@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_exposure.R
 \name{check.exposure}
 \alias{check.exposure}
-\title{INTERNAL: Check Exposure values}
+\title{Check Exposure values}
 \usage{
 check.exposure(X)
 }
@@ -10,7 +10,7 @@ check.exposure(X)
 \item{X}{Data frame of exposure that is evaluated in relative risk \code{rr}.}
 }
 \description{
-Function that verifies if all exposure values are greater or equal to zero.
+Function that verifies if all exposure values are greater or equal than zero.
 }
 \examples{
 #Example 1 
@@ -23,4 +23,10 @@ Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\seealso{
+\code{\link{check.confidence}}, \code{\link{check.thetas}}, 
+  \code{\link{check.cft}}, \code{\link{check.xvar}}, 
+  \code{\link{check.rr}}, \code{\link{check.integrals}}
+}
+\keyword{internal}
 

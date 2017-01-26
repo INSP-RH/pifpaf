@@ -9,15 +9,15 @@ counterfactual.plot(X, cft, weights = rep(1/nrow(as.matrix(X)),
   nrow(as.matrix(X))), adjust = 1, n = 512, ktype = c("gaussian",
   "epanechnikov", "rectangular", "triangular", "biweight", "cosine",
   "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-  title = "Exposure distribution under current and counterfactual scenarios",
-  dnames = c("Current distribution", "Counterfactual distribution"),
-  exposure.type = NA, legendtitle = "Scenario", xlab = "Exposure",
-  ylab = "Density", colors = c("deepskyblue", "tomato3"),
-  x_axis_order = unique(X), fill_limits = c(-Inf, Inf), fill = TRUE,
-  check_exposure = TRUE)
+  title = paste0("Exposure distribution under current and ",
+  "counterfactual scenarios"), dnames = c("Current distribution",
+  "Counterfactual distribution"), exposure.type = NA,
+  legendtitle = "Scenario", xlab = "Exposure", ylab = "Density",
+  colors = c("deepskyblue", "tomato3"), x_axis_order = unique(X),
+  fill_limits = c(-Inf, Inf), fill = TRUE, check_exposure = TRUE)
 }
 \arguments{
-\item{X}{Vector with exposure levels.}
+\item{X}{One dimensional \code{vector} with exposure levels.}
 
 \item{cft}{Counterfactual function of the exposure \code{cft(X)}
 
@@ -25,7 +25,7 @@ counterfactual.plot(X, cft, weights = rep(1/nrow(as.matrix(X)),
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{adjust}{Adjust bandwith parameter from density (for
+\item{adjust}{Adjust bandwith parameter from density (for 
 \code{"continuous"} case) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
@@ -33,60 +33,60 @@ counterfactual.plot(X, cft, weights = rep(1/nrow(as.matrix(X)),
 \code{\link[stats]{density}}).}
 
 \item{ktype}{\code{kernel} type for \code{"continuous"} case: 
-\code{"gaussian"}, \code{"epanechnikov"}, \code{"rectangular"},
+\code{"gaussian"}, \code{"epanechnikov"}, \code{"rectangular"}, 
 \code{"triangular"}, \code{"biweight"}, \code{"cosine"}, \code{"optcosine"}
-(for \code{kernel} method). Additional information on kernels in
+(for \code{kernel} method). Additional information on kernels in 
 \code{\link[stats]{density}}}
 
-\item{bw}{Smoothing bandwith parameter from density (for
-\code{"continuous"} case) from \code{\link[stats]{density}}. Default
+\item{bw}{Smoothing bandwith parameter from density (for 
+\code{"continuous"} case) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
-\item{title}{String with plot title}
+\item{title}{String with plot title.}
 
 \item{dnames}{String vector indicating the names of the distributions for 
-the legend}
+the legend.}
 
 \item{exposure.type}{Either \code{"continuous"} if distribution is continuous
 or \code{"discrete"} if distribution is discrete.}
 
-\item{legendtitle}{String title for the legend of plot}
+\item{legendtitle}{String title for the legend of plot.}
 
 \item{xlab}{String label for the X-axis of the plot (corresponding 
-to "a")}
+to "a").}
 
 \item{ylab}{String label for the Y-axis of the plot (corresponding 
-to "b")}
+to "b").}
 
-\item{colors}{String vector with colors for plots}
+\item{colors}{String vector with colors for plots.}
 
-\item{x_axis_order}{Order of names in xaxis for plot (\code{"discrete"}
+\item{x_axis_order}{Order of names in xaxis for plot (\code{"discrete"}. 
 case)}
 
-\item{fill_limits}{Vector. Limits of subset of the exposure \code{X} such
+\item{fill_limits}{Vector. Limits of subset of the exposure \code{X} such 
 that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.}
 
-\item{fill}{Colour the densities? Default \code{TRUE}}
+\item{fill}{Colour the densities? Default \code{TRUE}.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric 
 (if \code{"continuous"})}
 }
 \value{
-cft_plot   ggplot object plotting the shift from actual to 
-  counterfactual distribution
+cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
+  from observed to counterfactual distribution
 }
 \description{
-Function that creates a plot of the distribution of exposure 
-  under counterfactual scenario.
+Function that creates a plot of the distribution of exposure
+  \code{X} under counterfactual scenario \code{cft}.
 }
 \details{
-The function automatically tries to distinguish between
-  \code{"continuous"} and \code{"discrete"} distribution inputs. By
-  \code{"continuous"} we meen a vector of real numbers; by \code{"discrete"} 
+The function automatically tries to distinguish between 
+  \code{"continuous"} and \code{"discrete"} distribution inputs. By 
+  \code{"continuous"} we mean a vector of real numbers; by \code{"discrete"} 
   a vector of strings or factor variables.
 }
 \note{
-This function is a wrapper for
+This function is a wrapper for 
   \code{\link{counterfactual.plot.continuous}} and 
   \code{\link{counterfactual.plot.discrete}}
 }
@@ -109,6 +109,7 @@ cft <- function(X){
 }  
 counterfactual.plot(X, cft)
   
+\dontrun{   
 #Example 2: Multivariate discrete
 #--------------------------------------------------------
 set.seed(2783569)
@@ -151,6 +152,7 @@ cftplot
 #Objects returned are ggplot objects and you can play with them
 require(ggplot2)
 cftplot + coord_flip() + theme_grey()
+}
 
 #Example 3: Normal distribution and linear counterfactual
 #--------------------------------------------------------
@@ -187,7 +189,7 @@ counterfactual.plot(X, cft, ktype = "epanechnikov", bw = "nrd0")
   
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
@@ -201,7 +203,7 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
 \seealso{
 \code{\link{pif}} for Potential Impact Fraction estimation, 
   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
-  \code{\link{pif.plot}} for a plot of potential impact fraction as a 
-  function of theta.
+  \code{\link{pif.plot}} for a plot of \code{pif} as a function of its
+  parameter \code{theta}.
 }
 

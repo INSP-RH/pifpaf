@@ -13,7 +13,7 @@ counterfactual.plot.discrete(X, cft, weights = rep(1/nrow(as.matrix(X)),
   colors = c("deepskyblue", "tomato3"), x_axis_order = unique(X))
 }
 \arguments{
-\item{X}{Vector with univariate discrete exposure levels.}
+\item{X}{One dimensional \code{vector} with exposure levels.}
 
 \item{cft}{Counterfactual function of the exposure \code{cft(X)}
 
@@ -39,12 +39,12 @@ to "b")}
 \item{x_axis_order}{Order of names in xaxis for plot}
 }
 \value{
-cft_plot   ggplot object plotting the shift from actual to
+cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift from actual to
   counterfactual distribution
 }
 \description{
-Function that creates a plot of the distribution of exposure 
-under counterfactual scenario when exposure is discrete.
+Function that creates a plot of the distribution of exposure
+  \code{X} under counterfactual scenario \code{cft} for discrete exposures
 }
 \examples{
 
@@ -55,11 +55,11 @@ X   <- sample(c("Exposed","Unexposed"), 100, replace = TRUE, prob = c(0.3, 0.7))
 cft <- function(X){
 
      #Find which indivuals are exposed
-     exposed    <- which(X == "Exposed")
+     exposed      <- which(X == "Exposed")
      
      #Change 1/3 of exposed to unexposed
-     reduced    <- sample(exposed, length(exposed)/3)
-     X[reduced] <- "Unexposed"
+     reduced      <- sample(exposed, length(exposed)/3)
+     X[reduced]   <- "Unexposed"
      
      return(X)
 }  
@@ -102,10 +102,9 @@ cft <- function(X){
 #Create plot of counterfactual distribution
 counterfactual.plot.discrete(X, cft, x_axis_order = c("Underweight","Normal","Obese","Overweight")) 
 
-  
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
@@ -121,6 +120,7 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   \code{\link{pif}} for Potential Impact Fraction estimation, 
   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
   \code{\link{pif.plot}} for a plot of potential impact fraction as a 
-  function of theta.
+  function of the relative risk's parameter \code{theta}.
 }
+\keyword{internal}
 

@@ -4,19 +4,17 @@
 \alias{paf.confidence.inverse}
 \title{Confidence intervals for the Population Attributable Fraction, using the inverse method}
 \usage{
-paf.confidence.inverse(X, thetahat, thetavar, rr,
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 1000,
-  confidence = 95, deriv.method.args = list(),
-  deriv.method = c("Richardson", "complex"), force.min = FALSE,
-  check_thetas = TRUE, method = c("empirical", "approximate"),
-  Xvar = var(X))
+paf.confidence.inverse(X, thetahat, rr, thetavar,
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
+  method = c("empirical", "approximate"), nsim = 1000, confidence = 95,
+  deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
+  force.min = FALSE, check_thetas = TRUE, Xvar = var(X))
 }
 \arguments{
-\item{X}{Random sample (can be vector or matrix) which includes exposure and covariates. Or mean exposure from a previous study if no sample is available.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure
+and covariates.}
 
 \item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
-
-\item{thetavar}{Estimator of variance of \code{thetahat}}
 
 \item{rr}{Function for Relative Risk which uses parameter 
   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -24,11 +22,15 @@ paf.confidence.inverse(X, thetahat, thetavar, rr,
 
 **Optional**}
 
+\item{thetavar}{Estimator of variance of \code{thetahat}}
+
 \item{weights}{Survey \code{weights} for the random sample \code{X}.}
 
-\item{nsim}{Number of simulations (default: 1000)}
+\item{method}{Either \code{empirical} (default) or \code{approximate}.}
 
-\item{confidence}{Confidence level \% (default: 95)}
+\item{nsim}{Number of simulations (default: \code{1000})}
+
+\item{confidence}{Confidence level \% (default: \code{95})}
 
 \item{deriv.method.args}{\code{method.args} for
 \code{\link[numDeriv]{hessian}}. Only if \code{"approximate"} method is chosen.}
@@ -40,8 +42,6 @@ Don't change this unless you know what you are doing. Only if \code{"approximate
 minimum value of 1 instead of 0 (not recommended).}
 
 \item{check_thetas}{Checks that theta parameters are correctly inputed}
-
-\item{method}{Either \code{empirical} (default) or \code{approximate}.}
 
 \item{Xvar}{Variance of exposure levels.}
 }
@@ -62,17 +62,17 @@ set.seed(18427)
 X <- rnorm(100,0.3,.05)
 thetahat <- 0.4
 thetavar <- 0.1
-paf.confidence.inverse(X, thetahat, thetavar, function(X, theta){exp(theta*X)})
+paf.confidence.inverse(X, thetahat, function(X, theta){exp(theta*X)}, thetavar)
 
 #With approximate method
 Xmean <- mean(X)
 Xvar  <- var(X)
-paf.confidence.inverse(Xmean, thetahat, thetavar, 
-function(X, theta){exp(theta*X)}, Xvar = Xvar, method = "approximate")
+paf.confidence.inverse(Xmean, thetahat, 
+function(X, theta){exp(theta*X)}, thetavar, Xvar = Xvar, method = "approximate")
 
 #We can force PAF's CI to be >= 0 (only if it is certain)
-paf.confidence.inverse(X, thetahat, thetavar, 
-function(X, theta){exp(theta*X)}, force.min = TRUE)
+paf.confidence.inverse(X, thetahat, 
+function(X, theta){exp(theta*X)}, thetavar, force.min = TRUE)
 
 #Example 2: Multivariate Relative Risk
 #--------------------------------------------
@@ -83,18 +83,19 @@ X  <- as.matrix(cbind(X1,X2))
 thetahat <- c(0.12, 0.03)
 thetavar <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-paf.confidence.inverse(X, thetahat, thetavar, rr) 
+paf.confidence.inverse(X, thetahat, rr, thetavar) 
 
 #Same example with approximate method
-Xmean    <- colMeans(X)
+Xmean    <- matrix(colMeans(X), ncol = 2)
 Xvar     <- cov(X)
-paf.confidence.inverse(Xmean, thetahat, thetavar = thetavar, 
-rr=rr, method = "approximate", Xvar = Xvar)
+paf.confidence.inverse(Xmean, thetahat, rr=rr, thetavar = thetavar, 
+method = "approximate", Xvar = Xvar)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\keyword{internal}
 

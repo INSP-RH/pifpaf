@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_cft.R
 \name{check.cft}
 \alias{check.cft}
-\title{INTERNAL: Check that expected value of counterfactual decreases exposure levels}
+\title{Check that expected value of counterfactual decreases exposure levels}
 \usage{
 check.cft(cft, X)
 }
@@ -22,6 +22,7 @@ Function that checks whether the counterfactual function of
   \code{\link{pif}} decreases the exposure values \code{X}.
 }
 \examples{
+
 #Example 1 
 cft <- function(X){0.5*X}
 X   <- runif(100, 0,2)
@@ -33,4 +34,10 @@ Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\seealso{
+\code{\link{check.confidence}}, \code{\link{check.thetas}}, 
+  \code{\link{check.xvar}}, \code{\link{check.rr}}, 
+  \code{\link{check.exposure}}, \code{\link{check.integrals}}
+}
+\keyword{internal}
 

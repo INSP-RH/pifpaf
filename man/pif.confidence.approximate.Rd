@@ -81,7 +81,7 @@ pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr, cft)
 X1       <- rnorm(1000,3,.5)
 X2       <- rnorm(1000,4,1)
 X        <- as.matrix(cbind(X1,X2))
-Xmean    <- colMeans(X)
+Xmean    <- matrix(colMeans(X), ncol = 2)
 Xvar     <- cov(X)
 theta    <- c(0.12, 0.17)
 thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
@@ -91,8 +91,9 @@ cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\keyword{internal}
 

@@ -2,13 +2,13 @@
 % Please edit documentation in R/pif_confidence_approximate_loglinear.R
 \name{pif.confidence.approximate.loglinear}
 \alias{pif.confidence.approximate.loglinear}
-\title{Confidence Intervals for the Potential Impact Fraction when only mean and variance of exposure values is available using loglinear method}
+\title{Confidence Intervals for the Potential Impact Fraction when only mean
+ and variance of exposure values is available using loglinear method}
 \usage{
 pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, rr,
-  cft = function(Varx) {     matrix(0, ncol = ncol(as.matrix(Varx)), nrow =
-  nrow(as.matrix(Varx))) }, deriv.method.args = list(),
-  deriv.method = c("Richardson", "complex"), check_exposure = TRUE,
-  check_rr = TRUE, check_integrals = TRUE, nsim = 1000, confidence = 95,
+  cft = NA, deriv.method.args = list(), deriv.method = c("Richardson",
+  "complex"), check_exposure = TRUE, check_rr = TRUE,
+  check_integrals = TRUE, nsim = 1000, confidence = 95,
   check_thetas = TRUE, is_paf = FALSE)
 }
 \arguments{
@@ -16,25 +16,25 @@ pif.confidence.approximate.loglinear(Xmean, Xvar, thetahat, thetavar, rr,
 
 \item{Xvar}{Variance of the exposure levels.}
 
-\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the 
-Relative Risk function \code{rr}}
+\item{thetahat}{Estimator (vector or matrix) of \code{theta} for the Relative
+Risk function \code{rr}}
 
 \item{thetavar}{Estimator of variance of \code{thetahat}}
 
-\item{rr}{Function for Relative Risk which uses parameter 
-  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\item{rr}{Function for Relative Risk which uses parameter \code{theta}.
+The order of the parameters shound be \code{rr(X, theta)}.
 
 
 **Optional**}
 
-\item{cft}{Differentiable function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{\link{paf}} where counterfactual 
-is 0 exposure.}
+\item{cft}{Differentiable function \code{cft(X)} for counterfactual.
+Leave empty for the Population Attributable Fraction \code{\link{paf}} where
+counterfactual is 0 exposure.}
 
-\item{deriv.method.args}{\code{method.args} for
+\item{deriv.method.args}{\code{method.args} for 
 \code{\link[numDeriv]{hessian}}.}
 
-\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}.
+\item{deriv.method}{\code{method} for \code{\link[numDeriv]{hessian}}. 
 Don't change this unless you know what you are doing.}
 
 \item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
@@ -54,7 +54,10 @@ values are well defined for this scenario.}
 \item{is_paf}{Boolean forcing evaluation of \code{paf}}
 }
 \description{
-Confidence intervals for the Population Attributable Fraction for the approximate method where only mean and variance from a previous study is available.For relative risk inyective functions, the pif is inyective, and intervals can be calculated for log(pif), and then transformed to pif CI.
+Confidence intervals for the Population Attributable Fraction for
+ the approximate method where only mean and variance from a previous study is
+ available.For relative risk inyective functions, the pif is inyective, and
+ intervals can be calculated for log(pif), and then transformed to pif CI.
 }
 \examples{
 
@@ -85,8 +88,9 @@ rr, cft = function(X){0.8*X}, nsim = 100)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rodrigo.zepeda@insp.mx}
+Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
+\keyword{internal}
 
