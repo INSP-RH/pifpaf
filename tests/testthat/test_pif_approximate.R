@@ -15,7 +15,7 @@ test_that("Checking pif.approximate function errors",{
   })
   
   #Check that relative risk > 0
-  expect_warning({
+  expect_error({
     X     <- runif(1000,0,2)
     Xmean <- data.frame(mean(X))
     Xvar  <- var(X)
@@ -26,7 +26,7 @@ test_that("Checking pif.approximate function errors",{
 
   
   #Check that counterfactual relative risk > 0
-  expect_warning({
+  expect_error({
     
     X     <- rnorm(100, 2, .5)
     Xmean <- data.frame(mean(X))

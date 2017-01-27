@@ -47,10 +47,10 @@ test_that("Checking paf point estimate",{
     X        <- data.frame(c(1,4,2,1,2,1,1,0,0,1,2))
     thetahat <- 1
     rr       <- function(X,theta){X*theta+1}
-    paf(X, thetahat, rr)
+    round(paf(X, thetahat, rr),2)
   },
   {
-    1-1/(mean(X)+1)
+    round(1-1/(mean(X[,1])+1),2)
   })
   
   expect_equal({
