@@ -95,10 +95,18 @@ The \code{"empirical"} method estimates the \code{pif} by \deqn{ PIF
   
   The \code{"kernel"} method approximates the \code{\link[stats]{density}} of
   the exposure \code{X} and estimates its expected value from that 
-  approximation: \deqn{ PIF = BLAH }{ PIF = BLAH }
+  approximation: 
+  \deqn{ PIF = 1 - 
+        \frac{\int\limits_{-\infty}^{\infty} rr\big(cft(X);\theta \big) \hat{f}(x) dx
+  }{
+        \int\limits_{-\infty}^{\infty} rr\big(cft(X);\theta \big) \hat{f}(x) dx}
+  }{ 
+  PIF = 1 - integrate(rr(cft(X), theta)*f(x))/integrate(rr(X, theta)*f(x))  
+  }
   
-  The \code{"approximate"} method conducts a Laplace approximation of the PIF
-  and thus estimates: \deqn{ 2 }{ 2 }
+  The \code{"approximate"} method conducts a Laplace approximation of the PIF.
+  Additional information on the methods is dicussed in the package's vignette:
+  \code{browseVignettes("pif")}.
   
   In practice \code{"approximate"} method should be the last choice. 
   Simulations have shown that \code{"empirical"}'s convergence is faster than
