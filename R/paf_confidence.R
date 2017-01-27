@@ -108,7 +108,18 @@
 #' @note Do not use the \code{$} operator when using \code{"approximate"}
 #'   \code{method}.
 #'   
-#' @details The \code{confidence_method}  BLAH BLAH
+#' @details The \code{confidence_method} confidence intervals according
+#' to different methods. A bootstrap approximation is conducted by 
+#' \code{"bootstrap"}; whilst the Delta Method is applied to \code{\link{pif}}
+#' or \code{log(pif)} when choosing \code{"linear"} and \code{"loglinear"}
+#' respectively. The \code{"inverse"} method estimates confidence intervals
+#' for the Relative Risk function \code{rr} and applies the transformation
+#' \code{1 - 1/rr}. Finally, \code{"one2one"} works with functions for which
+#' the expected value of the relative risk over \code{X} is injective and 
+#' increasing in  \code{theta}.
+#' 
+#' Additional information on confidence method estimations can be found
+#' in the package's vignette: \code{browseVignettes("pif")}
 #'   
 #' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
 #' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
