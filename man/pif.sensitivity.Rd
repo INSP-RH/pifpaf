@@ -4,13 +4,11 @@
 \alias{pif.sensitivity}
 \title{Potential Impact Fraction Sensitivity Analysis plot}
 \usage{
-pif.sensitivity(X, thetahat, rr, cft = NA,
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
-  method = c("empirical", "kernel"), adjust = 1, n = 512,
-  ktype = c("gaussian", "epanechnikov", "rectangular", "triangular",
-  "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv",
-  "bcv"), nsim = 50, mremove = min(nrow(as.matrix(X))/2, 100),
-  ylab = "PIF", xlab = "Number of randomly deleted observations for X",
+pif.sensitivity(X, thetahat, rr, cft = NA, method = "empirical",
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 50,
+  mremove = min(nrow(as.matrix(X))/2, 100), adjust = 1, n = 512,
+  ktype = "gaussian", bw = "SJ", ylab = "PIF",
+  xlab = "Number of randomly deleted observations for X",
   legendtitle = "Sensitivity Analysis",
   title = "Potential Impact Fraction (PIF) Sensitivity Analysis",
   colors = c("red", "deepskyblue", "gray75", "gray25"),
@@ -19,11 +17,11 @@ pif.sensitivity(X, thetahat, rr, cft = NA,
 }
 \arguments{
 \item{X}{Random sample (\code{data.frame}) which includes exposure 
-and covariates. or sample \code{mean} if \code{"approximate"} method is 
+and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function.}
+\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the
+Relative Risk function.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
 \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -32,13 +30,21 @@ Risk function.}
 **Optional**}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
-the Population Attributable Fraction \code{\link{paf}} where counterfactual
-is 0 exposure.}
+the Population Attributable Fraction \code{\link{paf}} where 
+counterfactualis the theoretical minimum risk exposure \code{X0} such that 
+\code{rr(X0,theta) = 1}.}
+
+\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
+\code{"approximate"}. For details on estimation methods see 
+\code{\link{pif}}.}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
-\code{"approximate"}.}
+\item{nsim}{Integer with number of samples to include (for each removal)
+in order to conduct sensitivity analysis.}
+
+\item{mremove}{Limit number of measurements of \code{X} to remove when
+resampling.}
 
 \item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
@@ -47,49 +53,48 @@ method) from \code{\link[stats]{density}}.}
 \code{"kernel"} method) is to be estimated (see 
 \code{\link[stats]{density}}).}
 
-\item{ktype}{\code{"kernel"} type:  \code{"gaussian"}, 
+\item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-\code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
-method). Additional information on kernels in \code{\link[stats]{density}}}
+\code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
+method). Additional information on kernels in \code{\link[stats]{density}}.}
 
-\item{bw}{Smoothing bandwith parameter from density (for
-\code{"kernel"} method) from \code{\link[stats]{density}}. Default
+\item{bw}{Smoothing bandwith parameter from density (for 
+\code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
-\item{nsim}{Integer with number of samples to include (for each removal)
-in order to conduct sensitivity analysis.}
+\item{ylab}{\code{string} label for the Y-axis of the plot
+(corresponding to "b").}
 
-\item{mremove}{Limit to number of measurements of \code{X} to remove.}
-
-\item{ylab}{String label for the Y-axis of the plot (corresponding 
-to "b").}
-
-\item{xlab}{String label for the X-axis of the plot (corresponding 
-to "a").}
+\item{xlab}{\code{string} label for the X-axis of the plot
+(corresponding to "a").}
 
 \item{legendtitle}{String title for the legend of plot.}
 
-\item{title}{String with plot title.}
+\item{title}{\code{string} Title of plot.}
 
 \item{colors}{String vector with colors for plots.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
+\item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
+positive and numeric}
 
-\item{check_rr}{Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}.}
+\item{check_rr}{\code{boolean} Check that Relative Risk function 
+\code{rr} equals \code{1} when evaluated at \code{0}}
 
-\item{check_integrals}{Check that counterfactual and relative risk's expected
-values are well defined for this scenario.}
+\item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
+and relative risk's \code{rr} expected values are well defined for this 
+scenario}
 
-\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}.}
+\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}. This forces
+the \code{pif} function ignore the inputed counterfactual and set it to the
+theoretical minimum risk value of \code{1}.}
 }
 \value{
 plotpif      \code{\link[ggplot2]{ggplot}} object plotting a
   sensitivity analysis of \code{\link{pif}}
 }
 \description{
-Function that plots a sensitivity analysis for the potential 
-  impact fraction by checking how estimates vary when reducing the exposure 
+Function that plots a sensitivity analysis for the Potential 
+  Impact Fraction \code{\link{pif}} by checking how estimates vary when reducing the exposure 
   sample \code{X}.
 }
 \details{
@@ -101,7 +106,7 @@ Function that plots a sensitivity analysis for the potential
 #Example 1
 #------------------------------------------------------------------
 set.seed(3284)
-X  <- rnorm(250,3)                        #Sample
+X  <- data.frame(Exposure = rnorm(250,3)) #Sample
 rr <- function(X,theta){exp(X*theta)}     #Relative risk
 theta <- 0.1                              #Estimate of theta
 \dontrun{
@@ -115,7 +120,7 @@ pif.sensitivity(X, thetahat = theta, rr = rr)
 #Example 2
 #--------------------------------------------------------------
 set.seed(3284)
-X     <- rbeta(1000, 1, 0.2)
+X     <- data.frame(Exposure = rbeta(1000, 1, 0.2))
 theta <- c(0.12, 1)
 rr    <- function(X, theta){X*theta[1] + theta[2]}
 cft   <- function(X){X/2}
@@ -130,13 +135,14 @@ pif.sensitivity(X, thetahat = theta, rr = rr, cft = cft,
 pif.sensitivity(X, theta, rr = rr, cft = cft,
                  mremove = 100, nsim = 50, method = "kernel", 
                  title = "Sensitivity Analysis for example 1 using kernel")
-}                 
+                 
 
 #Example 4: Plot counterfactual with categorical risks
 #------------------------------------------------------------------
 set.seed(18427)
-X        <- sample(c("Normal","Overweight","Obese"), 1000, 
-                   replace = TRUE, prob = c(0.4, 0.1, 0.5))
+X        <- data.frame(Exposure = 
+               sample(c("Normal","Overweight","Obese"), 1000, 
+                      replace = TRUE, prob = c(0.4, 0.1, 0.5)))
 thetahat <- c(1, 1.7, 2)
 
 #Categorical relative risk function
@@ -169,7 +175,7 @@ cft <- function(X){
    return(X)
 }
 
-\dontrun{
+
 pifplot <- pif.sensitivity(X, thetahat = thetahat, rr = rr, cft = cft, 
                            title = "Sensitivity analysis of PIF for excess-weight",
                            colors = rainbow(4), 
@@ -178,8 +184,8 @@ pifplot <- pif.sensitivity(X, thetahat = thetahat, rr = rr, cft = cft,
 pifplot              
 
 #You can edit pifplot as it is a ggplot object
-require(ggplot2)
-pifplot + theme_classic()
+#require(ggplot2)
+#pifplot + theme_classic()
 }
 
 }

@@ -5,23 +5,20 @@
 \title{Plot of Potential Impact Fraction under different values of Relative 
   Risk's parameter theta (univariate)}
 \usage{
-pif.plot(X, thetalow, thetaup, rr, cft = NA,
-  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))),
-  method = c("empirical", "kernel", "approximate"), adjust = 1, n = 512,
-  mpoints = 100, Xvar = var(X), deriv.method.args = list(),
-  deriv.method = c("Richardson", "complex"), ktype = c("gaussian",
-  "epanechnikov", "rectangular", "triangular", "biweight", "cosine",
-  "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-  confidence_method = c("bootstrap", "linear", "loglinear"),
-  confidence = 95, colors = c("deepskyblue", "gray25"), xlab = "Theta",
-  ylab = "PIF",
+pif.plot(X, thetalow, thetaup, rr, cft = NA, method = "empirical",
+  confidence_method = "bootstrap", confidence = 95, nsim = 100,
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), mpoints = 100,
+  adjust = 1, n = 512, Xvar = var(X), deriv.method.args = list(),
+  deriv.method = "Richardson", ktype = "gaussian", bw = "SJ",
+  colors = c("deepskyblue", "gray25"), xlab = "Theta", ylab = "PIF",
   title = "Potential Impact Fraction (PIF) under different values of theta",
   check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
   is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (\code{data.frame}) which includes exposure 
-and covariates.}
+and covariates or sample \code{mean} if \code{"approximate"} method is 
+selected.}
 
 \item{thetalow}{Minimum of \code{theta} (parameter of relative risk 
 \code{rr}) for plot.}
@@ -34,14 +31,26 @@ and covariates.}
 
 **Optional**}
 
-\item{cft}{\code{function} \code{cft(X)} for counterfactual. Leave 
-empty for the Population Attributable Fraction \code{\link{paf}} where 
-counterfactual is 0 exposure.}
+\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
+the Population Attributable Fraction \code{\link{paf}} where 
+counterfactualis the theoretical minimum risk exposure \code{X0} such that 
+\code{rr(X0,theta) = 1}.}
+
+\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
+\code{"approximate"}. For details on estimation methods see 
+\code{\link{pif}}.}
+
+\item{confidence_method}{Either \code{bootstrap} (default) \code{inverse}, 
+\code{one2one}, \code{linear}, \code{loglinear}. See \code{\link{paf}} 
+details for additional information.}
+
+\item{confidence}{Confidence level \% (default \code{95}).}
+
+\item{nsim}{Number of simulations to generate confidence intervals.}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
-\code{"approximate"}.}
+\item{mpoints}{Number of points in plot.}
 
 \item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
@@ -50,10 +59,8 @@ method) from \code{\link[stats]{density}}.}
 \code{"kernel"} method) is to be estimated (see 
 \code{\link[stats]{density}}).}
 
-\item{mpoints}{Number of points in plot.}
-
 \item{Xvar}{Variance of exposure levels (for \code{"approximate"} 
-method)}
+method).}
 
 \item{deriv.method.args}{\code{method.args} for 
 \code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).}
@@ -62,38 +69,36 @@ method)}
 Don't change this unless you know what you are doing (for 
 \code{"approximate"} method).}
 
-\item{ktype}{\code{"kernel"} type:  \code{"gaussian"}, 
+\item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
-method). Additional information on kernels in \code{\link[stats]{density}}}
+method). Additional information on kernels in \code{\link[stats]{density}}.}
 
 \item{bw}{Smoothing bandwith parameter from density (for 
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
-\item{confidence_method}{Either \code{"linear"}, \code{"loglinear"}, 
-\code{"bootstrap"}}
+\item{colors}{\code{vector} Colours of plot.}
 
-\item{confidence}{Confidence level \% (default \code{95})}
+\item{xlab}{\code{string} Label of x-axis in plot.}
 
-\item{colors}{Colours of plot.}
+\item{ylab}{\code{string} Label of y-axis in plot.}
 
-\item{xlab}{Label of x-axis in plot.}
+\item{title}{\code{string} Title of plot.}
 
-\item{ylab}{Label of y-axis in plot.}
+\item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
+positive and numeric}
 
-\item{title}{Title of plot.}
+\item{check_rr}{\code{boolean} Check that Relative Risk function
+\code{rr} equals \code{1} when evaluated at \code{0}}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
+\item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
+and relative risk's \code{rr} expected values are well defined for this 
+scenario}
 
-\item{check_rr}{Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}.}
-
-\item{check_integrals}{Check that counterfactual of theoretical minimum risk 
-exposure and relative risk's expected values are well defined for this 
-scenario.}
-
-\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}}
+\item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}. This forces
+the \code{pif} function ignore the inputed counterfactual and set it to the
+theoretical minimum risk value of \code{1}.}
 }
 \value{
 pif.plot       \code{\link[ggplot2]{ggplot}} object with plot of 
@@ -111,7 +116,7 @@ Function that plots the \code{\link{pif}} under different values
 #-----------------------------------------------------
 \dontrun{
 set.seed(18427)
-X <- rbeta(25, 4.2, 10)
+X <- data.frame(Exposure = rbeta(25, 4.2, 10))
 pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)})
 
 #Same example with kernel method
@@ -119,7 +124,7 @@ pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, 
 title = "Kernel method example") 
  
 #Same example for approximate method. Notice that approximate method has more uncertainty
-Xmean <- mean(X)
+Xmean <- data.frame(mean(X[,"Exposure"]))
 Xvar  <- var(X)
 pif.plot(Xmean, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, 
 method = "approximate", Xvar = Xvar, title = "Approximate method example")
@@ -145,6 +150,6 @@ Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 \code{\link{pif}} for Potential Impact Fraction estimation with
   confidence intervals \code{\link{pif.confidence}}.
   
-  \code{\link{paf.plot}} for same plot with Population Attributable Fraction.
+  \code{\link{paf.plot}} for same plot with Population Attributable Fraction \code{\link{paf}}.
 }
 

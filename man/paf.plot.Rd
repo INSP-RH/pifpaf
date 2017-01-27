@@ -2,24 +2,22 @@
 % Please edit documentation in R/paf_plot.R
 \name{paf.plot}
 \alias{paf.plot}
-\title{Plot of Population Attributable Fraction under different values of
+\title{Plot of Population Attributable Fraction under different values of 
   Relative Risk's parameter theta (univariate)}
 \usage{
-paf.plot(X, thetalow, thetaup, rr, weights = rep(1/nrow(as.matrix(X)),
-  nrow(as.matrix(X))), method = c("empirical", "kernel", "approximate"),
-  adjust = 1, n = 512, mpoints = 100, Xvar = var(X),
-  deriv.method.args = list(), deriv.method = c("Richardson", "complex"),
-  confidence = 95, confidence_method = c("bootstrap", "linear",
-  "loglinear"), ktype = c("gaussian", "epanechnikov", "rectangular",
-  "triangular", "biweight", "cosine", "optcosine"), bw = c("SJ", "nrd0",
-  "nrd", "ucv", "bcv"), colors = c("deepskyblue", "gray25"), xlab = "Theta",
-  ylab = "PAF",
+paf.plot(X, thetalow, thetaup, rr, method = "empirical",
+  confidence_method = "bootstrap", confidence = 95, nsim = 100,
+  weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), mpoints = 100,
+  adjust = 1, n = 512, Xvar = var(X), deriv.method.args = list(),
+  deriv.method = "Richardson", ktype = "gaussian", bw = "SJ",
+  colors = c("deepskyblue", "gray25"), xlab = "Theta", ylab = "PAF",
   title = "Population Attributable Fraction (PAF) under different values of theta",
   check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE)
 }
 \arguments{
-\item{X}{Random sample (\code{data.frame}) which includes exposure
-and covariates.}
+\item{X}{Random sample (\code{data.frame}) which includes exposure 
+and covariates or sample \code{mean} if \code{"approximate"} method is 
+selected.}
 
 \item{thetalow}{Minimum of \code{theta} (parameter of relative risk 
 \code{rr}) for plot.}
@@ -32,10 +30,21 @@ and covariates.}
 
 **Optional**}
 
+\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
+\code{"approximate"}. For details on estimation methods see 
+\code{\link{pif}}.}
+
+\item{confidence_method}{Either \code{bootstrap} (default) \code{inverse}, 
+\code{one2one}, \code{linear}, \code{loglinear}. See \code{\link{paf}} 
+details for additional information.}
+
+\item{confidence}{Confidence level \% (default \code{95}).}
+
+\item{nsim}{Number of simulations to generate confidence intervals.}
+
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
-\code{"approximate"}.}
+\item{mpoints}{Number of points in plot.}
 
 \item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
@@ -44,10 +53,8 @@ method) from \code{\link[stats]{density}}.}
 \code{"kernel"} method) is to be estimated (see 
 \code{\link[stats]{density}}).}
 
-\item{mpoints}{Number of points in plot.}
-
 \item{Xvar}{Variance of exposure levels (for \code{"approximate"} 
-method)}
+method).}
 
 \item{deriv.method.args}{\code{method.args} for 
 \code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).}
@@ -56,36 +63,32 @@ method)}
 Don't change this unless you know what you are doing (for 
 \code{"approximate"} method).}
 
-\item{confidence}{Confidence level \% (default \code{95})}
-
-\item{confidence_method}{Either \code{"linear"}, \code{"loglinear"}, 
-\code{"bootstrap"}}
-
-\item{ktype}{\code{"kernel"} type:  \code{"gaussian"}, 
+\item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
-method). Additional information on kernels in \code{\link[stats]{density}}}
+method). Additional information on kernels in \code{\link[stats]{density}}.}
 
 \item{bw}{Smoothing bandwith parameter from density (for 
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
-\item{colors}{Colours of plot.}
+\item{colors}{\code{vector} Colours of plot.}
 
-\item{xlab}{Label of x-axis in plot.}
+\item{xlab}{\code{string} Label of x-axis in plot.}
 
-\item{ylab}{Label of y-axis in plot.}
+\item{ylab}{\code{string} Label of y-axis in plot.}
 
-\item{title}{Title of plot.}
+\item{title}{\code{string} Title of plot.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
+\item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
+positive and numeric}
 
-\item{check_rr}{Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}.}
+\item{check_rr}{\code{boolean} Check that Relative Risk function
+\code{rr} equals \code{1} when evaluated at \code{0}}
 
-\item{check_integrals}{Check that counterfactual of theoretical minimum risk 
-exposure and relative risk's expected values are well defined for this 
-scenario.}
+\item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
+and relative risk's \code{rr} expected values are well defined for this 
+scenario}
 }
 \value{
 paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of 
@@ -93,8 +96,8 @@ paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of
 }
 \description{
 Function that plots the \code{\link{paf}} under different values
-  of an univariate parameter theta of the relative risk function \code{rr}
-  which depends on the exposure \code{X} and a \code{theta} parameter
+  of an univariate parameter theta of the relative risk function \code{rr} 
+  which depends on the exposure \code{X} and a \code{theta} parameter 
   (\code{rr(X, theta)})
 }
 \examples{
@@ -103,7 +106,7 @@ Function that plots the \code{\link{paf}} under different values
 #Example 1: Exponential Relative Risk empirical method
 #-----------------------------------------------------
 set.seed(18427)
-X <- rbeta(25, 4.2, 10)
+X <- data.frame(Exposure = rbeta(25, 4.2, 10))
 paf.plot(X, thetalow = 0, thetaup = 2, function(X, theta){exp(theta*X)})
 
 
@@ -112,7 +115,7 @@ paf.plot(X, 0, 2, function(X, theta){exp(theta*X)}, method = "kernel",
 title = "Kernel method example") 
  
 #Same example for approximate method
-Xmean <- mean(X)
+Xmean <- data.frame(mean(X[,"Exposure"]))
 Xvar  <- var(X)
 paf.plot(Xmean, 0, 2, function(X, theta){exp(theta*X)}, 
 method = "approximate", Xvar = Xvar, title = "Approximate method example")
@@ -125,9 +128,10 @@ Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
 Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
-\code{\link{paf}} for Population Attributable Fraction estimation
+\code{\link{paf}} for Population Attributable Fraction estimation 
   with confidence intervals \code{\link{paf.confidence}}.
   
-  \code{\link{pif.plot}} for same plot with Potential Impact Fraction.
+  \code{\link{pif.plot}} for same plot with Potential Impact Fraction 
+  \code{\link{pif}}.
 }
 

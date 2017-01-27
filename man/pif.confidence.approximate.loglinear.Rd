@@ -66,7 +66,7 @@ Confidence intervals for the Population Attributable Fraction for
 set.seed(46987)
 rr      <- function(X,theta){exp(X*theta)}
 cft     <- function(X){0.4*X}
-Xmean   <- 3
+Xmean   <- data.frame(3)
 Xvar    <- 1
 theta   <- 0.4
 thetavar <- 0.001
@@ -77,7 +77,7 @@ nsim = 1000)
 #--------------------------------------------
 X1       <- rnorm(100,3,.5)
 X2       <- rnorm(100,4,1)
-X        <- as.matrix(cbind(X1,X2))
+X        <- data.frame(cbind(X1,X2))
 Xmean    <- t(as.matrix(colMeans(X)))
 Xvar     <- cov(X)
 thetahat <- c(0.12, 0.17)

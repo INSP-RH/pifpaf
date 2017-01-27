@@ -28,9 +28,11 @@ Function for fast-computing an overall PAF from subpopulation
 #-------------
 
 #Estimate PAF for each subpopulation
-pafmen   <- paf(X = 2.7, thetahat = 0.12, rr = function(X, theta){X*theta + 1},
+pafmen   <- paf(X = data.frame(2.7), thetahat = 0.12, 
+                rr = function(X, theta){X*theta + 1},
                 Xvar = 0.11, method = "approximate")
-pafwomen <- paf(X = 3.1, thetahat = 0.12, rr = function(X, theta){exp(X*theta/3)},
+pafwomen <- paf(X = data.frame(3.1), thetahat = 0.12, 
+                rr = function(X, theta){exp(X*theta/3)},
                 Xvar = 0.17, method = "approximate")
 
 #Combine estimates

@@ -52,7 +52,7 @@ The \code{force.min} option forces the relative risk \code{rr} to have
 #Example 1: Exponential Relative Risk
 #--------------------------------------------
 set.seed(18427)
-X        <- rnorm(100)
+X        <- data.frame(rnorm(100))
 thetahat <- 0.1
 thetavar <- 0.2
 rr       <- function(X, theta){exp(theta*X)}
@@ -69,7 +69,7 @@ risk.ratio.confidence(X, thetahat, rr, thetavar, force.min = TRUE)
 set.seed(18427)
 X1        <- rnorm(1000)
 X2        <- runif(1000)
-X         <- as.matrix(cbind(X1,X2))
+X         <- data.frame(cbind(X1,X2))
 thetahat  <- c(0.02, 0.01)
 thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 rr        <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
@@ -97,12 +97,12 @@ rr <- function(X, theta){
    return(r_risk)
 }
 
-risk.ratio.confidence(X, thetahat, rr, thetavar)
+risk.ratio.confidence(data.frame(X), thetahat, rr, thetavar)
 
 #Example 4: Categorical Relative Risk & continuous exposure
 #----------------------------------------------------------
 set.seed(18427)
-BMI      <- rlnorm(100, 3.1, sdlog = 0.1)
+BMI      <- data.frame(rlnorm(100, 3.1, sdlog = 0.1))
 thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, Obese = 2.5)
 thetavar <- diag(c(0.5, 0.1, 0.1, 0.2))
 rr       <- function(X, theta){
@@ -139,7 +139,7 @@ rr <- function(X, theta){
    return(r_risk)
 }    
 
-risk.ratio.confidence(X, thetahat, rr, thetavar)
+risk.ratio.confidence(data.frame(X), thetahat, rr, thetavar)
 }
 }
 \author{
@@ -155,4 +155,5 @@ Sherif, Y. .s. (1989). The lower confidence limit for the mean of
 \link{risk.ratio.approximate.confidence} for a method when only
   \code{mean(X)} and \code{var(X)} are known.
 }
+\keyword{internal}
 

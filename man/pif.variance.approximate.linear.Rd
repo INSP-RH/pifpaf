@@ -69,7 +69,7 @@ set.seed(46987)
 rr       <- function(X,theta){exp(X*theta)}
 cft      <- function(X){0.5*X}
 X        <- rbeta(100, 2, 3)
-Xmean    <- mean(X)
+Xmean    <- data.frame(mean(X))
 Xvar     <- var(X)
 theta    <- 1.2
 thetavar <- 0.15
@@ -79,14 +79,14 @@ pif.variance.approximate.linear(Xmean, theta, rr, thetavar, Xvar, cft)
 #--------------------------------------------
 X1       <- rnorm(1000,3,.5)
 X2       <- rnorm(1000,4,1)
-X        <- as.matrix(cbind(X1,X2))
+X        <- data.frame(cbind(X1,X2))
 Xmean    <- matrix(colMeans(X), ncol = 2)
 Xvar     <- cov(X)
 theta    <- c(0.12, 0.17)
 thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 pif.variance.approximate.linear(Xmean, theta, rr, thetavar, Xvar,
-cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
+cft = function(X){cbind(0.5*X[,1],0.4*X[,2])}, check_integrals = FALSE)
 
 }
 \author{

@@ -64,24 +64,25 @@ Function that calculates approximate confidence intervals of the
 #Example 1: Exponential Relative Risk
 #--------------------------------------------
 set.seed(18427)
-X <- rnorm(1000, 3,.7)
+X <- data.frame(rnorm(1000, 3,.7))
 thetahat <- 0.4
 thetalow <- 0.1
 thetaup  <- 0.7
-paf.confidence.one2one(X, thetahat, function(X, theta){exp(theta*X)}, thetalow, thetaup)
+paf.confidence.one2one(X, thetahat, function(X, theta){exp(theta*X)}, 
+thetalow, thetaup)
 
 #Approximate method:
-Xmean <- mean(X)
-Xvar  <- var(X)
-paf.confidence.one2one(Xmean, thetahat, function(X, theta){exp(theta*X)}, thetalow, thetaup, 
-Xvar = Xvar, method = "approximate")
+Xmean <- data.frame(mean(X[,1]))
+Xvar  <- var(X[,1])
+paf.confidence.one2one(Xmean, thetahat, function(X, theta){exp(theta*X)}, 
+thetalow, thetaup, Xvar = Xvar, method = "approximate")
 
 #Example 2: Multivariate example
 #--------------------------------------------
 set.seed(18427)
 X1 <- rnorm(1000,3,.7)
 X2 <- rnorm(1000,3,.7)
-X  <- as.matrix(cbind(X1,X2))
+X  <- data.frame(X1,X2)
 thetahat <- c(0.12, 0.03)
 thetalow <- c(0.05, 0.01)
 thetaup  <- c(0.25, 0.06)
@@ -89,7 +90,7 @@ rr <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 paf.confidence.one2one(X, thetahat, rr, thetalow, thetaup) 
 
 #Approximate method:
-Xmean <- matrix(colMeans(X), ncol = 2)
+Xmean <- data.frame(t(colMeans(X)))
 Xvar  <- var(X)
 paf.confidence.one2one(Xmean, thetahat, 
 function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}, 

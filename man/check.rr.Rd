@@ -26,7 +26,9 @@ Function for checking that Relative Risk \code{rr} equals
   \code{1} when evaluated in \code{0}.
 }
 \examples{
-check.rr(as.matrix(rnorm(100)), 1, function(X, theta){exp(X*theta)})
+X  <- data.frame(rnorm(100))
+rr <- function(X, theta){exp(X*theta)}
+check.rr(X, 1, rr)
 
 }
 \author{

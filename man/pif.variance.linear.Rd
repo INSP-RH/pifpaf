@@ -50,7 +50,7 @@ Function that calculates approximate variance of the potential
 #Example 1: Exponential Relative risk
 #--------------------------------------------
 set.seed(18427)
-X <- rnorm(100,3,.5)
+X <- data.frame(rnorm(100,3,.5))
 thetahat <- 0.12
 thetavar <- 0.1
 pif.variance.linear(X, thetahat, function(X, theta){exp(theta*X)}, 
@@ -67,7 +67,7 @@ pif.variance.linear(X, thetahat, function(X, theta){exp(theta*X)},
 set.seed(18427)
 X1 <- rnorm(100, 3,.5)
 X2 <- runif(100, 1, 1.5)
-X  <- as.matrix(cbind(X1,X2))
+X  <- data.frame(cbind(X1,X2))
 thetahat <- c(0.1, 0.03)
 thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 rr        <- function(X, theta){

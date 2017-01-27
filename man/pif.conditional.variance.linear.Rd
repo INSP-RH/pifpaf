@@ -41,7 +41,7 @@ Function that calculates the conditional variance of the
 #Example 1: Exponential Relative risk
 #--------------------------------------------
 set.seed(18427)
-X        <- rnorm(100,3,.5)
+X        <- data.frame(rnorm(100,3,.5))
 thetahat <- 0.12
 rr       <- function(X, theta){exp(theta*X)}
 
@@ -57,7 +57,7 @@ pif.conditional.variance.linear(X, thetahat,  rr = function(X, theta){exp(theta*
 set.seed(18427)
 X1 <- rnorm(100, 3,.5)
 X2 <- runif(100, 1, 1.5)
-X  <- as.matrix(cbind(X1,X2))
+X  <- data.frame(cbind(X1,X2))
 thetahat  <- c(0.1, 0.03)
 rr        <- function(X, theta){
            .X <- as.matrix(X, ncol = 2)

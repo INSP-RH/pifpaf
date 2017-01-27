@@ -62,11 +62,11 @@ The \code{force.min} option forces the relative risk \code{rr} to have a
 #' #Example 1: Exponential Relative Risk
 #--------------------------------------------
 set.seed(18427)
-X        <- rnorm(100)
+X        <- data.frame(rnorm(100))
 thetahat <- 0.1
 thetavar <- 0.2
-Xmean    <- mean(X)
-Xvar     <- var(X)
+Xmean    <- data.frame(mean(X[,1]))
+Xvar     <- var(X[,1])
 rr      <- function(X,theta){exp(X*theta)}
 risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, rr, thetavar)
 
@@ -80,7 +80,7 @@ risk.ratio.approximate.confidence(Xmean, Xvar, thetahat, rr, thetavar, force.min
 set.seed(18427)
 X1        <- rnorm(1000)
 X2        <- runif(1000)
-X     <- colMeans(cbind(X1,X2))
+X         <- data.frame(t(colMeans(cbind(X1,X2))))
 Xvar      <- cov(cbind(X1,X2))
 thetahat  <- c(0.02, 0.01)
 thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
@@ -102,4 +102,5 @@ Sherif, Y. .s. (1989). The lower confidence limit for the mean of
 \link{risk.ratio.confidence} for a method when there is a sample of 
  the exposure.
 }
+\keyword{internal}
 
