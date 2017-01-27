@@ -269,8 +269,6 @@ pif.confidence(X = tobacco_consumption, thetahat = thetahat, thetavar = thetavar
 
 We remark that ``"bootstrap"`` is the only ``confidence_method`` designed for categorical relative risks. 
 
-<div style = "background-color: red;"> AND IF USING APPROXIMATE??? </div>
-
 The ``counterfactual.plot`` function produces an appropriate plot for the discrete exposure:
 ```{r, fig.width=7, fig.height=4}
 counterfactual.plot(tobacco_consumption, cft)
@@ -438,10 +436,8 @@ is a consistent estimator of the Potential Impact Fraction ($\textrm{PIF}$).
 
 Sometimes researchers do not have a random sample of the exposure $X$; nevertheless, they posess $m$, $s^2$ estimators of the exposure's mean and variance (respectively). Furthermore, assume that for each $\theta$ the Relative Risk function $RR(\cdot, \theta)$ has a second order Taylor Expansion for all $X$ and that the counter-factual function is twice differentiable. An approximate point estimate for PIF is given by the Laplace approximation:
 
-<div style = "background-color:red"> THIS DERIVATIVES SHOULD BE PARTIAL </div>
-
 \begin{equation}
-\widehat{\textrm{PIF}}= 1-\frac{RR(\textrm{cft}(m),\theta) + \frac{1}{2}\left(\frac{\partial^2RR}{\partial \textrm{cft}^2}\cdot\left(\frac{d \textrm{cft}}{d X}\right)^2 + \frac{\partial RR}{\partial \textrm{cft}}\cdot \frac{d ^2 \textrm{cft}}{d X^2}\right)\Big|_m s^2}{RR(m;\hat{\theta})+\frac{1}{2} \frac{\partial^2 RR(X;\hat{\theta})}{\partial X^2}|_{m}s^2}.
+\widehat{\textrm{PIF}}= 1-\frac{RR(\textrm{cft}(m),\theta) + \frac{1}{2}\sum\limits_{i=1}^n\sum\limits_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(\textrm{cft}(X),\theta\big)}{\partial X_i \partial X_j}\Big|_m}{RR(m;\hat{\theta})+\frac{1}{2} \sum\limits_{i=1}^n\sum\limits_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(X,\theta\big)}{\partial X_i \partial X_j}\Big|_m}.
 \end{equation}
 
 The approximate method solely requires the sample mean and variance $m$, $s^2$ and not the whole sample. If the sample is available, the other methods should be prefered.  
@@ -472,45 +468,57 @@ Note that for the approximate method the correct input is mean and variance of X
 
 
 ### Confidence Intervals
+The bootstrap method is the recommended method to calculate confidence intervals for the kernel and empirical point estimate. However this method can not be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal, i.e. $\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)$. The following table shows the methods to estimate confidence intervals and when each of the methods can be used.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cccc}
+        Confidence Interval & Point Estimate & PAF or PIF & Extra Assumptions \\ \hline
+        \hline
+    \multirow{2}{*}{Bootstrap }
+ & Kernel &\multirow{2}{*}{PIF \& PAF} &\multirow{2}{*}{None}\\
+ & Empirical &  &\\ 
+      \hdashline  
+    \multirow{2}{*}{Linear}
+ & Empirical & \multirow{2}{*}{PIF \& PAF}&\multirow{2}{*}{None}\\ 
+ & Approximate && \\
+    \hdashline
+     \multirow{2}{*}{Log-linear}
+ & Empirical & \multirow{2}{*}{PIF \& PAF}&\multirow{2}{*}{None}\\ 
+ & Approximate && \\
+ \hdashline
+     \multirow{2}{*}{Inverse}
+ & Empirical & \multirow{2}{*}{PAF} & \multirow{2}{*}{$RR(X,\theta)$ is injective in $X$}\\
+ & Approximate & &\\
+ \hdashline
+     \multirow{2}{*}{One to one}
+ & Empirical & \multirow{2}{*}{PAF} & \multirow{2}{*}{$RR(X,\theta)$ is injective in $X$ and $\theta$}\\ 
+ & Approximate & & \\
+ \hline 
+ \hline
+    \end{tabular}
+    \caption{Usage of confidence interval methods}
+    \label{fig:CI_methods}
+\end{table}
+Remember that to calculate the point estimate  of $\widehat{\textrm{PIF}}$ the relative risk function $RR(X,\theta)$ and the counter-factual function $\textrm{cft}(X)$ must be continuously differentiable in terms of $X$.
+A brief explanation of each of the methods is given below.
 
 #### Bootstrap
+Bootstrap consists on resampling with replacement several times from a given random sample, in this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\sigma^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is calculated with the selected method (empirical or kernel). Once  $\widehat{\textrm{PIF}}_j$ has been calculated for every sample $X^j$ a confidence interval is calculated using the pivotal method  @wasserman2006nonparametric.
 
 #### Linear
+For the linear, log-linear and inverse method the variance of $\widehat{\textrm{PIF}}$ or a transformation of  $\widehat{\textrm{PIF}}$ is calculated for a fixed value of $\theta$. Then simulations of $\theta$ and conditional variance is used to account uncertainty in $\theta$.
+The linear method considers Taylor's first order approximation (linearization) of $\widehat{\textrm{PIF}}$ and the variance for $\widehat{\textrm{PIF}}$ is calculated as the variance of the linearization. This approach is better known as the Delta Method @casella2002statistical. 
 
-#### Loglinear
+#### Log-linear
+First we calculate the $(1-\alpha)$ confidence interval for $\textrm{log}(1-\widehat{\textrm{PIF}})$ ($\textrm{IC}_{\textrm{log}}$) , then it is transformed as $1-e^{\textrm{IC}_{\textrm{log}}}$. Since $1-e^x$ is a one to one function the confidence interval of $\widehat{\textrm{PIF}}$ is at least a  $(1-\alpha)$ confidence interval @bar1999confidence.
 
-#### Injective
+#### Inverse
+The inverse method can be used only for confidence intervals of $\widehat{\textrm{PAF}}$. The confidence interval ($\textrm{IC}_{RR}$) for $RR(X,\theta)$ (approximate method) or for $\sum_{i=1}^{\infty}w_iRR(X_i,\theta)$ (empirical method) is calculated and then transformed to a confidence interval of $\widehat{\textrm{PAF}}$ by $1-1/\textrm{IC}_{RR}$. Once again the transformation $1-1/x$ is injective, therefore from a $(1-\alpha)$ confidence interval for $\textrm{IC}_{RR}$ a confidence interval of $\widehat{\textrm{PAF}}$  at least  $(1-\alpha)$ confidence can be calculated @bar1999confidence.
 
-#### One 2 one
+#### One to one
+The one to one method is similar to the inverse method, for the confidence interval $\textrm{IC}_{RR}$ is calculated. The difference lies on how uncertainty on $\theta$ is calculated. The inverse method uses simulations of $\theta$, while the one to one method considers the upper and lower bounds of a $1-\beta$ confidence interval of $\theta$ to calculate a $1-\alpha$ confidence interval $\textrm{IC}_{RR}$, where $\alpha>\beta$ @bar1999confidence.
 
-<div style = "background-color: red"> Dalia  please complete this section from your appendix</div>
-
-<!--
-To get the confidence intervals of the PAF we must calculate the variance of PAF (or of a transformation of the PAF), notice that uncertainty comes from two sources: the exposure data $X$ and the Relative Risk parameter $\theta$. Since we have a sample of the exposure values and the point estimate and confidence intervals of parameter $\theta$ we use conditional probability:
-
-\begin{equation}\label{conditioningvar}
-\textrm{Var} \left(A \right)  = E_{B} \left[ \textrm{Var} \left( A \left. \right| B \right) \right] + \textrm{Var}_{B} \left[ E\left( A \left. \right| B\right)  \right],
-\end{equation}
-conditioning on $\theta$.
-
-Four different approaches to get confidence intervals were taken. 
-
-1. The linear method, that calculates the confidence interval for the linearization of PAF.
-2. The loglinear method in which the confidence interval for $g(\hat{\theta}) = \text{ln}\left(1 - \widehat{PAF}(\hat{\theta})\right)=\hat{\mu}_n(\theta)$ is calculated and then transformed to get PAF confidence interval.
-3. The inverse method consists on estimating the confidence intervals for $\hat{\mu}_n(\theta)$ and then inverting.
-4. The one to one method estimates of conditional confidence intervals for $R_O(\theta)$  (as in the inverse method) are calculated and applied to the lower and upper bounds of $\theta$ to obtain a confidence interval[@bar1999confidence].
-
-All confidence intervals are constructed assuming asymptotic normality. 
-
-###Approximate empirical method
-In the previous section estimates were calculated assuming one has a sample of exposure levels, however this might not be the case. It may occur that the only available information is the sample-mean $\hat{\mu}$ and sample-variance $\hat{\sigma}^2$  of the exposure levels. To avoid errors that arise from distribution mis-specification we propose using the estimator:
-
-\begin{equation}
-\widehat{PAF}= 1-\frac{1}{R(\hat{\mu};\hat{\theta})+\frac{1}{2} \frac{\partial^2 R(x;\hat{\theta})}{\partial x^2}|_{\hat{\mu}}\hat{\sigma}^2}\label{approxpaf}
-\end{equation}
-
-To calculate confidence intervals using the approximate point estimate the variance was calculated considering the linearization of PAF. (The resulting confidence intervals are different than those for the empirical method using linear confidence intervals.)
--->
 
 ## Advanced examples
 
@@ -638,7 +646,7 @@ The approximate PAF is given by:
 paf(Xmean, thetahat, rr, Xvar = Xvar, method = "approximate")
 ```
 
-Additional options can be changed to improve the derivative method:
+Additional options can be changed to improve the derivation method:
 ```{r}
 paf(Xmean, thetahat, rr, Xvar = Xvar, 
     method = "approximate", 
@@ -651,9 +659,7 @@ paf(Xmean, thetahat, rr, Xvar = Xvar,
 
 By default, confidence intervals for the [empirical](#the-empirical-potential-impact-fraction) and [kernel](#kernel-based-potential-impact-fraction) methods are [bootstrap](#bootstrap); for the [approximate](#approximate-empirical-potential-impact-fraction) method default is [loglinear](#loglinear). 
 
-<div style = "background-color: red"> CHECK FOLLOWING PARAGRAPH IS OK </div>
-
-For the Population Attributable Fraction additional options are available: `"one2one"` and `"inverse"`. These are "smaller" confidence intervals however require additional theoretical considerations. The `"inverse"` method requires that the expected value of the Relative Risks is injective as a function of $\theta$. The `"one2one"` uses theta's confidence interval $[\theta_{\textrm{low}}, \theta_{\textrm{high}}]$] instead of the variance to generate confidence intervals of at least the same confidence level. 
+When calculating confidence intervals for the Population Attributable Fraction additional methods are available: `"one2one"` and `"inverse"`. These are "smaller" confidence intervals, however additional assumptions are required. The `"inverse"` method requires that the Relative Risk is injective as a function of $X$. The `"one2one"` requires that the Relative Risk is injective as a function of $X$ and $\theta$. The `"one2one"` instead of receiving the estimated variance of $\theta$ it receives $\theta$'s confidence interval $[\theta_{\textrm{low}}, \theta_{\textrm{high}}]$]. 
 
 #### Force min
 
