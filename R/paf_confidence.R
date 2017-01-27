@@ -132,6 +132,7 @@
 #' #Using bootstrap method
 #' paf.confidence(X, thetahat, rr, thetavar)
 #' 
+#' \dontrun{
 #' #Same example with loglinear method
 #' paf.confidence(X, thetahat, rr, thetavar, confidence_method = "loglinear")
 #' 
@@ -186,12 +187,14 @@
 #'              
 #' paf.confidence(Xmean, thetahat, rr_better, thetavar,
 #'                method = "approximate", Xvar = Xvar)
+#' }
 #' \donttest{
 #' #Warning: $ operator in rr definitions don't work in approximate
 #' paf.confidence(Xmean, thetahat, rr_not, thetavar,
 #'                method = "approximate", Xvar = Xvar)
 #' }
 #' 
+#' \dontrun{
 #' #Example 4: Categorical Relative Risk & Exposure
 #' #--------------------------------------------
 #' set.seed(18427)
@@ -217,6 +220,7 @@
 #' }
 #' 
 #' paf.confidence(X, thetahat, rr, thetavar, check_rr = FALSE)
+#' 
 #' 
 #' #Example 5: Continuous Exposure and Categorical Relative Risk
 #' #------------------------------------------------------------------
@@ -303,6 +307,7 @@
 #' }
 #' 
 #' paf.confidence(X, thetahat, rr, thetavar)
+#' }
 #' @export
 
 paf.confidence <- function(X, thetahat, rr,  thetavar = NA,

@@ -88,6 +88,7 @@
 #'@importFrom MASS mvrnorm
 #'@importFrom numDeriv grad
 #'@importFrom stats qnorm
+#'@keywords internal
 #'@export
 
 risk.ratio.approximate.confidence <- function(X, Xvar, thetahat, rr, thetavar,

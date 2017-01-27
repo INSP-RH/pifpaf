@@ -52,14 +52,15 @@
 #'   \code{"kernel"} method) is to be estimated (see 
 #'   \code{\link[stats]{density}}).
 #'   
-#' @param check_integrals Check that counterfactual of theoretical minimum risk 
-#'   exposure and relative risk's expected values are well defined for this 
-#'   scenario.
+#' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
+#'   and relative risk's \code{rr} expected values are well defined for this 
+#'   scenario
 #'   
-#' @param check_exposure  Check exposure \code{X} is positive and numeric.
+#' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
+#'   positive and numeric
 #'   
-#' @param check_rr        Check Relative Risk function \code{rr} equals \code{1}
-#'   when evaluated at \code{0}.
+#' @param check_rr        \code{boolean} Check that Relative Risk function
+#'   \code{rr} equals \code{1} when evaluated at \code{0}
 #'   
 #' @return paf      Estimate of Population Attributable Fraction.
 #'   

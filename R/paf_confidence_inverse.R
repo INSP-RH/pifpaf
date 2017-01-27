@@ -54,6 +54,7 @@
 #' thetavar <- 0.1
 #' paf.confidence.inverse(X, thetahat, function(X, theta){exp(theta*X)}, thetavar)
 #' 
+#' \dontrun{
 #' #With approximate method
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)
@@ -80,6 +81,7 @@
 #' Xvar     <- cov(X)
 #'paf.confidence.inverse(Xmean, thetahat, rr=rr, thetavar = thetavar, 
 #'method = "approximate", Xvar = Xvar)
+#'}
 #' 
 #' @keywords internal
 #' @export

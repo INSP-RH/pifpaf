@@ -1,13 +1,19 @@
-#' @title  Graphical Sensitivity Analysis of PIF's Counterfactual
+#' @title  Graphical Sensitivity Analysis of Potential Impact Fraction's Counterfactual
 #'   
 #' @description Provides a graphic sensitivity analysis for \code{\link{pif}} by
 #'   varying the parameters of a bivariate counterfactual function \code{cft}.
+#'   By default it evaluates the counterfactual:
+#'   \deqn{
+#'   \textrm{cft}(X) = aX + b
+#'   }{
+#'   cft(X) = aX + b
+#'   }
 #'   
-#' @param X         Random sample (\code{data.frame}) which includes exposure
-#'   and covariates. or sample \code{mean} if \code{"approximate"} method is
+#' @param X         Random sample (\code{data.frame}) which includes exposure 
+#'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative
+#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
 #'   Risk function.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
@@ -16,47 +22,52 @@
 #'   **Optional**
 #'   
 #' @param cft       Function \code{cft(X, a, b)} for counterfactual dependent on
-#'   parameters \code{a} and \code{b}. Default counterfactual is linear:
+#'   one dimensional parameters \code{a} and \code{b}. Default counterfactual is linear:
 #'   \code{aX + b}.
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
 #' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
-#'   \code{"approximate"}.
+#'   \code{"approximate"}. For details on estimation methods see 
+#'   \code{\link{pif}}.
 #'   
-#' @param Xvar      Variance of exposure levels (for \code{"approximate"} method)
+#' @param Xvar      Variance of exposure levels (for \code{"approximate"} 
+#'   method).
 #'   
 #' @param deriv.method.args \code{method.args} for 
 #'   \code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).
 #'   
 #' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
-#'   Don't change this unless you know what you are doing (for
+#'   Don't change this unless you know what you are doing (for 
 #'   \code{"approximate"} method).
 #'   
-#' @param ktype    \code{"kernel"} type:  \code{"gaussian"}, 
+#' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
 #'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
-#'   method). Additional information on kernels in \code{\link[stats]{density}}
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
+#'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for \code{"kernel"}
-#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#' @param bw        Smoothing bandwith parameter from density (for 
+#'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
+#'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"}
+#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
-#' @param n   Number of equally spaced points at which the density (for
-#'   \code{"kernel"} method) is to be estimated (see
+#' @param n   Number of equally spaced points at which the density (for 
+#'   \code{"kernel"} method) is to be estimated (see 
 #'   \code{\link[stats]{density}}).
 #'   
-#' @param check_integrals Check that counterfactual and relative risk's expected
-#'   values are well defined for this scenario.
+#' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
+#'   and relative risk's \code{rr} expected values are well defined for this 
+#'   scenario
 #'   
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric.
+#' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
+#'   positive and numeric
 #'   
-#' @param check_rr        Check that Relative Risk function \code{rr} equals 
-#'   \code{1} when evaluated at \code{0}.
+#' @param check_rr        \code{boolean} Check that Relative Risk function
+#'   \code{rr} equals \code{1} when evaluated at \code{0}
 #'   
-#' @param legendtitle   String title for the legend of plot.
+#' @param legendtitle   \code{string} title for the legend of plot.
 #'   
 #' @param mina          Minimum for parameter \code{a} for the counterfactual.
 #'   
@@ -68,21 +79,21 @@
 #'   
 #' @param nmesh         Number of tiles in plot (default \code{10}).
 #'   
-#' @param title         String title for the plot.
+#' @param title         \code{string} title for the plot.
 #'   
-#' @param xlab          String label for the X-axis of the plot (corresponding
+#' @param xlab          \code{string} label for the X-axis of the plot (corresponding
 #'   to "a").
 #'   
-#' @param ylab          String label for the Y-axis of the plot (corresponding
+#' @param ylab          \code{string} label for the Y-axis of the plot (corresponding
 #'   to "b").
 #'   
 #' @param colors       Colors of heatmap.
 #'   
 #' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a heatmap
-#'   with sensitivity analysis
+#'   with sensitivity analysis of the counterfactual.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
 #'   
 #' @seealso \code{\link{pif}} for Potential Impact Fraction estimation,
 #'   \code{\link{pif.sensitivity}} for data-driven for sensitivity analysis of
@@ -93,12 +104,12 @@
 #' 
 #' #Example 1
 #' #------------------------------------------------------------------
-#' X  <- rnorm(25,3)                        #Sample
+#' X  <- data.frame(rnorm(25,3))            #Sample
 #' rr <- function(X,theta){exp(X*theta)}    #Relative risk
 #' theta <- 0.01                            #Estimate of theta
 #' pif.heatmap(X, theta = theta, rr = rr)
 #' 
-#' #Save file
+#' #Save file using ggplot2
 #' #require(ggplot2)
 #' #ggsave("My Potential Impact Fraction Analysis.pdf")
 #' 
@@ -108,7 +119,7 @@
 #' 
 #' #Example 2
 #' #------------------------------------------------------------------
-#' X     <- rbeta(100, 1, 0.2)
+#' X     <- data.frame(Exposure = rbeta(100, 1, 0.2))
 #' theta <- c(0.12, 1)
 #' rr    <- function(X,theta){X*theta[1] + theta[2]}
 #' cft   <- function(X, a, b){sin(a*X)*b}
@@ -117,7 +128,7 @@
 #'      title = "PIF with counterfactual cft(X) = sin(a*X)*b")
 #' 
 #' #Change estimation method to approximate
-#' Xmean <- mean(X)
+#' Xmean <- data.frame(mean(X[,"Exposure"]))
 #' Xvar  <- var(X)
 #' pif.heatmap(Xmean, Xvar = Xvar, theta = theta, rr = rr, cft = cft, 
 #'      nmesh = 15, colors = rainbow(30), method = "approximate",
@@ -126,8 +137,7 @@
 #' 
 #' #Example 3: Plot univariate counterfactuals
 #' #------------------------------------------------------------------
-#' require(ggplot2)
-#' X       <- rgamma(100, 1, 0.2)
+#' X       <- data.frame(rgamma(100, 1, 0.2))
 #' theta   <- c(0.12, 1)
 #' rr      <- function(X,theta){X*theta[1] + theta[2]}
 #' cft     <- function(X, a, b){sqrt(a*X)}   #Leave two variables in it
@@ -138,29 +148,30 @@
 #' pifplot
 #' 
 #' #You can also add additional ggplot objects
-#' require(ggplot2)
-#' pifplot + annotate("text", x = 0.25, y = 0.4, label = "10yr scenario") + 
-#' geom_vline(aes(xintercept = 0.5), linetype = "dashed") +
-#' geom_segment(aes(x = 0.25, y = 0.38, xend = 0.5, yend = 0.3), 
-#' arrow = arrow(length = unit(0.25, "cm")))
+#' #require(ggplot2)
+#' #pifplot + annotate("text", x = 0.25, y = 0.4, label = "10yr scenario") + 
+#' #geom_vline(aes(xintercept = 0.5), linetype = "dashed") +
+#' #geom_segment(aes(x = 0.25, y = 0.38, xend = 0.5, yend = 0.3), 
+#' #arrow = arrow(length = unit(0.25, "cm")))
 #' 
 #' #Example 4: Plot counterfactual with categorical risks
 #' #------------------------------------------------------------------
 #' set.seed(18427)
-#' X        <- sample(c("Normal","Overweight","Obese"), 100, 
-#'                    replace = TRUE, prob = c(0.4, 0.1, 0.5))
+#' X        <- data.frame(Exposure = 
+#'               sample(c("Normal","Overweight","Obese"), 100, 
+#'                       replace = TRUE, prob = c(0.4, 0.1, 0.5)))
 #' thetahat <- c(1, 1.7, 2)
 #' 
 #' #Categorical relative risk function
 #' rr <- function(X, theta){
 #' 
 #'    #Create return vector with default risk of 1
-#'    r_risk <- rep(1, length(X))
+#'    r_risk <- rep(1, nrow(X))
 #'    
 #'    #Assign categorical relative risk
-#'    r_risk[which(X == "Normal")]      <- thetahat[1]
-#'    r_risk[which(X == "Overweight")]  <- thetahat[2]
-#'    r_risk[which(X == "Obese")]       <- thetahat[3]
+#'    r_risk[which(X[,"Exposure"] == "Normal")]      <- thetahat[1]
+#'    r_risk[which(X[,"Exposure"] == "Overweight")]  <- thetahat[2]
+#'    r_risk[which(X[,"Exposure"] == "Obese")]       <- thetahat[3]
 #'    
 #'    return(r_risk)
 #' }
@@ -170,12 +181,14 @@
 #' cft <- function(X, per.over, per.obese){
 #' 
 #'    #Find the overweight and obese individuals
-#'    which_obese <- which(X == "Obese")
-#'    which_over  <- which(X == "Overweight")
+#'    which_obese <- which(X[,"Exposure"] == "Obese")
+#'    which_over  <- which(X[,"Exposure"] == "Overweight")
 #'    
 #'    #Reduce per.over % of overweight and per.obese % of obese
-#'    X[sample(which_obese, length(which_obese)*per.obese)] <- "Normal"
-#'    X[sample(which_over,  length(which_over)*per.over)]   <- "Normal"
+#'    X[sample(which_obese, length(which_obese)*per.obese),
+#'        "Exposure"] <- "Normal"
+#'    X[sample(which_over,  length(which_over)*per.over),
+#'        "Exposure"] <- "Normal"
 #'    
 #'    return(X)
 #' }
@@ -190,17 +203,17 @@
 #' @export
 
 
-pif.heatmap <-function(X, thetahat, rr,         
+pif.heatmap <-function(X, thetahat, rr,   
+                        cft     = function(X, a, b){a*X + b},
+                        method  = "empirical",
                         weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                        method  = c("empirical", "kernel", "approximate"),
                         Xvar    = var(X), 
                         deriv.method.args = list(), 
-                        deriv.method      = c("Richardson", "complex"),
+                        deriv.method      = "Richardson",
                         adjust  = 1, 
                         n       = 512,
-                        ktype   = c("gaussian", "epanechnikov", "rectangular", "triangular", 
-                                    "biweight","cosine", "optcosine"), 
-                        bw      = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
+                        ktype   = "gaussian", 
+                        bw      = "SJ",
                         legendtitle = "PIF",
                         mina    = 0, 
                         maxa    = 1, 
@@ -211,7 +224,6 @@ pif.heatmap <-function(X, thetahat, rr,
                                          "\nf(X)= aX+b"),
                         xlab    = "a", 
                         ylab    = "b", 
-                        cft     = function(X, a, b){a*X + b},
                         colors  = rev(heat.colors(nmesh)),
                         check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   

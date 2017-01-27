@@ -34,13 +34,11 @@
 #'   
 #' @param nsim      Number of simulations for estimation of variance.
 #'   
-#' @param confidence Confidence level \% (default \code{95}). If 
-#'   \code{confidence_method} \code{"one2one"} is selected, \code{confidence} 
-#'   should be at least the one from \code{theta}'s confidence interval.
+#' @param confidence Confidence level \% (default \code{95}). 
 #'   
 #' @param confidence_method  Either \code{bootstrap} (default) \code{inverse}, 
-#'   \code{one2one}, \code{linear}, \code{loglinear}. See details for additional
-#'   explanation.
+#'   \code{one2one}, \code{linear}, \code{loglinear}. See \code{\link{paf}} 
+#'   details for additional information.
 #' 
 #' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
 #'   \code{"approximate"}. For details on estimation methods see 
@@ -130,11 +128,13 @@
 #' #Using bootstrap method
 #' pif.confidence(X, thetahat, rr, thetavar, cft)
 #' 
+#' \dontrun{
 #' #Same example with loglinear method
 #' pif.confidence(X, thetahat, rr, thetavar, cft, confidence_method = "loglinear")
 #' 
 #' #Same example with linear method (usually the widest and least precise)
 #' pif.confidence(X, thetahat, rr, thetavar, cft, confidence_method = "linear")
+#' 
 #' 
 #' #Example 2: Linear Relative Risk
 #' #--------------------------------------------
@@ -195,12 +195,14 @@
 #' 
 #' pif.confidence(Xmean, thetahat, rr_better, thetavar, cft, 
 #' method = "approximate", Xvar = Xvar) 
+#' }
 #' 
 #' \donttest{
 #' #Warning: $ operator in rr definitions don't work in approximate
 #' pif.confidence(Xmean, thetahat, rr_not, thetavar, cft, method = "approximate", Xvar = Xvar)
 #' }
 #' 
+#' \dontrun{
 #' #Example 4: Categorical Relative Risk & Exposure
 #' #--------------------------------------------
 #' set.seed(18427)
@@ -233,6 +235,7 @@
 #' }
 #' 
 #' pif.confidence(X, thetahat, rr, thetavar, cft, check_rr = FALSE)
+#' 
 #' 
 #' #Example 5: Categorical Relative Risk & continuous exposure
 #' #----------------------------------------------------------
@@ -351,6 +354,7 @@
 #' }
 #' 
 #' pif.confidence(X, thetahat, rr, thetavar, cft)
+#' }
 #' @export
 
 pif.confidence <- function(X, thetahat, rr, thetavar, 

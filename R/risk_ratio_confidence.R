@@ -141,6 +141,7 @@
 #' }
 #' @importFrom MASS mvrnorm
 #' @importFrom stats qnorm
+#' @keywords internal
 #' @export
 
 risk.ratio.confidence <- function(X, thetahat, rr, thetavar, 
