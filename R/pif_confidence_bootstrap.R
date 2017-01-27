@@ -145,7 +145,8 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
     
     #Get resampled values
     .whichX  <- sample(.index, nrow(.X), replace = TRUE, prob = weights) #Resampling 
-    .Xboost  <- .X[.whichX, ]                                            #Rows = individuals
+    .Xboost  <- as.data.frame(.X[.whichX, ])                                           #Rows = individuals
+    colnames(.Xboost) <- colnames(.X)
     .wboost  <- weights[.whichX]/sum(weights[.whichX])                   #Renormalize weights ????
     
     #Get pif

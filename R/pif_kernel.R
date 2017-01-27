@@ -70,7 +70,7 @@
 #' #Example 1: Relative risk given by exponential
 #'#--------------------------------------------
 #' set.seed(18427)
-#' X        <- rnorm(100,3,.5)
+#' X        <- data.frame(rnorm(100,3,.5))
 #' thetahat <- 0.12
 #' rr       <- function(X, theta){exp(theta*X)}
 #' pif.kernel(X, thetahat, rr, cft = function(X){ 0.5*X })
@@ -93,7 +93,7 @@
 #' #Example 3: More complex counterfactual
 #' #--------------------------------------------
 #' set.seed(18427)
-#' X       <- rnorm(100,4,1)
+#' X       <- data.frame(rnorm(100,4,1))
 #' thetahat <- c(0.12, 0.03)
 #' rr       <- function(X, theta){1 + theta[1]*X + theta[2]*X^2}
 #' 

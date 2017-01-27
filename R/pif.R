@@ -1,14 +1,19 @@
 #' @title Potential Impact Fraction
 #'   
 #' @description Function for estimating the Potential Impact Fraction \code{pif}
-#'   from a cross-sectional sample of the exposure \code{X} with a known 
-#'   Relative Risk function \code{rr} with parameter \code{theta}.
+#'   from a cross-sectional sample of the exposure \code{X} with known Relative 
+#'   Risk function \code{rr} with parameter \code{theta}. Where the Potential 
+#'   Impact Fraction is given by: \deqn{ PIF = 
+#'   \frac{E_X\left[rr(X;\theta)\right] - 
+#'   E_X\left[rr\big(\textrm{cft}(X);\theta\big)\right]} 
+#'   {E_X\left[rr(X;\theta)\right]} }{ PIF = (mean(rr(X; theta)) - 
+#'   mean(rr(cft(X);theta)))/mean(rr(X; theta)) }
 #'   
-#' @param X         Random sample (\code{data.frame}) which includes exposure
-#'   and covariates. or sample \code{mean} if \code{"approximate"} method is
+#' @param X         Random sample (\code{data.frame}) which includes exposure 
+#'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Estimator (\code{vector}) of \code{theta} for the Relative
+#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
 #'   Risk function.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
@@ -18,75 +23,94 @@
 #'   **Optional**
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
-#'   the Population Attributable Fraction \code{\link{paf}} where counterfactual
-#'   is 0 exposure.
+#'   the Population Attributable Fraction \code{\link{paf}} where 
+#'   counterfactualis the theoretical minimum risk exposure \code{X0} such that 
+#'   \code{rr(X0,theta) = 1}.
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
 #' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
 #'   \code{"approximate"}.
 #'   
-#' @param Xvar      Variance of exposure levels (for \code{"approximate"} method)
+#' @param Xvar      Variance of exposure levels (for \code{"approximate"} 
+#'   method).
 #'   
 #' @param deriv.method.args \code{method.args} for 
 #'   \code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).
 #'   
 #' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
-#'   Don't change this unless you know what you are doing (for
+#'   Don't change this unless you know what you are doing (for 
 #'   \code{"approximate"} method).
 #'   
-#' @param ktype    \code{"kernel"} type:  \code{"gaussian"}, 
+#' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
 #'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
-#'   method). Additional information on kernels in \code{\link[stats]{density}}
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
+#'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for \code{"kernel"}
-#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#' @param bw        Smoothing bandwith parameter from density (for 
+#'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
+#'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"}
+#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
-#' @param n   Number of equally spaced points at which the density (for
-#'   \code{"kernel"} method) is to be estimated (see
+#' @param n   Number of equally spaced points at which the density (for 
+#'   \code{"kernel"} method) is to be estimated (see 
 #'   \code{\link[stats]{density}}).
 #'   
-#' @param check_integrals Check that counterfactual and relative risk's expected
-#'   values are well defined for this scenario.
+#' @param check_integrals Check that counterfactual of theoretical minimum risk 
+#'   exposure and relative risk's expected values are well defined for this 
+#'   scenario.
 #'   
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric.
+#' @param check_exposure  Check exposure \code{X} is positive and numeric.
 #'   
 #' @param check_rr        Check that Relative Risk function \code{rr} equals 
 #'   \code{1} when evaluated at \code{0}.
-#'
-#' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}.
+#'   
+#' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}. This forces
+#'   the \code{pif} function ignore the inputed counterfactual and set it to the
+#'   theoretical minimum risk value of \code{1}.
 #'   
 #' @return pif      Estimate of Potential Impact Fraction
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-#'   
-#' @note \code{"approximate"} method should be the last choice. In practice 
-#'   \code{"empirical"} should be prefered as convergence is faster in
-#'   simulations than \code{"kernel"} for most functions. In addition, the scope
-#'   of \code{kernel} is limited as it does not work with multivariate exposure
-#'   data \code{X}.
-#'   
-#' @note \code{\link{pif}} is a wrapper for all pif methods: 
-#'   \code{\link{pif.empirical}}, \code{\link{pif.approximate}}, 
-#'   \code{\link{pif.kernel}}.
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
 #'   
 #' @note For more information on kernels see \code{\link[stats]{density}}
+#'   
+#' @note Do not use the \code{$} operator when using \code{"approximate"}
+#'   \code{method}.
+#'   
+#' @details The \code{"empirical"} method estimates the \code{pif} by \deqn{ PIF
+#'   = 1 - \frac{\sum\limits_{i=1}^{n}w_i rr\big(cft(X_i); 
+#'   \theta\big)}{\sum\limits_{i=1}^{n} w_i rr(X_i; \theta)}. }{ PIF = 1 - 
+#'   weighted.mean(rr(cft(X), theta), weights)/ weighted.mean(rr(cft(X), theta),
+#'   weights) }
+#'   
+#'   The \code{"kernel"} method approximates the \code{\link[stats]{density}} of
+#'   the exposure \code{X} and estimates its expected value from that 
+#'   approximation: \deqn{ PIF = BLAH }{ PIF = BLAH }
+#'   
+#'   The \code{"approximate"} method conducts a Laplace approximation of the PIF
+#'   and thus estimates: \deqn{ 2 }{ 2 }
+#'   
+#'   In practice \code{"approximate"} method should be the last choice. 
+#'   Simulations have shown that \code{"empirical"}'s convergence is faster than
+#'   \code{"kernel"} for most functions. In addition, the scope of 
+#'   \code{"kernel"} is limited as it does not work with multivariate exposure 
+#'   data \code{X}.
 #'   
 #' @examples 
 #' 
 #' #Example 1: Exponential Relative Risk
 #' #--------------------------------------------
 #' set.seed(18427)
-#' X        <- rnorm(100,3,1)
+#' X        <- data.frame(Exposure = rnorm(100,3,1))
 #' thetahat <- 0.12
 #' rr       <- function(X, theta){exp(theta*X)}
 #' 
-#' #Using the empirical method. Without specifying counterfactual it matches paf
+#' #Using the empirical method. Without specifying counterfactual 
+#' #it matches paf
 #' pif(X, thetahat, rr)
 #' paf(X, thetahat, rr)
 #' 
@@ -94,8 +118,8 @@
 #' pif(X, thetahat, rr, method = "kernel")
 #' 
 #' #Same example with approximate method
-#' Xmean <- mean(X)
-#' Xvar  <- var(X)
+#' Xmean <- data.frame(Exposure = mean(X[,"Exposure"]))
+#' Xvar  <- var(X[,"Exposure"])
 #' pif(Xmean, thetahat, rr, method = "approximate", Xvar = Xvar)
 #' 
 #' #Same example considering counterfactual of halfing exposure
@@ -105,7 +129,7 @@
 #' #Example 2: Linear Relative Risk
 #' #--------------------------------------------
 #' set.seed(18427)
-#' X        <- rbeta(100,3,1)
+#' X        <- data.frame(Exposure = rbeta(100,3,1))
 #' thetahat <- 0.12
 #' rr       <- function(X, theta){theta*X + 1}
 #' cft      <-  function(X){ 0.5*X }
@@ -113,15 +137,16 @@
 #' normalized_weights  <- weights/sum(weights)
 #' pif(X, thetahat, rr, cft, weights = normalized_weights)
 #' 
-#' #Same example with more complex counterfactual that reduces only the values for
-#' #those that exceed a quantity
+#' #Same example with more complex counterfactual that reduces 
+#' #only the values for those that exceed a quantity
 #' cft       <- function(X){
 #' 
 #'    #Indentify the ones with "a lot" of exposure:
-#'    where_excess_exposure    <- which(X > 0.75)             
+#'    where_excess_exposure    <- which(X[,"Exposure"] > 0.75)             
 #'    
 #'    #Halve their exposure
-#'    X[where_excess_exposure,] <- X[where_excess_exposure,]/2  
+#'    X[where_excess_exposure, "Exposure"] <- 
+#'             X[where_excess_exposure, "Exposure"]/2  
 #'    return(X)
 #' }
 #' pif(X, thetahat, rr, cft, weights = normalized_weights)
@@ -132,33 +157,50 @@
 #' set.seed(18427)
 #' X1       <- rnorm(100,4,1)
 #' X2       <- rnorm(100,2,0.4)
-#' X        <- as.matrix(cbind(X1,X2))
+#' X        <- data.frame(Exposure = X1, Covariate = X2)
 #' thetahat <- c(0.12, 0.03)
-#' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
-#' pif(X, thetahat, rr) 
 #' 
-#' #Creating a counterfactual. As rr requires a bivariate input, cft should 
-#' #return a two-column matrix
+#' #When creating relative risks and counterfactuals avoid using $ operator
+#' #as it doesn't work under approximate method
+#' rr_not    <- function(X, theta){
+#'                exp(theta[1]*X$Exposure + theta[2]*X$Covariate)
+#'              }
+#' rr_better <- function(X, theta){
+#'                exp(theta[1]*X[,"Exposure"] + theta[2]*X[,"Covariate"])
+#'              }
+#'                                      
+#' #Creating a counterfactual. 
 #' cft  <- function(X){
-#'    cbind(X[,1]/2, 1.1*X[,2])
+#'    Y               <- X
+#'    Y[,"Exposure"]  <- 0.5*X[,"Exposure"]
+#'    Y[,"Covariate"] <- 1.1*X[,"Covariate"] + 1
+#'    return(Y)
 #' }
-#' pif(X, thetahat, rr, cft) 
+#' pif(X, thetahat, rr_better, cft) 
 #' 
-#' #Same multivariate example for approximate method calculating mean and variance
-#' Xmean <- matrix(colMeans(X), ncol = 2)
+#' #Same multivariate example for approximate method calculating 
+#' #mean and variance
+#' Xmean <- data.frame(Exposure = mean(X$Exposure), 
+#'                    Covariate = mean(X$Covariate))
 #' Xvar  <- var(X)
-#' pif(Xmean, thetahat, rr, method = "approximate", Xvar = Xvar)
+#' pif(Xmean, thetahat, rr_better, method = "approximate", Xvar = Xvar)
 #' 
+#' \donttest{
+#' #The one with $ operators doesn't work:
+#' pif(Xmean, thetahat, rr_not, method = "approximate", Xvar = Xvar)
+#' }
 #' \dontrun{
 #' #Warning: Multivariate cases cannot be evaluated with kernel method
-#' pif(X, thetahat, rr, method = "kernel") 
+#' pif(X, thetahat, rr_better, method = "kernel") 
 #' }
 #' 
 #' #Example 4: Categorical Relative Risk & Exposure
 #' #--------------------------------------------
 #' set.seed(18427)
-#' X        <- sample(c("Normal","Overweight","Obese"), 100, 
+#' mysample  <- sample(c("Normal","Overweight","Obese"), 100, 
 #'                    replace = TRUE, prob = c(0.4, 0.1, 0.5))
+#' X        <- data.frame(Exposure = mysample)
+#' 
 #' thetahat <- c(1, 1.2, 1.5)
 #' 
 #' #Categorical relative risk function
@@ -168,19 +210,18 @@
 #'    r_risk <- rep(1, nrow(X))
 #'    
 #'    #Assign categorical relative risk
-#'    r_risk[which(X[,1] == "Normal")]      <- thetahat[1]
-#'    r_risk[which(X[,1] == "Overweight")]  <- thetahat[2]
-#'    r_risk[which(X[,1] == "Obese")]       <- thetahat[3]
+#'    r_risk[which(X[,"Exposure"] == "Normal")]      <- thetahat[1]
+#'    r_risk[which(X[,"Exposure"] == "Overweight")]  <- thetahat[2]
+#'    r_risk[which(X[,"Exposure"] == "Obese")]       <- thetahat[3]
 #'    
 #'    return(r_risk)
 #' }
 #' 
-#' #Population attributable Fraction
 #' pif(X, thetahat, rr, check_rr = FALSE)
 #' 
 #' #Counterfactual of reducing all obesity to normality
 #' cft <- function(X){
-#'    X[which(X == "Obese"),] <- "Normal"
+#'    X[which(X[,"Exposure"] == "Obese"),] <- "Normal"
 #'    return(X)
 #' }
 #' 
@@ -189,71 +230,118 @@
 #' #Example 5: Categorical Relative Risk & continuous exposure
 #' #----------------------------------------------------------
 #' set.seed(18427)
-#' BMI      <- rlnorm(100, 3.1, sdlog = 0.1)
-#' thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, Obese = 2.5)
+#' BMI      <- data.frame(Exposure = rlnorm(100, 3.1, sdlog = 0.1))
+#' 
+#' #Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+#' BMI_adjusted <- BMI - 20
+#' 
+#' thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, 
+#'               Obese = 2.5)
+#'               
 #' rr       <- function(X, theta){
 #'      
 #'      #Create return vector with default risk of 1
 #'      r_risk <- rep(1, nrow(X))
 #'    
 #'      #Assign categorical relative risk
-#'      r_risk[which(X[,1] < 20)]                                 <- theta[1] #Malnourished
-#'      r_risk[intersect(which(X[,1] >= 20), which(X[,1] < 25))]  <- theta[2] #Normal
-#'      r_risk[intersect(which(X[,1] >= 25), which(X[,1] < 30))]  <- theta[3] #Overweight
-#'      r_risk[which(X[,1] >= 30)]                                <- theta[4] #Obese
+#'      r_risk[which(X[,"Exposure"] < 0)]             <- theta[1] #Malnourished
+#'      r_risk[intersect(which(X[,"Exposure"] >= 0), 
+#'                       which(X[,"Exposure"] < 5))]  <- theta[2] #Normal
+#'      r_risk[intersect(which(X[,"Exposure"] >= 5), 
+#'                       which(X[,"Exposure"] < 10))] <- theta[3] #Overweight
+#'      r_risk[which(X[,"Exposure"] >= 10)]           <- theta[4] #Obese
 #'    
 #'    return(r_risk)
 #' }
 #' 
 #' #Counterfactual of everyone in normal range
 #' cft <- function(bmi){
-#'      bmi <- matrix(rep(22.5, nrow(bmi)), ncol = 1)
+#'      bmi           <- data.frame(rep(2.5, nrow(bmi)), ncol = 1)
+#'      colnames(bmi) <- c("Exposure")
 #'      return(bmi)
 #' }
 #' 
-#' pif(BMI, thetahat, rr, cft, check_rr = FALSE, method = "empirical")
+#' pif(BMI_adjusted, thetahat, rr, cft, 
+#'     check_exposure = FALSE, method = "empirical")
 #' 
 #' 
 #' #Example 6: Bivariate exposure and rr ("classical PAF")
 #' #------------------------------------------------------------------
 #' set.seed(18427)
-#' X     <- sample(c("Exposed","Unexposed"), 1000, replace = TRUE, prob = c(0.1, 0.9))
-#' theta <- c("Exposed" = 2.5, "Unexposed" = 1.2)  
-#' rr <- function(X, theta){
+#' mysample  <- sample(c("Exposed","Unexposed"), 1000, 
+#'                 replace = TRUE, prob = c(0.1, 0.9))
+#' X         <- data.frame(Exposure = mysample)
+#' theta     <- c("Exposed" = 2.5, "Unexposed" = 1.2)   
+#' rr        <- function(X, theta){
 #'    
 #'    #Create relative risk function
-#'    r_risk <- rep(1, length(X))
+#'    r_risk <- rep(1, nrow(X))
 #'    
 #'    #Assign values of relative risk
-#'    r_risk[which(X == "Unexposed")] <- theta["Unexposed"]
-#'    r_risk[which(X == "Exposed")]   <- theta["Exposed"]
+#'    r_risk[which(X[,"Exposure"] == "Unexposed")] <- theta["Unexposed"]
+#'    r_risk[which(X[,"Exposure"] == "Exposed")]   <- theta["Exposed"]
 #'    
 #'    return(r_risk)
-#' }    
-#' 
-#' pif(X, theta, rr, check_rr = FALSE)
+#' }      
 #' 
 #' #Counterfactual of reducing the exposure in half of the individuals
 #' cft <- function(X){
 #' 
 #'    #Find out which ones are exposed
-#'    Xexp  <- which(X[,1] == "Exposed")
+#'    Xexp  <- which(X[,"Exposure"] == "Exposed")
 #'    
 #'    #Use only half of the exposed randomly
 #'    reduc <- sample(Xexp, length(Xexp)/2)
 #'    
 #'    #Unexpose those individuals
-#'    X[reduc,] <- "Unexposed"
+#'    X[reduc, "Exposure"] <- "Unexposed"
 #'    
 #'    return(X)
 #' }
 #' 
-#' pif(X, theta, rr, cft, check_rr = FALSE)
+#' pif(X, theta, rr, cft)
+#' 
+#' #Example 7: Continuous exposure, several covariates
+#' #------------------------------------------------------------------
+#' X <- data.frame(Exposure = rbeta(100, 2, 3),
+#'                 Age      = runif(100, 20, 100),
+#'                 Sex      = sample(c("M","F"), 100, replace = TRUE),
+#'                 BMI      = rlnorm(100, 3.2, 0.2))
+#' thetahat <- c(-0.1, 0.05, 0.2, -0.4, 0.3, 0.1)
+#' 
+#' rr <- function(X, theta){
+#'      #Create risk vector
+#'      Risk    <- rep(1, nrow(X))
+#'      
+#'      #Identify subpopulations
+#'      males   <- which(X[,"Sex"] == "M")
+#'      females <- which(X[,"Sex"] == "F")
+#'      
+#'      #Calculate population specific rr
+#'      Risk[males] <- theta[1]*X[males,"Exposure"] + 
+#'                                       theta[2]*X[males,"Age"]^2 + 
+#'                                       theta[3]*X[males,"BMI"]/2 
+#'                                      
+#'      Risk[females] <- theta[4]*X[females,"Exposure"] + 
+#'                                       theta[5]*X[females,"Age"]^2 + 
+#'                                       theta[6]*X[females,"BMI"]/2 
+#'                                      
+#'     return(Risk)
+#' }
+#' 
+#' #Counterfactual of reducing BMI
+#' cft <- function(X){
+#'     excess_bmi           <- which(X[,"BMI"] > 25)
+#'     X[excess_bmi,"BMI"]  <- 25
+#'     return(X)
+#' }
+#' 
+#' pif(X, thetahat, rr, cft)
 #' 
 #' @seealso  \code{\link{pif.confidence}} for confidence interval estimation, 
 #'   \code{\link{paf}} for Population Attributable Fraction estimation.
 #'   
-#'   Sensitivity analysis graphics can be done with \code{\link{pif.plot}},
+#'   Sensitivity analysis graphics can be done with \code{\link{pif.plot}}, 
 #'   \code{\link{pif.sensitivity}}, and \code{\link{pif.heatmap}}
 #'   
 #' @references Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
@@ -267,15 +355,14 @@
 
 pif <- function(X, thetahat, rr,         
                 cft     = NA,
+                method  = "empirical",
                 weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                method  = c("empirical", "kernel", "approximate"),
                 Xvar    = var(X), 
                 deriv.method.args = list(), 
-                deriv.method      = c("Richardson", "complex"),
+                deriv.method      = "Richardson",
                 adjust  = 1, n = 512,
-                ktype   = c("gaussian", "epanechnikov", "rectangular", "triangular", 
-                          "biweight","cosine", "optcosine"), 
-                bw      = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
+                ktype   = "gaussian", 
+                bw      = "SJ",
                 check_exposure = TRUE, 
                 check_integrals = TRUE,
                 check_rr = TRUE, 
@@ -286,6 +373,11 @@ pif <- function(X, thetahat, rr,
   
   #Check if counterfactual is na then estimate paf
   if (!is.function(cft)){ is_paf <- TRUE}
+  
+  #Check X is data.frame
+  if (!is.data.frame(X)){
+    warning("Exposure X should be a data.frame.")
+  }
   
   switch(.method,
          empirical   = {

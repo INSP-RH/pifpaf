@@ -24,7 +24,9 @@
 #'   \code{\link{check.exposure}}, \code{\link{check.integrals}}
 #'   
 #' @examples 
-#' check.rr(as.matrix(rnorm(100)), 1, function(X, theta){exp(X*theta)})
+#' X  <- data.frame(rnorm(100))
+#' rr <- function(X, theta){exp(X*theta)}
+#' check.rr(X, 1, rr)
 #' 
 #' @keywords internal
 #' 
@@ -39,10 +41,11 @@ check.rr <- function(X, thetahat,  rr, tol = 1.e-8){
   if(is.numeric(as.matrix(X))){
   
     #Create matrix of size 0
-    .X0 <- matrix(0, ncol = ncol(X), nrow = 1)
+    .X0           <- as.data.frame(matrix(0, ncol = ncol(X), nrow = 1))
+    colnames(.X0) <- colnames(X)
     
     #Check condition
-    if (  norm(rr(.X0, thetahat) - 1, type = "2") > tol) {
+    if (  norm(as.matrix(rr(.X0, thetahat)) - 1, type = "2") > tol) {
       .bool <- FALSE
       warning(paste("Relative Risk by definition must equal 1 when evaluated in 0.",
                     "Are you using displaced RRs?"))

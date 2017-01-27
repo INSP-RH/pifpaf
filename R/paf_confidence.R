@@ -1,136 +1,323 @@
 #' @title Confidence intervals for the Population Attributable Fraction
-#' 
-#' @description Confidence intervals for the population attributable fraction 
-#' 
-#' @param X         Random sample (can be vector or matrix) which includes exposure and covariates.
-#' 
-#' @param thetahat  Estimative of \code{theta} for the Relative Risk function
-#' 
-#' @param rr        Function for Relative Risk which uses parameter 
+#'   
+#' @description Function that estimates confidence intervals for the Population 
+#'   Attributable Fraction \code{\link{paf}} from a cross-sectional sample of 
+#'   the exposure \code{X} with a known Relative Risk function \code{rr} with 
+#'   parameter \code{theta}. Where the Population Attributable Fraction is given
+#'   by: \deqn{ PAF = 
+#'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} }{ PAF 
+#'   = mean(rr(X; theta) - 1)/mean(rr(X; theta)) }
+#'   
+#' @param X         Random sample (\code{data.frame}) which includes exposure 
+#'   and covariates or sample \code{mean} if \code{"approximate"} method is 
+#'   selected.
+#'   
+#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+#'   Risk function. That is asymptotically normal with mean \code{theta} and 
+#'   variance \code{var_of_theta}
+#'   
+#' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-#' 
-#' 
-#' **Optional**
-#' @param thetavar   Estimator of variance of thetahat
-#' 
-#' @param thetalow  Lower bound of the confidence interval (vector)
 #'   
-#' @param thetaup   Upper band of the confidence interval (vector)
-#' 
-#' @param weights    Survey \code{weights} for the random sample \code{X}.
-#' 
+#'   
+#'   **Optional**
+#'   
+#' @param thetavar   Estimator of variance \code{var_of_theta} of asymptotic 
+#'   normality of \code{thetahat}.
+#'   
+#' @param thetalow  (\code{vector}) Lower bound of the confidence interval of 
+#'   \code{theta}
+#'   
+#' @param thetaup   (\code{vector}) Upper band of the confidence interval of 
+#'   \code{theta}
+#'   
+#' @param weights   Normalized survey \code{weights} for the sample \code{X}.
+#'   
 #' @param nsim      Number of simulations for estimation of variance.
-#' 
-#' @param confidence Confidence level \% (default 95)
-#' 
-#' @param confidence_method  Either \code{inverse}, \code{one2one}, \code{linear}, \code{loglinear}, \code{bootstrap}
-#' 
-#' @param method    Either \code{empirical} (default), \code{kernel} or 
-#'   \code{approximate}.
 #'   
-#' @param Xvar      Variance of exposure levels (for \code{approximate} method)
+#' @param confidence Confidence level \% (default \code{95}). If 
+#'   \code{confidence_method} \code{"one2one"} is selected, \code{confidence} 
+#'   should be at least the one from \code{theta}'s confidence interval.
+#'   
+#' @param confidence_method  Either \code{bootstrap} (default) \code{inverse}, 
+#'   \code{one2one}, \code{linear}, \code{loglinear}. See details for additional
+#'   explanation.
+#'   
+#' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
+#'   \code{"approximate"}. For details on estimation methods see 
+#'   \code{\link{pif}}.
+#'   
+#' @param Xvar      Variance of exposure levels (for \code{"approximate"} 
+#'   method).
 #'   
 #' @param deriv.method.args \code{method.args} for 
-#'   \code{\link[numDeriv]{hessian}} (for \code{approximate} method).
+#'   \code{\link[numDeriv]{hessian}} (for \code{"approximate"} method).
 #'   
 #' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
-#'   Don't change this unless you know what you are doing (for
-#'   \code{approximate} method).
+#'   Don't change this unless you know what you are doing (for 
+#'   \code{"approximate"} method).
 #'   
 #' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
 #'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel}
-#'   method). Additional information on kernels in \code{\link[stats]{density}}
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
+#'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for \code{kernel}
-#'   method) from \code{\link[stats]{density}}. Default \code{"SJ"}.
+#' @param bw        Smoothing bandwith parameter from density (for 
+#'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
+#'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{kernel}
+#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
-#' @param n   Number of equally spaced points at which the density (for
-#'   \code{kernel} method) is to be estimated (see
+#' @param n   Number of equally spaced points at which the density (for 
+#'   \code{"kernel"} method) is to be estimated (see 
 #'   \code{\link[stats]{density}}).
-#' 
-#' @param check_thetas Check that theta parameters are correctly inputed
-#' 
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric
-#' 
-#' @param check_cft  Check if counterfactual function \code{cft} reduces exposure.
-#' 
-#' @param check_xvar Check if it is covariance matrix.
-#'
-#' @param check_integrals Check that counterfactual and relative risk's expected
-#'   values are well defined for this scenario
 #'   
-#' @param check_rr        Check that Relative Risk function \code{rr} equals 
+#' @param check_thetas \code{boolean} Check that theta associated parameters are
+#'   correctly inputed for the model.
+#'   
+#' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
+#'   positive and numeric
+#'   
+#' @param check_cft  \code{boolean}  Check that counterfactual function 
+#'   \code{cft} reduces exposure.
+#'   
+#' @param check_xvar \code{boolean} Check if it is covariance matrix.
+#'   
+#' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
+#'   and relative risk's \code{rr} expected values are well defined for this 
+#'   scenario
+#'   
+#' @param check_rr         \code{boolean} Check that Relative Risk function \code{rr} equals 
 #'   \code{1} when evaluated at \code{0}
 #'   
 #' @param force.min Boolean indicating whether to force the \code{rr} to have a 
-#'                  minimum value of 1 instead of 0 (not recommended).
-#'
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#'   minimum value of 1 instead of 0 (not recommended). This works only for 
+#'   \code{confidence_method} \code{"inverse"} and \code{"one2one"}
+#'   
+#' @return pafvec Vector with lower (\code{"Lower_CI"}), and upper 
+#'   (\code{"Upper_CI"}) confidence bounds for the \code{\link{paf}} as well as
+#'   point estimate \code{"Point_Estimate"} and estimated variance or variance
+#'   of \code{log(paf)} (if \code{confidence_method} is \code{"loglinear"}).
+#'   
+#' @note \code{\link{paf.confidence}} is a wrapper for
+#'   \code{\link{pif.confidence}} with counterfactual of \code{0} exposure.
+#'   
+#' @note For more information on kernels see \code{\link[stats]{density}}.
+#'   
+#' @note Do not use the \code{$} operator when using \code{"approximate"}
+#'   \code{method}.
+#'   
+#' @details The \code{confidence_method}  BLAH BLAH
+#'   
+#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
 #' 
+#' @seealso  \code{\link{pif.confidence}} for confidence interval estimation of
+#'   \code{\link{pif}}. And  \code{\link{paf}} for only point estimate.
+#'   
+#'   Sensitivity analysis graphics can be done with \code{\link{paf.plot}}, and 
+#'   \code{\link{paf.sensitivity}}
+#'   
 #' @examples 
-#' # Example 1: univariate example
-#' set.seed(82392)
-#' X         <- rnorm(1000,3,.5)
-#' thetahat  <- 0.5
-#' thetavar  <- 0.1
-#' rr        <- function(X,theta){exp(theta*X)}
-#' # Default
-#' paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr)
-#' # One to one
-#' paf.confidence(X = X, thetahat = thetahat, thetalow = 0.45, 
-#' thetaup = 0.55, rr = rr, confidence_method = "one2one")
-#' # Approximate 
-#' Xmean <- mean(X)
-#' Xvar  <- var(X)
-#' paf.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, 
-#' rr = rr, method = "approximate", Xvar = Xvar)
-#'  
-#' # Example 2: multivariate example
-#'  
-#' X1 <- rnorm(100, 3,.5)
-#' X2 <- rnorm(100,3,.5)
-#' X  <- as.matrix(cbind(X1,X2))
-#' thetahat <- c(0.1, 0.03)
-#' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
-#' rr       <- function(X, theta){
-#'   .X <- as.matrix(X, ncol = 2)
-#'   exp(theta[1]*.X[,1] + theta[2]*.X[,2])
+#' 
+#' #Example 1: Exponential Relative Risk
+#' #--------------------------------------------
+#' set.seed(18427)
+#' X        <- data.frame(Exposure = rnorm(100,3,1))
+#' thetahat <- 0.32
+#' thetavar <- 0.02
+#' rr       <- function(X, theta){exp(theta*X)}
+#' 
+#' #Using bootstrap method
+#' paf.confidence(X, thetahat, rr, thetavar)
+#' 
+#' #Same example with loglinear method
+#' paf.confidence(X, thetahat, rr, thetavar, confidence_method = "loglinear")
+#' 
+#' #Same example with linear method (usually the widest and least precise)
+#' paf.confidence(X, thetahat, rr, thetavar, confidence_method = "linear")
+#' 
+#' #Same example with inverse method 
+#' paf.confidence(X, thetahat, rr, thetavar, confidence_method = "inverse")
+#' 
+#' #Same example with one2one method 
+#' #assume ci of theta is [0.27, 0.35]
+#' paf.confidence(X, thetahat, rr, thetalow = 0.27, thetaup = 0.35, 
+#' confidence_method = "one2one")
+#' 
+#' #Example 2: Linear Relative Risk with weighted sample
+#' #--------------------------------------------
+#' set.seed(18427)
+#' X                   <- data.frame(Exposure = rbeta(100,3,1))
+#' weights             <- runif(100)
+#' normalized_weights  <- weights/sum(weights)
+#' thetahat            <- 0.17
+#' thetavar            <- 0.01
+#' rr                  <- function(X, theta){theta*X^2 + 1}
+#' paf.confidence(X, thetahat, rr, thetavar, weights = normalized_weights)
+#' 
+#' #Change the confidence level and paf method
+#' paf.confidence(X, thetahat, rr,  thetavar, weights = normalized_weights, 
+#'      method = "kernel", confidence = 90)
+#' 
+#' 
+#' #Example 3: Multivariate Linear Relative Risk
+#' #--------------------------------------------
+#' set.seed(18427)
+#' X1       <- rnorm(100,4,1)
+#' X2       <- rnorm(100,2,0.4)
+#' thetahat <- c(0.12, 0.03)
+#' thetavar <- diag(c(0.01, 0.02))
+#' 
+#' #But the approximate method crashes due to operator
+#' Xmean <- data.frame(Exposure = mean(X1), 
+#'                     Covariate = mean(X2))
+#' Xvar  <- var(cbind(X1, X2))
+#' 
+#' #When creating relative risks avoid using the $ operator
+#' #as it doesn't work under approximate method of PAF
+#' rr_not    <- function(X, theta){
+#'                exp(theta[1]*X$Exposure + theta[2]*X$Covariate)
+#'              }
+#' rr_better <- function(X, theta){
+#'                exp(theta[1]*X[,"Exposure"] + theta[2]*X[,"Covariate"])
+#'              }
+#'              
+#' paf.confidence(Xmean, thetahat, rr_better, thetavar,
+#'                method = "approximate", Xvar = Xvar)
+#' \donttest{
+#' #Warning: $ operator in rr definitions don't work in approximate
+#' paf.confidence(Xmean, thetahat, rr_not, thetavar,
+#'                method = "approximate", Xvar = Xvar)
 #' }
-#' cft <- function(X){0.5*X}
 #' 
-#' # Default
-#' paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr)
+#' #Example 4: Categorical Relative Risk & Exposure
+#' #--------------------------------------------
+#' set.seed(18427)
+#' mysample  <- sample(c("Normal","Overweight","Obese"), 100, 
+#'                    replace = TRUE, prob = c(0.4, 0.1, 0.5))
+#' X        <- data.frame(Exposure = mysample)
 #' 
-#'  # Approximate 
-#'  Xmean <- matrix(colMeans(X), ncol = 2)
-#'  Xvar  <- cov(X)
-#'  paf.confidence(X = Xmean, thetahat = thetahat, thetavar = thetavar, 
-#'  rr = rr, method = "approximate", Xvar = Xvar)
-#'  
-#' # One to one
-#' paf.confidence(X = X, thetahat = thetahat, thetalow = c(0.05, 0), 
-#' thetaup = c(0.15, 0.08), rr = rr, confidence_method = "one2one")
+#' thetahat <- c(1, 1.2, 1.5)
+#' thetavar <- diag(c(0.1, 0.2, 0.3))
 #' 
+#' #Categorical relative risk function
+#' rr <- function(X, theta){
+#' 
+#'    #Create return vector with default risk of 1
+#'    r_risk <- rep(1, nrow(X))
+#'    
+#'    #Assign categorical relative risk
+#'    r_risk[which(X[,"Exposure"] == "Normal")]      <- thetahat[1]
+#'    r_risk[which(X[,"Exposure"] == "Overweight")]  <- thetahat[2]
+#'    r_risk[which(X[,"Exposure"] == "Obese")]       <- thetahat[3]
+#'    
+#'    return(r_risk)
+#' }
+#' 
+#' paf.confidence(X, thetahat, rr, thetavar, check_rr = FALSE)
+#' 
+#' #Example 5: Continuous Exposure and Categorical Relative Risk
+#' #------------------------------------------------------------------
+#' set.seed(18427)
+#' 
+#' #Assume we have BMI from a sample
+#' BMI          <- data.frame(Exposure = rlnorm(100, 3.1, sdlog = 0.1))
+#' 
+#' #Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+#' BMI_adjusted <- BMI - 20
+#' 
+#' thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, 
+#'               Obese = 2.5)
+#' thetavar <- diag(c(0.1, 0.2, 0.2, 0.1))
+#' rr       <- function(X, theta){
+#'      
+#'      #Create return vector with default risk of 1
+#'      r_risk <- rep(1, nrow(X))
+#'    
+#'      #Assign categorical relative risk
+#'      r_risk[which(X[,"Exposure"] < 0)]             <- theta[1] #Malnourished
+#'      r_risk[intersect(which(X[,"Exposure"] >= 0), 
+#'                       which(X[,"Exposure"] < 5))]  <- theta[2] #Normal
+#'      r_risk[intersect(which(X[,"Exposure"] >= 5), 
+#'                       which(X[,"Exposure"] < 10))] <- theta[3] #Overweight
+#'      r_risk[which(X[,"Exposure"] >= 10)]           <- theta[4] #Obese
+#'    
+#'    return(r_risk)
+#' }
+#' 
+#' paf.confidence(BMI_adjusted, thetahat, rr, thetavar, check_exposure = FALSE)
+#' 
+#' #Example 6: Bivariate exposure and rr ("classical PAF")
+#' #------------------------------------------------------------------
+#' set.seed(18427)
+#' mysample  <- sample(c("Exposed","Unexposed"), 1000, 
+#'                 replace = TRUE, prob = c(0.1, 0.9))
+#' X         <- data.frame(Exposure = mysample)
+#' theta     <- c("Exposed" = 2.5, "Unexposed" = 1.2)  
+#' thetavar  <- matrix(c(0.04, 0.02, 0.02, 0.03), ncol = 2)
+#' rr        <- function(X, theta){
+#'    
+#'    #Create relative risk function
+#'    r_risk <- rep(1, nrow(X))
+#'    
+#'    #Assign values of relative risk
+#'    r_risk[which(X[,"Exposure"] == "Unexposed")] <- theta["Unexposed"]
+#'    r_risk[which(X[,"Exposure"] == "Exposed")]   <- theta["Exposed"]
+#'    
+#'    return(r_risk)
+#' }    
+#' 
+#' paf.confidence(X, theta, rr, thetavar)
+#' 
+#' #Example 7: Continuous exposure, several covariates
+#' #------------------------------------------------------------------
+#' X <- data.frame(Exposure = rbeta(100, 2, 3),
+#'                 Age      = runif(100, 20, 100),
+#'                 Sex      = sample(c("M","F"), 100, replace = TRUE),
+#'                 BMI      = rlnorm(100, 3.2, 0.2))
+#' thetahat <- c(-0.1, 0.05, 0.2, -0.4, 0.3, 0.1)
+#' 
+#' #Create variance of theta
+#' almostvar <- matrix(runif(6^2), ncol = 6)
+#' thetavar <- t(almostvar) %*% almostvar
+#' rr <- function(X, theta){
+#'      #Create risk vector
+#'      Risk    <- rep(1, nrow(X))
+#'      
+#'      #Identify subpopulations
+#'      males   <- which(X[,"Sex"] == "M")
+#'      females <- which(X[,"Sex"] == "F")
+#'      
+#'      #Calculate population specific rr
+#'      Risk[males] <- theta[1]*X[males,"Exposure"] + 
+#'                                       theta[2]*X[males,"Age"]^2 + 
+#'                                       theta[3]*X[males,"BMI"]/2 
+#'                                      
+#'      Risk[females] <- theta[4]*X[females,"Exposure"] + 
+#'                                       theta[5]*X[females,"Age"]^2 + 
+#'                                       theta[6]*X[females,"BMI"]/2 
+#'                                      
+#'     return(Risk)
+#' }
+#' 
+#' paf.confidence(X, thetahat, rr, thetavar)
 #' @export
 
 paf.confidence <- function(X, thetahat, rr,  thetavar = NA,
                            thetalow = NA, thetaup = NA,
+                           method  = "empirical",
+                           confidence_method = "bootstrap",
+                           confidence = 95,
+                           nsim    =  1000, 
                            weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                           nsim    =  100, confidence = 95,
-                           confidence_method = c("bootstrap", "inverse", "one2one", "loglinear", "linear"),
-                           method  = c("empirical", "kernel", "approximate"),
                            Xvar    = var(X), 
                            deriv.method.args = list(), 
-                           deriv.method      = c("Richardson", "complex"),
+                           deriv.method      = "Richardson",
                            adjust = 1, n = 512,
-                           ktype  = c("gaussian", "epanechnikov", "rectangular", "triangular", 
-                                      "biweight","cosine", "optcosine"), 
-                           bw     = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
+                           ktype  = "gaussian", 
+                           bw     = "SJ",
                            check_exposure = TRUE, check_cft = TRUE, check_rr = TRUE,
                            check_xvar = TRUE, check_integrals = TRUE, check_thetas = TRUE,
                            force.min = FALSE){

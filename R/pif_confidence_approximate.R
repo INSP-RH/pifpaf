@@ -58,7 +58,7 @@
 #' rr      <- function(X,theta){exp(X*theta)}
 #' cft     <- function(X){0.5*X}
 #' X       <- runif(1000)
-#' Xmean   <- mean(X)
+#' Xmean   <- data.frame(mean(X))
 #' Xvar    <- var(X)
 #' theta   <-  0.2
 #' thetavar <- 0.015
@@ -70,7 +70,7 @@
 #' X1       <- rnorm(1000,3,.5)
 #' X2       <- rnorm(1000,4,1)
 #' X        <- as.matrix(cbind(X1,X2))
-#' Xmean    <- matrix(colMeans(X), ncol = 2)
+#' Xmean    <- data.frame(t(colMeans(X)))
 #' Xvar     <- cov(X)
 #' theta    <- c(0.12, 0.17)
 #' thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)

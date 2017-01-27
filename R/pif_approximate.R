@@ -59,7 +59,7 @@
 #'
 #'#Example 1
 #'#--------------------------------------------
-#' X         <- 2
+#' X         <- data.frame(2)
 #' thetahat  <- 0.12
 #' Xvar      <- 0.2
 #' rr        <- function(X,theta){exp(X*theta)}
@@ -78,7 +78,7 @@
 #' #--------------------------------------------
 #' X1        <- 2
 #' X2        <- 1.1
-#' X         <- as.matrix(cbind(X1,X2))
+#' X         <- data.frame(X1,X2)
 #' Xvar      <- matrix(c(1,.4,.4,1),ncol = 2, byrow = TRUE)
 #' cft       <- function(X){.25*X}
 #' thetahat  <- c(0.12, 0.03)
@@ -90,7 +90,7 @@
 #' X1       <- rnorm(1000,3,.5)
 #' X2       <- rnorm(1000,4,1)
 #' X        <- cbind(X1,X2)
-#' Xmean    <- matrix(colMeans(X), ncol = 2)
+#' Xmean    <- data.frame(t(colMeans(X)))
 #' Xvar     <- var(X)
 #' thetahat <- c(0.12, 0.17)
 #' thetavar <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
@@ -131,11 +131,11 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
   #Rewrite rr and counterfactual functions as functions of X only for 
   #numerical derivatives
   .rr_cft_fun <- function(.xmat){
-    return(rr( cft(.xmat), thetahat) )
+    return(as.matrix(rr( cft(.xmat), thetahat)))
   } 
   
   .rr_fun_x   <- function(.xmat){
-    rr(.xmat, thetahat)
+    return(as.matrix(rr(.xmat, thetahat)))
   }
   
   #Estimate weighted sums

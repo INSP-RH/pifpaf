@@ -6,7 +6,7 @@
 #'  risk function \code{rr(X, thetahat)} with parameters \code{thetahat} the
 #'  empirical estimator is given by:
 #'  
-#'  \deqn{PIF = 1 - 1/\sum rr(X_i; \theta)}
+#'  \deqn{PIF = 1 - \sum rr(cft(X_i); \theta)/\sum rr(X_i; \theta)}
 #'  
 #'@param X         Random sample (\code{data.frame}) which includes exposure and 
 #'  covariates. or sample mean if approximate method is selected.
@@ -54,7 +54,7 @@
 #' #Example 1: Relative risk given by exponential
 #'#--------------------------------------------
 #' set.seed(18427)
-#' X        <- rnorm(100,3,.5)
+#' X        <- data.frame(rnorm(100,3,.5))
 #' thetahat <- 0.12
 #' rr       <- function(X, theta){exp(theta*X)}
 #' pif.empirical(X, thetahat, rr, cft = function(X){ 0.5*X })
@@ -72,7 +72,7 @@
 #' set.seed(18427)
 #' X1       <- rnorm(100,4,1)
 #' X2       <- rnorm(100,2,0.4)
-#' X        <- as.matrix(cbind(X1,X2))
+#' X        <- data.frame(cbind(X1,X2))
 #' thetahat <- c(0.12, 0.03)
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' 
