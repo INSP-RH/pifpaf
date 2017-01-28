@@ -11,7 +11,7 @@ We suggest installing the package from Github to get the latest version by using
 
 ```{r, eval = FALSE}
 install.packages("devtools")
-devtools::install_github("INSP-RH/pif", build_vignettes = TRUE)
+devtools::install_github("INSP-RH/pif")
 ```
 
 Recall that, once installed, to use a package in R you need to call the associated ``library``:
@@ -29,7 +29,7 @@ Let X denote exposure values to something. And define the exponential relative r
 ```{r}
 rr       <- function(x, theta){exp(theta*x)}
 thetahat <- 0.11                            
-X        <- rnorm(1000, 9, 3)
+X        <- data.frame(Exposure = rbeta(1000, 1, 3))
 ```
 
 We use the ``paf`` function to estimate the population atributable fraction:
@@ -69,7 +69,7 @@ paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr,
 The previous examples consider a random sample of exposure values is available, however we developed a method for estimating the PAF when only mean and variance of the exposure values are known. 
 
 ```{r}
-Xmean <- mean(X)
+Xmean <- data.frame(mean(X[,"Exposure"]))
 Xvar  <- var(X)
 paf(X = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, method = "approximate")
 ```

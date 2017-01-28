@@ -10,7 +10,7 @@ We suggest installing the package from Github to get the latest version by using
 
 ``` r
 install.packages("devtools")
-devtools::install_github("INSP-RH/pif", build_vignettes = TRUE)
+devtools::install_github("INSP-RH/pif")
 ```
 
 Recall that, once installed, to use a package in R you need to call the associated `library`:
@@ -29,7 +29,7 @@ Let X denote exposure values to something. And define the exponential relative r
 ``` r
 rr       <- function(x, theta){exp(theta*x)}
 thetahat <- 0.11                            
-X        <- rnorm(1000, 9, 3)
+X        <- data.frame(Exposure = rbeta(1000, 1, 3))
 ```
 
 We use the `paf` function to estimate the population atributable fraction:
@@ -38,10 +38,7 @@ We use the `paf` function to estimate the population atributable fraction:
 paf(X = X, thetahat = thetahat, rr = rr)
 ```
 
-    ## Warning in check.exposure(.X): Some exposure values are less than zero,
-    ## verify this is correct.
-
-    ## [1] 0.6426382
+    ## [1] 0.0285131
 
 The PAF calculated above considers the sampling weights of the exposure values to be equal. In case the observed exposure values have different sampling weights, the PAF is calculated by:
 
@@ -50,10 +47,7 @@ weights <- c(rep(1/1500, 500), rep(2/1500, 500))
 paf(X = X, thetahat = thetahat, rr = rr, weights = weights)
 ```
 
-    ## Warning in check.exposure(.X): Some exposure values are less than zero,
-    ## verify this is correct.
-
-    ## [1] 0.6433246
+    ## [1] 0.02853325
 
 The default method is empirical, but it can be changed to kernel method when the exposure values for one observation are unidimensional and there are no covariates.
 
@@ -61,10 +55,7 @@ The default method is empirical, but it can be changed to kernel method when the
 paf(X = X, thetahat = thetahat, rr = rr, method = "kernel")
 ```
 
-    ## Warning in check.exposure(.X): Some exposure values are less than zero,
-    ## verify this is correct.
-
-    ## [1] 0.6441464
+    ## [1] 0.02943677
 
 Confidence intervals for the PAF can be calculated if the variance of the estimator of ø is known. For example if the variance of the estimator of ø is 0.0025:
 
@@ -73,8 +64,10 @@ thetavar <- 0.0025
 paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr)
 ```
 
-    ##          Lower Point_Estimate          Upper 
-    ##      0.2171866      0.6426382      0.8368609
+    ##           Lower_CI     Point_Estimate           Upper_CI 
+    ##       0.0042985131       0.0285130990       0.0537475882 
+    ## Estimated_Variance 
+    ##       0.0001663288
 
 The default method is `bootstrap`; however, other confidence interval methods are available:
 
@@ -83,18 +76,18 @@ paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr,
                confidence_method = "inverse")
 ```
 
-    ##          Lower Point_Estimate          Upper 
-    ##      0.2390676      0.6426382      0.8321697
+    ##       Lower_CI Point_Estimate       Upper_CI 
+    ##    0.003213858    0.028513099    0.053170225
 
 The previous examples consider a random sample of exposure values is available, however we developed a method for estimating the PAF when only mean and variance of the exposure values are known.
 
 ``` r
-Xmean <- mean(X)
+Xmean <- data.frame(mean(X[,"Exposure"]))
 Xvar  <- var(X)
 paf(X = Xmean, Xvar = Xvar, thetahat = thetahat, rr = rr, method = "approximate")
 ```
 
-    ## [1] 0.6419899
+    ## [1] 0.02851213
 
 We remind the reader that if the whole exposure X is available the approximate method is the last resource.
 
@@ -112,10 +105,7 @@ Then we estimate the PIF via the empirical method:
 pif(X = X, thetahat = thetahat, rr = rr, cft = cft)
 ```
 
-    ## Warning in check.exposure(.X): Some exposure values are less than zero,
-    ## verify this is correct.
-
-    ## [1] 0.4718027
+    ## [1] 0.1170813
 
 The PIF can also be calculated by estimating a distribution for exposure values using a kernel:
 
@@ -124,10 +114,7 @@ pif(X = X, thetahat = thetahat, rr = rr, cft = cft,
     method = "kernel")
 ```
 
-    ## Warning in check.exposure(.X): Some exposure values are less than zero,
-    ## verify this is correct.
-
-    ## [1] 0.4730906
+    ## [1] 0.1170839
 
 confidence intervals are available through `pif.confidence`:
 
@@ -136,13 +123,10 @@ pif.confidence(X = X, thetahat = thetahat, rr = rr, cft = cft,
                method = "kernel", thetavar = thetavar)
 ```
 
-    ## Warning in check.exposure(.X): Some exposure values are less than zero,
-    ## verify this is correct.
-
     ##           Lower_CI     Point_Estimate           Upper_CI 
-    ##         0.27723664         0.47309056         0.94536599 
+    ##        0.020677535        0.117083916        0.216560276 
     ## Estimated_Variance 
-    ##         0.03366958
+    ##        0.002495226
 
 Additional functions in the package include sensitivity analysis plots `pif.sensitivity`, `paf.sensitivity`, `pif.plot`, `paf.plot`, `pif.heatmap` and `counterfactual.plot` for display of the counterfactual function. An exploration of this functions as well as additional examples of usage and utilization of advanced options can be found in the package's vignettes:
 
