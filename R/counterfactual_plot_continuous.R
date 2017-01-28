@@ -77,7 +77,7 @@
 #' #Example 1: Normal distribution and linear counterfactual
 #' #--------------------------------------------------------
 #' set.seed(2783569)
-#' X   <- rnorm(1000, 150, 15)
+#' X   <- data.frame(rnorm(1000, 150, 15))
 #' cft <- function(X){0.35*X + 75}  
 #' counterfactual.plot.continuous(X, cft, xlab = "Usual SBP (mmHg)", 
 #' ylab = "Relative risk of ischaemic heart disease",
@@ -89,14 +89,14 @@
 #' #Example 2: Counterfactual of BMI reduction only for those with excess-weight (BMI > 25)
 #' #--------------------------------------------------------
 #' set.seed(2783569)
-#' X <- rlnorm(1000, 3, 0.2)
+#' X <- data.frame(Exposure = rlnorm(1000, 3, 0.2))
 #' cft <- function(X){
 #' 
 #'      #Find individuals with excess weight
-#'      excess_weight <- which(X > 25)
+#'      excess_weight <- which(X[,"Exposure"] > 25)
 #'      
 #'      #Set those with excess weight to BMI of 25
-#'      X[excess_weight] <- 22.5
+#'      X[excess_weight, "Exposure"] <- 22.5
 #'      
 #'      return(X)
 #' }     
@@ -131,9 +131,9 @@ counterfactual.plot.continuous <- function(X, cft,
                                   colors = c("deepskyblue", "tomato3"),
                                   check_exposure = TRUE){
   
-  #Set X as matrix
-  .X     <- as.matrix(X)
-  .cX    <- as.matrix(cft(.X))
+  #Set X as data frame
+  .X     <- data.frame(X)
+  .cX    <- data.frame(cft(.X))
   
   #Get kernel parameters
   .ktype <- as.vector(ktype)[1]
@@ -143,8 +143,8 @@ counterfactual.plot.continuous <- function(X, cft,
   if(check_exposure){ check.exposure(.X) }
   
   #Create a kernel density plot
-  .densX <- density(.X,  kernel = .ktype, n = n, bw = .bw, adjust = adjust)
-  .densY <- density(.cX, kernel = .ktype, n = n, bw = .bw, adjust = adjust)
+  .densX <- density(.X[,1],  kernel = .ktype, n = n, bw = .bw, adjust = adjust)
+  .densY <- density(.cX[,1], kernel = .ktype, n = n, bw = .bw, adjust = adjust)
   
   #Densities to data frame
   .dX    <- as.data.frame(.densX[c("x","y")])
@@ -160,7 +160,9 @@ counterfactual.plot.continuous <- function(X, cft,
   if(fill & fill_limits[1] < fill_limits[2] & fill_limits[1] < max(.dX[,1]) & fill_limits[2] > min(.dX[,1])){
     
     #Create subset between fill limits
-    .sub_X    <- subset(.dX$x, .dX[,1] >= fill_limits[1] & .dX[,1] <= fill_limits[2])
+    .sub_X    <- as.data.frame(subset(.dX$x, .dX[,1] >= fill_limits[1] & .dX[,1] <= fill_limits[2]))
+    colnames(.sub_X) <- colnames(X)
+    
     .sub_cft  <- cft(.sub_X)
     
     #Get density at new point

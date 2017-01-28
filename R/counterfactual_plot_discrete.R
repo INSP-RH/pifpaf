@@ -54,15 +54,17 @@
 #' #Example 1: Bivariate exposure
 #' #--------------------------------------------------------
 #' set.seed(2783569)
-#' X   <- sample(c("Exposed","Unexposed"), 100, replace = TRUE, prob = c(0.3, 0.7))
+#' X   <- data.frame(Exposure = 
+#'                    sample(c("Exposed","Unexposed"), 100, 
+#'                    replace = TRUE, prob = c(0.3, 0.7)))
 #' cft <- function(X){
 #' 
 #'      #Find which indivuals are exposed
-#'      exposed      <- which(X == "Exposed")
+#'      exposed      <- which(X[,"Exposure"] == "Exposed")
 #'      
 #'      #Change 1/3 of exposed to unexposed
-#'      reduced      <- sample(exposed, length(exposed)/3)
-#'      X[reduced]   <- "Unexposed"
+#'      reduced                 <- sample(exposed, length(exposed)/3)
+#'      X[reduced,"Exposure"]   <- "Unexposed"
 #'      
 #'      return(X)
 #' }  
@@ -71,8 +73,9 @@
 #' #Example 2: Multivariate exposure
 #' #--------------------------------------------------------
 #' set.seed(2783569)
-#' X   <- sample(c("Underweight","Normal","Overweight","Obese"), 1000, 
-#'                replace = TRUE, prob = c(0.05, 0.3, 0.25, 0.4))
+#' X   <- data.frame(
+#'          Exposure = sample(c("Underweight","Normal","Overweight","Obese"), 
+#'          1000, replace = TRUE, prob = c(0.05, 0.3, 0.25, 0.4)))
 #'                
 #' #Complex counterfactual of changing half of underweights to normal,
 #' #1/2 of overweights to normal, 1/3 of obese to normal and 
@@ -80,9 +83,9 @@
 #' cft <- function(X){
 #' 
 #'      #Classify the individuals
-#'      underweights    <- which(X == "Underweight")
-#'      overweights     <- which(X == "Overweight")
-#'      obese           <- which(X == "Obese")
+#'      underweights    <- which(X[,"Exposure"] == "Underweight")
+#'      overweights     <- which(X[,"Exposure"] == "Overweight")
+#'      obese           <- which(X[,"Exposure"] == "Obese")
 #'      
 #'      #Sample 1/2 underweights and overweights and 2/3 of obese
 #'      changed_under    <- sample(underweights, length(underweights)/2)
@@ -94,10 +97,10 @@
 #'      obese_to_over    <- which(!(changed_obese %in% obese_to_normal))
 #'      
 #'      #Change the individuals to normal and overweight
-#'      X[changed_under]   <- "Normal"
-#'      X[changed_over]    <- "Normal"
-#'      X[obese_to_normal] <- "Normal"
-#'      X[obese_to_over]   <- "Overweight"
+#'      X[changed_under,"Exposure"]   <- "Normal"
+#'      X[changed_over,"Exposure"]    <- "Normal"
+#'      X[obese_to_normal,"Exposure"] <- "Normal"
+#'      X[obese_to_over,"Exposure"]   <- "Overweight"
 #'      
 #'      return(X)
 #' }  
@@ -115,12 +118,16 @@ counterfactual.plot.discrete <- function(X, cft,
                                 legendtitle = "Scenario",
                                 xlab = "Exposure", ylab = "Frequency",
                                 colors = c("deepskyblue", "tomato3"),
-                                x_axis_order = unique(X)){
+                                x_axis_order = unique(X[,1])){
   
   #Set X as matrix
-  .X  <- as.matrix(X)
-  .cX <- cbind(as.matrix(cft(.X)), dnames[2])
-  .X  <- cbind(.X,                 dnames[1])
+  .X  <- as.data.frame(X)
+  colnames(.X) <- colnames(X)
+  .cX <- data.frame(cft(.X), rep(dnames[2], nrow(.X)))
+  .X  <- data.frame(.X, rep(dnames[1], nrow(.X)))
+  
+  colnames(.X) <- c(colnames(X)[1],"Distribution")
+  colnames(.cX) <- c(colnames(X)[1],"Distribution")
   
   #Create a kernel density plot
   .dens_data         <- as.data.frame(rbind(.X,.cX))
