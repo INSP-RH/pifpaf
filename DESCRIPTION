@@ -1,9 +1,11 @@
 Package: pif
 Title: Potential Impact Fraction and Population Attributable Fraction
-Version: 0.0.0.9000
-Authors@R: c(person("Rodrigo", "Zepeda", email = "rodrigo.zepeda@insp.mx", role = c("aut", "cre")), person("Dalia", "Camacho", email = "daliaf172@gmail.com", role = c("aut")), person("Tonatiuh","Barrientos", role = c("ctb")))
-Description: pif is a package for estimating the Population Impact Fraction
+Version: 0.8.1.0
+Authors@R: c(person("Rodrigo", "Zepeda", email = "rodrigo.zepeda@insp.mx", role = c("aut", "cre")), person("Dalia", "Camacho", email = "daliaf172@gmail.com", role = c("aut")), person("Tonatiuh","Barrientos", role = c("ctb")), person("Ana","Abreu", role = c("ctb")), person("Ariela","Braverman", role = c("ctb")), person("Dèsirée","Vidaña", role = c("ctb")), person("Frederick","Cudhea", role = c("ctb")))
+Description: The package pif is used to estimate the Population Impact Fraction
     (PIF) and the Population Attributable Fraction (PAF) from cross-sectional data.
+    This work was supported by a grant from Bloomberg Philanthropies. The authors
+    have no competing interests.
 Depends:
     R (>= 3.2.3)
 License: GPL-3
