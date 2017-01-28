@@ -6,40 +6,39 @@
   scenario}
 \usage{
 counterfactual.plot(X, cft, weights = rep(1/nrow(as.matrix(X)),
-  nrow(as.matrix(X))), adjust = 1, n = 512, ktype = c("gaussian",
-  "epanechnikov", "rectangular", "triangular", "biweight", "cosine",
-  "optcosine"), bw = c("SJ", "nrd0", "nrd", "ucv", "bcv"),
-  title = paste0("Exposure distribution under current and ",
-  "counterfactual scenarios"), dnames = c("Current distribution",
-  "Counterfactual distribution"), exposure.type = NA,
-  legendtitle = "Scenario", xlab = "Exposure", ylab = "Density",
-  colors = c("deepskyblue", "tomato3"), x_axis_order = unique(X),
-  fill_limits = c(-Inf, Inf), fill = TRUE, check_exposure = TRUE)
+  nrow(as.matrix(X))), adjust = 1, n = 512, ktype = "gaussian",
+  bw = "SJ",
+  title = "Exposure distribution under current and counterfactual scenarios",
+  dnames = c("Current distribution", "Counterfactual distribution"),
+  exposure.type = NA, legendtitle = "Scenario", xlab = "Exposure",
+  ylab = "Density", colors = c("deepskyblue", "tomato3"),
+  x_axis_order = unique(X[, 1]), fill_limits = c(-Inf, Inf), fill = TRUE,
+  check_exposure = TRUE)
 }
 \arguments{
-\item{X}{One dimensional \code{vector} with exposure levels.}
+\item{X}{Random sample (one-dimensional \code{data.frame}) which of
+exposure}
 
-\item{cft}{Counterfactual function of the exposure \code{cft(X)}
+\item{cft}{Function \code{cft(X)} for counterfactual.
 
 **Optional**}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{adjust}{Adjust bandwith parameter from density (for 
-\code{"continuous"} case) from \code{\link[stats]{density}}.}
+\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
+method) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
-\code{"continuous"} case) is to be estimated (see 
+\code{"kernel"} method) is to be estimated (see 
 \code{\link[stats]{density}}).}
 
-\item{ktype}{\code{kernel} type for \code{"continuous"} case: 
-\code{"gaussian"}, \code{"epanechnikov"}, \code{"rectangular"}, 
-\code{"triangular"}, \code{"biweight"}, \code{"cosine"}, \code{"optcosine"}
-(for \code{kernel} method). Additional information on kernels in 
-\code{\link[stats]{density}}}
+\item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
+\code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
+\code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
+method). Additional information on kernels in \code{\link[stats]{density}}.}
 
 \item{bw}{Smoothing bandwith parameter from density (for 
-\code{"continuous"} case) from \code{\link[stats]{density}}. Default 
+\code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
 \item{title}{String with plot title.}
@@ -64,19 +63,20 @@ to "b").}
 case)}
 
 \item{fill_limits}{Vector. Limits of subset of the exposure \code{X} such 
-that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.}
+that only \code{fill_limits[1]} < \code{X} < \code{fill_limits[2]} are
+filled with color.}
 
 \item{fill}{Colour the densities? Default \code{TRUE}.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric 
-(if \code{"continuous"})}
+\item{check_exposure}{Check exposure \code{X} is positive and numeric. (if
+\code{"continuous"})}
 }
 \value{
-cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
+cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift 
   from observed to counterfactual distribution
 }
 \description{
-Function that creates a plot of the distribution of exposure
+Function that creates a plot of the distribution of exposure 
   \code{X} under counterfactual scenario \code{cft}.
 }
 \details{
@@ -85,25 +85,22 @@ The function automatically tries to distinguish between
   \code{"continuous"} we mean a vector of real numbers; by \code{"discrete"} 
   a vector of strings or factor variables.
 }
-\note{
-This function is a wrapper for 
-  \code{\link{counterfactual.plot.continuous}} and 
-  \code{\link{counterfactual.plot.discrete}}
-}
 \examples{
 
 #Example 1: Bivariate exposure
 #--------------------------------------------------------
 set.seed(2783569)
-X   <- sample(c("Exposed","Unexposed"), 100, replace = TRUE, prob = c(0.3, 0.7))
+X   <- data.frame(Exposure = 
+           sample(c("Exposed","Unexposed"), 100, replace = TRUE, 
+           prob = c(0.3, 0.7)))
 cft <- function(X){
 
      #Find which indivuals are exposed
-     exposed    <- which(X == "Exposed")
+     exposed    <- which(X[,"Exposure"] == "Exposed")
      
      #Change 1/3 of exposed to unexposed
-     reduced    <- sample(exposed, length(exposed)/3)
-     X[reduced] <- "Unexposed"
+     reduced               <- sample(exposed, length(exposed)/3)
+     X[reduced,"Exposure"] <- "Unexposed"
      
      return(X)
 }  
@@ -113,8 +110,9 @@ counterfactual.plot(X, cft)
 #Example 2: Multivariate discrete
 #--------------------------------------------------------
 set.seed(2783569)
-X   <- sample(c("Underweight","Normal","Overweight","Obese"), 1000, 
-               replace = TRUE, prob = c(0.05, 0.3, 0.25, 0.4))
+X   <- data.frame(Exposure = 
+         sample(c("Underweight","Normal","Overweight","Obese"), 1000, 
+                replace = TRUE, prob = c(0.05, 0.3, 0.25, 0.4)))
                
 #Complex counterfactual of changing half of underweights to normal,
 #1/2 of overweights to normal, 1/3 of obese to normal and 
@@ -122,9 +120,9 @@ X   <- sample(c("Underweight","Normal","Overweight","Obese"), 1000,
 cft <- function(X){
 
      #Classify the individuals
-     underweights    <- which(X == "Underweight")
-     overweights     <- which(X == "Overweight")
-     obese           <- which(X == "Obese")
+     underweights    <- which(X[,"Exposure"] == "Underweight")
+     overweights     <- which(X[,"Exposure"] == "Overweight")
+     obese           <- which(X[,"Exposure"] == "Obese")
      
      #Sample 1/2 underweights and overweights and 2/3 of obese
      changed_under    <- sample(underweights, length(underweights)/2)
@@ -136,10 +134,10 @@ cft <- function(X){
      obese_to_over    <- which(!(changed_obese \%in\% obese_to_normal))
      
      #Change the individuals to normal and overweight
-     X[changed_under]   <- "Normal"
-     X[changed_over]    <- "Normal"
-     X[obese_to_normal] <- "Normal"
-     X[obese_to_over]   <- "Overweight"
+     X[changed_under,"Exposure"]   <- "Normal"
+     X[changed_over,"Exposure"]    <- "Normal"
+     X[obese_to_normal,"Exposure"] <- "Normal"
+     X[obese_to_over,"Exposure"]   <- "Overweight"
      
      return(X)
 }  
@@ -150,14 +148,14 @@ cftplot <- counterfactual.plot(X, cft,
 cftplot 
 
 #Objects returned are ggplot objects and you can play with them
-require(ggplot2)
-cftplot + coord_flip() + theme_grey()
+#require(ggplot2)
+#cftplot + coord_flip() + theme_grey()
 }
 
 #Example 3: Normal distribution and linear counterfactual
 #--------------------------------------------------------
 set.seed(2783569)
-X   <- rnorm(1000, 150, 15)
+X   <- data.frame(Exposure = rnorm(1000, 150, 15))
 cft <- function(X){0.35*X + 75}  
 counterfactual.plot(X, cft, xlab = "Usual SBP (mmHg)", 
 ylab = "Relative risk of ischaemic heart disease",
@@ -169,14 +167,14 @@ title = paste0("Effect of a non-linear hazard function and choice",
 #Example 4: Counterfactual of BMI reduction only for those with excess-weight (BMI > 25)
 #--------------------------------------------------------
 set.seed(2783569)
-X <- rlnorm(1000, 3, 0.2)
+X <- data.frame(Exposure = rlnorm(1000, 3, 0.2))
 cft <- function(X){
 
      #Find individuals with excess weight
-     excess_weight <- which(X > 25)
+     excess_weight <- which(X[,"Exposure"] > 25)
      
      #Set those with excess weight to BMI of 25
-     X[excess_weight] <- 25
+     X[excess_weight, "Exposure"] <- 25
      
      return(X)
 }     
@@ -203,7 +201,7 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
 \seealso{
 \code{\link{pif}} for Potential Impact Fraction estimation, 
   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
-  \code{\link{pif.plot}} for a plot of \code{pif} as a function of its
+  \code{\link{pif.plot}} for a plot of \code{pif} as a function of its 
   parameter \code{theta}.
 }
 

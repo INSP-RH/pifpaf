@@ -10,7 +10,7 @@ counterfactual.plot.discrete(X, cft, weights = rep(1/nrow(as.matrix(X)),
   title = "Exposure distribution under current and counterfactual scenarios",
   dnames = c("Current distribution", "Counterfactual distribution"),
   legendtitle = "Scenario", xlab = "Exposure", ylab = "Frequency",
-  colors = c("deepskyblue", "tomato3"), x_axis_order = unique(X))
+  colors = c("deepskyblue", "tomato3"), x_axis_order = unique(X[, 1]))
 }
 \arguments{
 \item{X}{One dimensional \code{vector} with exposure levels.}
@@ -51,15 +51,17 @@ Function that creates a plot of the distribution of exposure
 #Example 1: Bivariate exposure
 #--------------------------------------------------------
 set.seed(2783569)
-X   <- sample(c("Exposed","Unexposed"), 100, replace = TRUE, prob = c(0.3, 0.7))
+X   <- data.frame(Exposure = 
+                   sample(c("Exposed","Unexposed"), 100, 
+                   replace = TRUE, prob = c(0.3, 0.7)))
 cft <- function(X){
 
      #Find which indivuals are exposed
-     exposed      <- which(X == "Exposed")
+     exposed      <- which(X[,"Exposure"] == "Exposed")
      
      #Change 1/3 of exposed to unexposed
-     reduced      <- sample(exposed, length(exposed)/3)
-     X[reduced]   <- "Unexposed"
+     reduced                 <- sample(exposed, length(exposed)/3)
+     X[reduced,"Exposure"]   <- "Unexposed"
      
      return(X)
 }  
@@ -68,8 +70,9 @@ counterfactual.plot.discrete(X, cft)
 #Example 2: Multivariate exposure
 #--------------------------------------------------------
 set.seed(2783569)
-X   <- sample(c("Underweight","Normal","Overweight","Obese"), 1000, 
-               replace = TRUE, prob = c(0.05, 0.3, 0.25, 0.4))
+X   <- data.frame(
+         Exposure = sample(c("Underweight","Normal","Overweight","Obese"), 
+         1000, replace = TRUE, prob = c(0.05, 0.3, 0.25, 0.4)))
                
 #Complex counterfactual of changing half of underweights to normal,
 #1/2 of overweights to normal, 1/3 of obese to normal and 
@@ -77,9 +80,9 @@ X   <- sample(c("Underweight","Normal","Overweight","Obese"), 1000,
 cft <- function(X){
 
      #Classify the individuals
-     underweights    <- which(X == "Underweight")
-     overweights     <- which(X == "Overweight")
-     obese           <- which(X == "Obese")
+     underweights    <- which(X[,"Exposure"] == "Underweight")
+     overweights     <- which(X[,"Exposure"] == "Overweight")
+     obese           <- which(X[,"Exposure"] == "Obese")
      
      #Sample 1/2 underweights and overweights and 2/3 of obese
      changed_under    <- sample(underweights, length(underweights)/2)
@@ -91,10 +94,10 @@ cft <- function(X){
      obese_to_over    <- which(!(changed_obese \%in\% obese_to_normal))
      
      #Change the individuals to normal and overweight
-     X[changed_under]   <- "Normal"
-     X[changed_over]    <- "Normal"
-     X[obese_to_normal] <- "Normal"
-     X[obese_to_over]   <- "Overweight"
+     X[changed_under,"Exposure"]   <- "Normal"
+     X[changed_over,"Exposure"]    <- "Normal"
+     X[obese_to_normal,"Exposure"] <- "Normal"
+     X[obese_to_over,"Exposure"]   <- "Overweight"
      
      return(X)
 }  

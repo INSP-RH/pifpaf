@@ -77,7 +77,7 @@ This function reproduces the classic counterfactual plot from Figure
 #Example 1: Normal distribution and linear counterfactual
 #--------------------------------------------------------
 set.seed(2783569)
-X   <- rnorm(1000, 150, 15)
+X   <- data.frame(rnorm(1000, 150, 15))
 cft <- function(X){0.35*X + 75}  
 counterfactual.plot.continuous(X, cft, xlab = "Usual SBP (mmHg)", 
 ylab = "Relative risk of ischaemic heart disease",
@@ -89,14 +89,14 @@ title = paste0("Effect of a non-linear hazard function and choice",
 #Example 2: Counterfactual of BMI reduction only for those with excess-weight (BMI > 25)
 #--------------------------------------------------------
 set.seed(2783569)
-X <- rlnorm(1000, 3, 0.2)
+X <- data.frame(Exposure = rlnorm(1000, 3, 0.2))
 cft <- function(X){
 
      #Find individuals with excess weight
-     excess_weight <- which(X > 25)
+     excess_weight <- which(X[,"Exposure"] > 25)
      
      #Set those with excess weight to BMI of 25
-     X[excess_weight] <- 22.5
+     X[excess_weight, "Exposure"] <- 22.5
      
      return(X)
 }     
