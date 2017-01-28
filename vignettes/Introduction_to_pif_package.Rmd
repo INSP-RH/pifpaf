@@ -77,6 +77,7 @@ This example aims to estimate the PIF and PAF of Ozone on children's lung growth
 ```{r}
 require(datasets)
 ozone_exposure  <- na.omit(airquality$Ozone) 
+ozone_exposure  <- as.data.frame(ozone_exposure) 
 ```
 
 Furthermore, assume normalized sampling weights for Ozone exposure are given by:
@@ -177,7 +178,7 @@ In this example we will compute the PIF and PAF of tobacco consumption over oeso
 
 ```{r}
 require(datasets)
-tobacco_consumption <- as.matrix(esoph$tobgp)
+tobacco_consumption <- as.data.frame(esoph$tobgp)
 ```
 
 This variable contains categorical information on the number of grams/dat of tobacco consumed. Assume the Relative Risk function is given by:
@@ -317,7 +318,7 @@ In this case, only mean and standard deviation information is available for each
 
 ```{r}
 #Get mean and variance
-afr_mean <- subset(sbp, Region == "Afr E")$SBP_mean
+afr_mean <- as.data.frame(subset(sbp, Region == "Afr E")$SBP_mean)
 afr_var  <- subset(sbp, Region == "Afr E")$SBP_sd^2 #Notice that variance is enormous!
 
 #Calculate paf using approximate method
@@ -378,11 +379,11 @@ rr_obese      <- function(X, theta){exp(theta*X/30)}
 and then compute the pafs:
 ```{r}
 #Subpopulation PAF
-paf_normal     <- paf(problem_data["Normal","Mean"],     1.00, rr = rr_normal    , check_rr = FALSE,
+paf_normal     <- paf(as.data.frame(problem_data["Normal","Mean"]),     1.00, rr = rr_normal    , check_rr = FALSE,
                       method = "approximate", Xvar = problem_data["Normal","Variance"])
-paf_overweight <- paf(problem_data["Overweight","Mean"], 1.39, rr = rr_overweight, check_rr = FALSE,
+paf_overweight <- paf(as.data.frame(problem_data["Overweight","Mean"]), 1.39, rr = rr_overweight, check_rr = FALSE,
                       method = "approximate", Xvar = problem_data["Overweight","Variance"])
-paf_obese      <- paf(problem_data["Obese","Mean"],      0.62, rr = rr_obese,      check_rr = FALSE,
+paf_obese      <- paf(as.data.frame(problem_data["Obese","Mean"]),      0.62, rr = rr_obese,      check_rr = FALSE,
                       method = "approximate", Xvar = problem_data["Obese","Variance"])
 ```
 
@@ -449,7 +450,7 @@ All methods have been coded in the ``method`` option of the functions ``paf``, `
 ```{r}
 #Data
 set.seed(2374)
-X        <- rlnorm(100)
+X        <- as.data.frame(rlnorm(100))
 rr       <- function(X, theta){theta*X + 1}
 cft      <- function(X){sqrt(X + 1)}
 thetahat <- 0.1943
@@ -461,14 +462,20 @@ pif(X, thetahat, rr, cft, method = "empirical")
 pif(X, thetahat, rr, cft, method = "kernel")
 
 #Approximate
-pif(mean(X), thetahat, rr, cft, method = "approximate", Xvar = var(X))
+meanX <- as.data.frame(mean(X[,1]))
+pif(meanX, thetahat, rr, cft, method = "approximate", Xvar = var(X))
 ```
 
 Note that for the approximate method the correct input is mean and variance of X. If no method is specified in `pif(X, thetahat, rr, cft)` the ``"empirical"`` is chosen.
 
 
 ### Confidence Intervals
-The bootstrap method is the recommended method to calculate confidence intervals for the kernel and empirical point estimate. However this method can not be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal, i.e. $\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)$. The following table shows the methods to estimate confidence intervals and when each of the methods can be used.
+The bootstrap method is the recommended method to calculate confidence intervals for the kernel and empirical point estimate. However this method cannot be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal, i.e. $\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)$ where $\hat{\sigma}_{\theta}^2$ is an estimator of $\sigma_{\theta}^2$. The following table shows the methods to estimate confidence intervals and when each of the methods can be used.
+
+<div style = "background-color: red"> RECALL CONFIDENCE INTERVALS ARE FOR THE REAL VALUES $\textrm{PIF}$ AND NOT FOR ESTIMATORS $\widehat{\textrm{PIF}}$</div>
+
+<div style = "background-color: red"> WHERE IS THIS TABLE? </div>
+
 
 \begin{table}[H]
     \centering
@@ -500,24 +507,25 @@ The bootstrap method is the recommended method to calculate confidence intervals
     \caption{Usage of confidence interval methods}
     \label{fig:CI_methods}
 \end{table}
-Remember that to calculate the point estimate  of $\widehat{\textrm{PIF}}$ the relative risk function $RR(X,\theta)$ and the counter-factual function $\textrm{cft}(X)$ must be continuously differentiable in terms of $X$.
-A brief explanation of each of the methods is given below.
+
+Remember that to calculate the point estimate in the case of the approximate method the relative risk function $RR(X,\theta)$ and the counter-factual function $\textrm{cft}(X)$ must be continuously differentiable in terms of $X$. A brief explanation of each of the methods is given below.
 
 #### Bootstrap
-Bootstrap consists on resampling with replacement several times from a given random sample, in this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\sigma^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is calculated with the selected method (empirical or kernel). Once  $\widehat{\textrm{PIF}}_j$ has been calculated for every sample $X^j$ a confidence interval is calculated using the pivotal method  @wasserman2006nonparametric.
+Bootstrap consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each re-sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\hat{\sigma}^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is calculated with the selected method (empirical or kernel). Once  $\widehat{\textrm{PIF}}_j$ has been calculated for every sample $X^j$ a confidence interval for $\textrm{PIF}$ is calculated using the pivotal method  @wasserman2006nonparametric.
+
+<div style = "background-color: red"> THERE IS NO REFERENCE HERE </div>
 
 #### Linear
-For the linear, log-linear and inverse method the variance of $\widehat{\textrm{PIF}}$ or a transformation of  $\widehat{\textrm{PIF}}$ is calculated for a fixed value of $\theta$. Then simulations of $\theta$ and conditional variance is used to account uncertainty in $\theta$.
 The linear method considers Taylor's first order approximation (linearization) of $\widehat{\textrm{PIF}}$ and the variance for $\widehat{\textrm{PIF}}$ is calculated as the variance of the linearization. This approach is better known as the Delta Method @casella2002statistical. 
 
 #### Log-linear
-First we calculate the $(1-\alpha)$ confidence interval for $\textrm{log}(1-\widehat{\textrm{PIF}})$ ($\textrm{IC}_{\textrm{log}}$) , then it is transformed as $1-e^{\textrm{IC}_{\textrm{log}}}$. Since $1-e^x$ is a one to one function the confidence interval of $\widehat{\textrm{PIF}}$ is at least a  $(1-\alpha)$ confidence interval @bar1999confidence.
+The log-linear method uses the $(1-\alpha)$ confidence interval for $\textrm{log}(1-\textrm{PIF})$ ($\textrm{IC}_{\textrm{log}}$) generated from the delta method applied to  $\textrm{log}(\widehat{\textrm{PIF}})$. The transformation $1-e^{\textrm{IC}_{\textrm{log}}}$ (which is a one to one function)  ensures that the confidence interval is at least a  $(1-\alpha)$  @bar1999confidence.
 
 #### Inverse
-The inverse method can be used only for confidence intervals of $\widehat{\textrm{PAF}}$. The confidence interval ($\textrm{IC}_{RR}$) for $RR(X,\theta)$ (approximate method) or for $\sum_{i=1}^{\infty}w_iRR(X_i,\theta)$ (empirical method) is calculated and then transformed to a confidence interval of $\widehat{\textrm{PAF}}$ by $1-1/\textrm{IC}_{RR}$. Once again the transformation $1-1/x$ is injective, therefore from a $(1-\alpha)$ confidence interval for $\textrm{IC}_{RR}$ a confidence interval of $\widehat{\textrm{PAF}}$  at least  $(1-\alpha)$ confidence can be calculated @bar1999confidence.
+The inverse method can be used only for confidence intervals of  for $\textrm{PAF}$. The confidence interval ($\textrm{IC}_{RR}$) for $E[RR(X,\theta)]$  is calculated and then transformed to a confidence interval of $\textrm{PAF}$ by $1-1/\textrm{IC}_{RR}$. Once again (as in the loglinear case) the transformation $1-1/x$ is injective and thus the transform confidence interval of  $1 - 1/\textrm{IC}_{RR}$ is at least  $(1-\alpha)$ for $\textrm{PAF}$ @bar1999confidence.
 
 #### One to one
-The one to one method is similar to the inverse method, for the confidence interval $\textrm{IC}_{RR}$ is calculated. The difference lies on how uncertainty on $\theta$ is calculated. The inverse method uses simulations of $\theta$, while the one to one method considers the upper and lower bounds of a $1-\beta$ confidence interval of $\theta$ to calculate a $1-\alpha$ confidence interval $\textrm{IC}_{RR}$, where $\alpha>\beta$ @bar1999confidence.
+The one to one method is similar to the inverse method, for the confidence interval $\textrm{IC}_{RR}$ is calculated. The difference lies on how uncertainty on $\theta$ is calculated. The inverse method uses simulations of $\theta$, while the one to one method considers the upper and lower bounds of a $1-\beta$ confidence interval of $\theta$ to calculate a $1-\alpha$ confidence interval $\textrm{IC}_{RR}$, where $\alpha>\beta$. This method can only be used if $E[RR(X;\theta)]$ is injective and increasing in $\theta$ @bar1999confidence.
 
 
 ## Advanced examples
@@ -605,6 +613,7 @@ kplot + scale_color_manual("Kernel type", values = color_k) + theme_classic() +
 Notice that different kernels have different approximations to the sample's density.  Henceforth, if we were to estimate the Impact Fraction, different values would result from different kernels:
 
 ```{r}
+X        <- as.data.frame(X)
 thetahat <- 1
 thetavar <- 0.1
 rr       <- function(X, theta){theta*X + 1}
@@ -636,7 +645,7 @@ rr <- function(X, theta){ theta[1]*X^2/(X + 1) + theta[2]*X + 1}
 
 Assume the following information is available of $X$:
 ```{r}
-Xmean    <- 0.365
+Xmean    <- as.data.frame(0.365)
 Xvar     <- 0.25
 thetahat <- c(0.32, 1/4)
 ```
@@ -666,7 +675,7 @@ When calculating confidence intervals for the Population Attributable Fraction a
 The `force.min` option of `"inverse"` confidence method forces the Population Attributable Fraction's interval to be > 0. This option is not recommended as it artificially reduces the uncertainty around estimates. 
 
 ```{r}
-X <- rnorm(100)
+X <- as.data.frame(rnorm(100))
 paf.confidence(X, 0.12, rr = function(X, theta){exp(theta*X)}, thetavar = 0.1, 
                check_exposure = F, confidence_method = "inverse",force.min = FALSE)
 ```
@@ -685,7 +694,7 @@ However, there might be cases for which such a confidence interval makes sense.
 The command `pif.plot` (`paf.plot` respectively) allows us to analyze how the PIF (resp. PAF) varies as the values of $\theta$ changes:
 
 ```{r fig.width=7, fig.height=4}
-X        <- rbeta(100, 1, 3)
+X        <- as.data.frame(rbeta(100, 1, 3))
 rr       <- function(X, theta){theta*X^2 + 1}
 cft      <- function(X){X/1.2}
 thetalow <- 0
@@ -720,8 +729,8 @@ The command `pif.sensitivity` (`paf.sensitivity` respectively) allows us to anal
 
 ```{r fig.width=7, fig.height=4}
 #Get sample
-X        <- sample(c("Exposed","Very exposed","Unexposed"), 540, 
-                   replace = TRUE, prob = c(0.25, 0.05, 0.7))
+X        <- as.data.frame(sample(c("Exposed","Very exposed","Unexposed"), 540, 
+                   replace = TRUE, prob = c(0.25, 0.05, 0.7)))
 
 #Theta values
 thetahat <- c(1.2, 7)
@@ -769,7 +778,7 @@ The sensitivity analysis can only be performed when a sample of exposure values 
 To evaluate different counterfactual scenarios a heatmap is a useful tool, for one can have an idea of the possible outcomes from different counterfactuals. The counterfactual scenarios analyzed by default are those with the counterfactual function $\text{cft}(X)=aX+b$, where $a\in(0.01, 1)$ and $b\in(-1,0)$. These counterfactual scenarios can be plotted as:
 
 ```{r fig.width=7, fig.height=4}
-X        <- runif(100, 0, 2*pi) + 1
+X        <- as.data.frame(runif(100, 0, 2*pi) + 1)
 rr       <- function(X, theta){return(abs(X*cos(X + thetahat) + 2))}
 thetahat <- pi
 pif.heatmap(X = X, thetahat = thetahat, rr = rr, 
@@ -830,7 +839,7 @@ The ``counterfactual.plot`` function allows the user to plot the effect of the c
 
 ```{r fig.width=7, fig.height=4}
 #Get the exposure
-X   <- rnorm(1000, 150, 15)
+X   <- as.data.frame(rnorm(1000, 150, 15))
 cft <- function(X){0.35*X + 75}  
 
 #Plot!
@@ -867,15 +876,16 @@ plot_cft + geom_segment(aes(x = 168, y = 0.01, xend = 132, yend = 0.025),
 The function automatically determines if the input is continuous or discrete:
 
 ```{r fig.width=7, fig.height=4}
-X   <- sample(c("Exposed","Unexposed"), 100, replace = TRUE, prob = c(0.3, 0.7))
+X   <- data.frame(Exposure = sample(c("Exposed","Unexposed"), 
+                      100, replace = TRUE, prob = c(0.3, 0.7)))
 cft <- function(X){
 
      #Find which indivuals are exposed
-     exposed    <- which(X == "Exposed")
+     exposed    <- which(X[,"Exposure"] == "Exposed")
      
      #Change 1/3 of exposed to unexposed
      reduced    <- sample(exposed, length(exposed)/3)
-     X[reduced] <- "Unexposed"
+     X[reduced,"Exposure"] <- "Unexposed"
      
      return(X)
 }  
@@ -891,17 +901,18 @@ One should be careful when including exposure variables $X$ that have been coded
 
 ```{r fig.width=7, fig.height=4}
 #Same example as before but now exposed has been coded as 1 and unexposed 0
-X   <- sample(c(1,0), 100, replace = TRUE, prob = c(0.3, 0.7))
+X   <- data.frame( Exposure = sample(c(1,0), 100, 
+                    replace = TRUE, prob = c(0.3, 0.7)))
 
 #Same counterfactual considering the new code
 cft <- function(X){
 
      #Find which indivuals are exposed
-     exposed    <- which(X == 1)
+     exposed    <- which(X[,"Exposure"] == 1)
      
      #Change 1/3 of exposed to unexposed
      reduced    <- sample(exposed, length(exposed)/3)
-     X[reduced] <- 0
+     X[reduced, "Exposure"] <- 0
      
      return(X)
 }  
@@ -917,14 +928,14 @@ counterfactual.plot(X, cft, exposure.type = "discrete")
 Error `Error in rr(.X0, thetahat) : unused argument (thetahat)` states `thetahat` was not included in the definition of the `rr` function. 
 
 ```{r, error = TRUE}
-X  <- rlnorm(100)
+X  <- data.frame(rlnorm(100))
 rr <- function(X){X + 1}
 paf(X, 0, rr)
 ```
 
 The solution is to include it:
 ```{r}
-X  <- rlnorm(100)
+X  <- data.frame(rlnorm(100))
 rr <- function(X, theta){X + 1}
 paf(X, 0, rr)
 ```
@@ -934,7 +945,7 @@ paf(X, 0, rr)
 Warning  `Relative Risk by definition must equal 1 when evaluated in 0. Are you using displaced RRs?` establishes the Relative Risk is not $1$ when the exposure $X$ is set to no exposure $0$. This is just a reminder to avoid careless definitions of  Relative Risk functions; however it is not always the case that exposure ought to be $0$ as the [Systolic Blood Pressure example](incomplete-data-continuous-rr-example-systolic-blood-pressure) establishes. If that is the case, set  `check_rr`  to false:
 
 ```{r}
-pif(rlnorm(100), 0, function(X, thetahat){X}, check_rr = FALSE)
+pif(data.frame(rlnorm(100)), 0, function(X, thetahat){X}, check_rr = FALSE)
 ```
 
 ###Some exposure values are less than zero
@@ -942,7 +953,7 @@ pif(rlnorm(100), 0, function(X, thetahat){X}, check_rr = FALSE)
 Warning `Some exposure values are less than zero, verify this is correct.` establishes there are negative elements of the exposure $X$. Due to the physical interpretation of `exposure` it might not make sense to have negative values. However, if your measurement of exposure includes negative values you can stop that message with `check_exposure` to `FALSE`.
 
 ```{r}
-paf(runif(100, -1, 1), 0, rr = function(X, theta){exp(X)}, check_exposure = FALSE)
+paf(data.frame(runif(100, -1, 1)), 0, rr = function(X, theta){exp(X)}, check_exposure = FALSE)
 ```
 
 ###Counterfactual is increasing the Risk
@@ -950,35 +961,35 @@ paf(runif(100, -1, 1), 0, rr = function(X, theta){exp(X)}, check_exposure = FALS
 Warning `Counterfactual is increasing the Risk. Are you sure you are specifying it correctly?` establishes that under current counterfactual the Relative Risk associated to that exposure is increasing (and not decreasing as the usual counterfactual practice of setting counterfactuals that reduce Risks would suggest). To dismiss the warning, set `check_integrals = FALSE`. 
 
 ```{r}
-pif(rbeta(100, 2, 3), 0, rr = function(X, theta){exp(X)}, cft = function(X){2*X}, check_integrals = FALSE)
+pif(data.frame(rbeta(100, 2, 3)), 0, rr = function(X, theta){exp(X)}, cft = function(X){2*X}, check_integrals = FALSE)
 ```
 
 ###Expected value is not finite
 
 Both  `pif` and `paf` are, [by definition](introduction), expected values. As such, there are certain distributions for which the theoretical expected values do not exist. The warnings `Expected value of Relative Risk is not finite`, and `Expected value of Relative Risk under counterfactual is not finite` establish that the estimator of the expected value of the Relative Risk of the exposure (or the Relative Risk over the Counterfactual exposure) is (for all computational purposes) infinite.
 
-```{r}
-paf(rlnorm(100, 23, 12), 1, rr = function(X, theta){exp(theta*X)})
+```{r, error=TRUE}
+paf(data.frame(rlnorm(100, 23, 12)), 1, rr = function(X, theta){exp(theta*X)})
 ```
 
 If both the Relative Risk of the observed exposure and the one over the counterfactual exposure are infinite then PIF is undefined:
 
-```{r}
-pif(rlnorm(100, 23, 12), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){X/2})
+```{r, error = TRUE}
+pif(as.data.frame(rlnorm(100, 23, 12)), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){X/2})
 ```
 
 Confidence intervals might also be undefined in those cases:
 
 ```{r, warning=FALSE}
-paf.confidence(rlnorm(100, 23, 12), 1, rr = function(X, theta){exp(theta*X)}, 
+paf.confidence(as.data.frame(rlnorm(100, 23, 12)), 1, rr = function(X, theta){exp(theta*X)}, 
                thetavar = 0.2, confidence_method = "inverse")
 ```
 
 or might be useless:
 
 ```{r, warning=FALSE}
-paf.confidence(rlnorm(100, 23, 12), 1, rr = function(X, theta){exp(theta*X)}, 
-               thetavar = 0.2, confidence_method = "linear")
+paf.confidence(as.data.frame(rlnorm(100, 23, 12)), 1, rr = function(X, theta){exp(theta*X)}, 
+               thetavar = 0.2,confidence_method = "linear")
 ```
 
 
@@ -988,17 +999,17 @@ Error `Error in weighted.mean.default(rr(.X, thetahat), weights) : 'x' and 'w' m
 
 ```{r, error = TRUE}
 #Survey weights have different length than exposure
-X <- runif(100)
+X <- data.frame(runif(100))
 w <- rep(1/12, 12)
 pif(X, 0.12, rr = function(X, theta){theta*X + 1}, weights = w)
 
 #The Relative Risk function result might have a different length than weights
-X  <- runif(100)
+X  <- data.frame(runif(100))
 rr <- function(X, theta){1}
 pif(X, 8, rr)
 
 #The Counterfactual function result might have a different length than exposure X
-X   <- runif(100)
+X   <- as.data.frame(runif(100))
 rr  <- function(X, theta){X + 1}
 cft <- function(X){2}
 pif(X, 8, rr = rr, cft = cft)
@@ -1011,14 +1022,14 @@ Error message: `Hessian might not be defined for those values of rr` states that
 
 ```{r, error = TRUE}
 #Extremely large values of rr
-pif(2.61573e+22, 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){X/2},
+pif(as.data.frame(2.61573e+22), 1, rr = function(X, theta){exp(theta*X)}, cft = function(X){X/2},
     Xvar = 100, method = "approximate")
 
 #rr not differentiable at 0
 rr <- function(X, theta){
   sqrt(X)
 }
-paf(0, 1, rr = rr, method = "approximate", Xvar = 1, check_rr = FALSE)
+paf(as.data.frame(0), 1, rr = rr, method = "approximate", Xvar = 1, check_rr = FALSE)
 ```
 
 ###Under this density some values are NA
@@ -1042,22 +1053,23 @@ ggplot(dens_data) + geom_line(aes(x = x, y = y), color = "deepskyblue4", size = 
 When kernel method is applied for `paf`, the error occurs as it attempts to take square root of the negative values. 
 
 ```{r, error = TRUE}
-paf(X, 0.12, rr = rr, method = "kernel", ktype = "gaussian")
+paf(as.data.frame(X), 0.12, rr = rr, method = "kernel", ktype = "gaussian")
 ```
 
 There are two ways of fixing this: using the empirical method or changing the Relative Risk function:
 
 ```{r, error = TRUE}
 #Using empirical method
-paf(X, 0.12, rr = rr, method = "empirical")
+paf(data.frame(X), 0.12, rr = rr, method = "empirical")
 
 #Rewriting RR function
 rr <- function(X, theta){
-  Xnew               <- rep(0, length(X))
-  Xnew[which(X >= 0)] <- sqrt(X[which(X >= 0)] ) + 1
+  Xnew            <- as.data.frame(rep(0, nrow(X)))
+  Xnew[which(X[,1] >= 0),1] <- sqrt(X[which(X[,1] >= 0),1] ) + 1
   return(Xnew)
 }
-paf(X, 0.12, rr = rr, method = "kernel", ktype = "gaussian")
+paf(data.frame(X), 0.12, rr = rr, method = "kernel", ktype = "gaussian")
+pif.kernel(as.data.frame(X), 0.12, rr)
 
 ```
 
