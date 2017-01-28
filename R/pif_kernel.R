@@ -157,7 +157,7 @@ pif.kernel <- function(X, thetahat, rr,
   
   #Integrate the expected values of the densities, Need to check
   #that cft is defined for where the counterfactual happened
-  .prod1   <- rr(densX, thetahat)
+  .prod1   <- as.matrix(rr(densX, thetahat))
   .naprod1 <- which(is.na(.prod1))
   
   #Eliminate potential na's
@@ -181,7 +181,7 @@ pif.kernel <- function(X, thetahat, rr,
   if (is_paf){
     .mucft   <- 1
   } else {
-    .prod2   <- rr(cft(densX), thetahat)
+    .prod2   <- as.matrix(rr(cft(densX), thetahat))
     .naprod2 <- which(is.na(.prod2))
     
     #Eliminate potential na's
