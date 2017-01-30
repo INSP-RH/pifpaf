@@ -120,9 +120,11 @@ paf.confidence.one2one <- function(X, thetahat, rr, thetalow, thetaup,
                 deriv.method.args = deriv.method.args, deriv.method = deriv.method)
   
   
-  #Return
-  .confint        <- c(.lower["Lower_CI"], .point, .upper["Upper_CI"])
+  #Rename
+  .confint        <- c(min(.lower["Lower_CI"], .upper["Upper_CI"]), .point, 
+                       max(.lower["Lower_CI"], .upper["Upper_CI"]))
   names(.confint) <- c("Lower_CI","Point_Estimate","Upper_CI")
+  
   
   #Return
   return(.confint)
