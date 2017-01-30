@@ -470,50 +470,24 @@ Note that for the approximate method the correct input is mean and variance of X
 
 
 ### Confidence Intervals
-The bootstrap method is the recommended method to calculate confidence intervals for the kernel and empirical point estimate. However this method cannot be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal, i.e. $\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)$ where $\hat{\sigma}_{\theta}^2$ is an estimator of $\sigma_{\theta}^2$. The following table shows the methods to estimate confidence intervals and when each of the methods can be used.
-
-<div style = "background-color: red"> RECALL CONFIDENCE INTERVALS ARE FOR THE REAL VALUES $\textrm{PIF}$ AND NOT FOR ESTIMATORS $\widehat{\textrm{PIF}}$</div>
-
-<div style = "background-color: red"> WHERE IS THIS TABLE? </div>
+The bootstrap method is the recommended method to calculate confidence intervals while using the kernel and empirical point estimate. However this method cannot be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal, i.e. $\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)$ where $\hat{\sigma}_{\theta}^2$ is an estimator of $\sigma_{\theta}^2$. The confidence might change with the estimation method, however confidence intervals are calculated for the real value of the $\textrm{PIF}$. This is if there was a large number of random samples and a $(1-\alpha)$ confidence interval was calculated for each sample, then the real value of $\textrm{PIF}$ will be in $(1-\alpha)\times 100\%$ of the confidence intervals. This would happen with every estimation method. The following table shows the methods to estimate confidence intervals and when each of the methods can be used. 
 
 
-\begin{table}[H]
-    \centering
-    \begin{tabular}{cccc}
-        Confidence Interval & Point Estimate & PAF or PIF & Extra Assumptions \\ \hline
-        \hline
-    \multirow{2}{*}{Bootstrap }
- & Kernel &\multirow{2}{*}{PIF \& PAF} &\multirow{2}{*}{None}\\
- & Empirical &  &\\ 
-      \hdashline  
-    \multirow{2}{*}{Linear}
- & Empirical & \multirow{2}{*}{PIF \& PAF}&\multirow{2}{*}{None}\\ 
- & Approximate && \\
-    \hdashline
-     \multirow{2}{*}{Log-linear}
- & Empirical & \multirow{2}{*}{PIF \& PAF}&\multirow{2}{*}{None}\\ 
- & Approximate && \\
- \hdashline
-     \multirow{2}{*}{Inverse}
- & Empirical & \multirow{2}{*}{PAF} & \multirow{2}{*}{$RR(X,\theta)$ is injective in $X$}\\
- & Approximate & &\\
- \hdashline
-     \multirow{2}{*}{One to one}
- & Empirical & \multirow{2}{*}{PAF} & \multirow{2}{*}{$RR(X,\theta)$ is injective in $X$ and $\theta$}\\ 
- & Approximate & & \\
- \hline 
- \hline
-    \end{tabular}
-    \caption{Usage of confidence interval methods}
-    \label{fig:CI_methods}
-\end{table}
+|Confidence Interval |Point Estimate|PAF or PIF   |Extra Assumptions|
+|-----------|:----------------------:|:---------:|:--------------------------------:|
+|Bootstrap  |Empirical & Kernel      | PIF & PAF  |None|
+|Linear     |Empirical & Appproximate| PIF & PAF  |None|
+|Log-linear |Empirical & Appproximate| PIF & PAF  |None|
+|Inverse    |Empirical & Appproximate| PAF        |$RR(X,\theta)$ is injective in $X$|
+|One to one |Empirical & Appproximate| PAF        |$RR(X,\theta)$ is injective in $X$ and $\theta$|
+
+
 
 Remember that to calculate the point estimate in the case of the approximate method the relative risk function $RR(X,\theta)$ and the counter-factual function $\textrm{cft}(X)$ must be continuously differentiable in terms of $X$. A brief explanation of each of the methods is given below.
 
 #### Bootstrap
 Bootstrap consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each re-sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\hat{\sigma}^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is calculated with the selected method (empirical or kernel). Once  $\widehat{\textrm{PIF}}_j$ has been calculated for every sample $X^j$ a confidence interval for $\textrm{PIF}$ is calculated using the pivotal method  @wasserman2006nonparametric.
 
-<div style = "background-color: red"> THERE IS NO REFERENCE HERE </div>
 
 #### Linear
 The linear method considers Taylor's first order approximation (linearization) of $\widehat{\textrm{PIF}}$ and the variance for $\widehat{\textrm{PIF}}$ is calculated as the variance of the linearization. This approach is better known as the Delta Method @casella2002statistical. 

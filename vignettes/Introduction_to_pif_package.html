@@ -445,37 +445,75 @@ meanX &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span 
 </div>
 <div id="confidence-intervals" class="section level3">
 <h3>Confidence Intervals</h3>
-<p>The bootstrap method is the recommended method to calculate confidence intervals for the kernel and empirical point estimate. However this method cannot be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF. All, but the one to one method, consider <span class="math inline">\(\hat{\theta}\)</span> to be a consistent estimator of <span class="math inline">\(\theta\)</span> such that it is asymptotically normal, i.e. <span class="math inline">\(\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)\)</span> where <span class="math inline">\(\hat{\sigma}_{\theta}^2\)</span> is an estimator of <span class="math inline">\(\sigma_{\theta}^2\)</span>. The following table shows the methods to estimate confidence intervals and when each of the methods can be used.</p>
-<div style="background-color: red">
-RECALL CONFIDENCE INTERVALS ARE FOR THE REAL VALUES <span class="math inline">\(\textrm{PIF}\)</span> AND NOT FOR ESTIMATORS <span class="math inline">\(\widehat{\textrm{PIF}}\)</span>
-</div>
-<div style="background-color: red">
-WHERE IS THIS TABLE?
-</div>
-
+<p>The bootstrap method is the recommended method to calculate confidence intervals while using the kernel and empirical point estimate. However this method cannot be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF. All, but the one to one method, consider <span class="math inline">\(\hat{\theta}\)</span> to be a consistent estimator of <span class="math inline">\(\theta\)</span> such that it is asymptotically normal, i.e. <span class="math inline">\(\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)\)</span> where <span class="math inline">\(\hat{\sigma}_{\theta}^2\)</span> is an estimator of <span class="math inline">\(\sigma_{\theta}^2\)</span>. The confidence might change with the estimation method, however confidence intervals are calculated for the real value of the <span class="math inline">\(\textrm{PIF}\)</span>. This is if there was a large number of random samples and a <span class="math inline">\((1-\alpha)\)</span> confidence interval was calculated for each sample, then the real value of <span class="math inline">\(\textrm{PIF}\)</span> will be in <span class="math inline">\((1-\alpha)\times 100\%\)</span> of the confidence intervals. This would happen with every estimation method. The following table shows the methods to estimate confidence intervals and when each of the methods can be used.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="14%"></col>
+<col width="29%"></col>
+<col width="14%"></col>
+<col width="41%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Confidence Interval</th>
+<th align="center">Point Estimate</th>
+<th align="center">PAF or PIF</th>
+<th align="center">Extra Assumptions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bootstrap</td>
+<td align="center">Empirical &amp; Kernel</td>
+<td align="center">PIF &amp; PAF</td>
+<td align="center">None</td>
+</tr>
+<tr class="even">
+<td>Linear</td>
+<td align="center">Empirical &amp; Appproximate</td>
+<td align="center">PIF &amp; PAF</td>
+<td align="center">None</td>
+</tr>
+<tr class="odd">
+<td>Log-linear</td>
+<td align="center">Empirical &amp; Appproximate</td>
+<td align="center">PIF &amp; PAF</td>
+<td align="center">None</td>
+</tr>
+<tr class="even">
+<td>Inverse</td>
+<td align="center">Empirical &amp; Appproximate</td>
+<td align="center">PAF</td>
+<td align="center"><span class="math inline">\(RR(X,\theta)\)</span> is injective in <span class="math inline">\(X\)</span></td>
+</tr>
+<tr class="odd">
+<td>One to one</td>
+<td align="center">Empirical &amp; Appproximate</td>
+<td align="center">PAF</td>
+<td align="center"><span class="math inline">\(RR(X,\theta)\)</span> is injective in <span class="math inline">\(X\)</span> and <span class="math inline">\(\theta\)</span></td>
+</tr>
+</tbody>
+</table>
 <p>Remember that to calculate the point estimate in the case of the approximate method the relative risk function <span class="math inline">\(RR(X,\theta)\)</span> and the counter-factual function <span class="math inline">\(\textrm{cft}(X)\)</span> must be continuously differentiable in terms of <span class="math inline">\(X\)</span>. A brief explanation of each of the methods is given below.</p>
 <div id="bootstrap" class="section level4">
 <h4>Bootstrap</h4>
-<p>Bootstrap consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values <span class="math inline">\(X_1,X_2,\cdots X_n\)</span>. For each re-sample <span class="math inline">\(X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}\)</span> a value <span class="math inline">\(\theta_j\)</span> is simulated from a normal distribution with mean <span class="math inline">\(\hat{\theta}\)</span> and variance <span class="math inline">\(\hat{\sigma}^2_{\theta}\)</span>. For each <span class="math inline">\(X^j\)</span> and <span class="math inline">\(\theta_j\)</span>, <span class="math inline">\(\widehat{\textrm{PIF}}_j\)</span> is calculated with the selected method (empirical or kernel). Once <span class="math inline">\(\widehat{\textrm{PIF}}_j\)</span> has been calculated for every sample <span class="math inline">\(X^j\)</span> a confidence interval for <span class="math inline">\(\textrm{PIF}\)</span> is calculated using the pivotal method <strong>???</strong>.</p>
-<div style="background-color: red">
-THERE IS NO REFERENCE HERE
-</div>
+<p>Bootstrap consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values <span class="math inline">\(X_1,X_2,\cdots X_n\)</span>. For each re-sample <span class="math inline">\(X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}\)</span> a value <span class="math inline">\(\theta_j\)</span> is simulated from a normal distribution with mean <span class="math inline">\(\hat{\theta}\)</span> and variance <span class="math inline">\(\hat{\sigma}^2_{\theta}\)</span>. For each <span class="math inline">\(X^j\)</span> and <span class="math inline">\(\theta_j\)</span>, <span class="math inline">\(\widehat{\textrm{PIF}}_j\)</span> is calculated with the selected method (empirical or kernel). Once <span class="math inline">\(\widehat{\textrm{PIF}}_j\)</span> has been calculated for every sample <span class="math inline">\(X^j\)</span> a confidence interval for <span class="math inline">\(\textrm{PIF}\)</span> is calculated using the pivotal method <span class="citation">(5)</span>.</p>
 </div>
 <div id="linear" class="section level4">
 <h4>Linear</h4>
-<p>The linear method considers Taylor’s first order approximation (linearization) of <span class="math inline">\(\widehat{\textrm{PIF}}\)</span> and the variance for <span class="math inline">\(\widehat{\textrm{PIF}}\)</span> is calculated as the variance of the linearization. This approach is better known as the Delta Method <span class="citation">(5)</span>.</p>
+<p>The linear method considers Taylor’s first order approximation (linearization) of <span class="math inline">\(\widehat{\textrm{PIF}}\)</span> and the variance for <span class="math inline">\(\widehat{\textrm{PIF}}\)</span> is calculated as the variance of the linearization. This approach is better known as the Delta Method <span class="citation">(6)</span>.</p>
 </div>
 <div id="log-linear" class="section level4">
 <h4>Log-linear</h4>
-<p>The log-linear method uses the <span class="math inline">\((1-\alpha)\)</span> confidence interval for <span class="math inline">\(\textrm{log}(1-\textrm{PIF})\)</span> (<span class="math inline">\(\textrm{IC}_{\textrm{log}}\)</span>) generated from the delta method applied to <span class="math inline">\(\textrm{log}(\widehat{\textrm{PIF}})\)</span>. The transformation <span class="math inline">\(1-e^{\textrm{IC}_{\textrm{log}}}\)</span> (which is a one to one function) ensures that the confidence interval is at least a <span class="math inline">\((1-\alpha)\)</span> <span class="citation">(6)</span>.</p>
+<p>The log-linear method uses the <span class="math inline">\((1-\alpha)\)</span> confidence interval for <span class="math inline">\(\textrm{log}(1-\textrm{PIF})\)</span> (<span class="math inline">\(\textrm{IC}_{\textrm{log}}\)</span>) generated from the delta method applied to <span class="math inline">\(\textrm{log}(\widehat{\textrm{PIF}})\)</span>. The transformation <span class="math inline">\(1-e^{\textrm{IC}_{\textrm{log}}}\)</span> (which is a one to one function) ensures that the confidence interval is at least a <span class="math inline">\((1-\alpha)\)</span> <span class="citation">(7)</span>.</p>
 </div>
 <div id="inverse" class="section level4">
 <h4>Inverse</h4>
-<p>The inverse method can be used only for confidence intervals of for <span class="math inline">\(\textrm{PAF}\)</span>. The confidence interval (<span class="math inline">\(\textrm{IC}_{RR}\)</span>) for <span class="math inline">\(E[RR(X,\theta)]\)</span> is calculated and then transformed to a confidence interval of <span class="math inline">\(\textrm{PAF}\)</span> by <span class="math inline">\(1-1/\textrm{IC}_{RR}\)</span>. Once again (as in the loglinear case) the transformation <span class="math inline">\(1-1/x\)</span> is injective and thus the transform confidence interval of <span class="math inline">\(1 - 1/\textrm{IC}_{RR}\)</span> is at least <span class="math inline">\((1-\alpha)\)</span> for <span class="math inline">\(\textrm{PAF}\)</span> <span class="citation">(6)</span>.</p>
+<p>The inverse method can be used only for confidence intervals of for <span class="math inline">\(\textrm{PAF}\)</span>. The confidence interval (<span class="math inline">\(\textrm{IC}_{RR}\)</span>) for <span class="math inline">\(E[RR(X,\theta)]\)</span> is calculated and then transformed to a confidence interval of <span class="math inline">\(\textrm{PAF}\)</span> by <span class="math inline">\(1-1/\textrm{IC}_{RR}\)</span>. Once again (as in the loglinear case) the transformation <span class="math inline">\(1-1/x\)</span> is injective and thus the transform confidence interval of <span class="math inline">\(1 - 1/\textrm{IC}_{RR}\)</span> is at least <span class="math inline">\((1-\alpha)\)</span> for <span class="math inline">\(\textrm{PAF}\)</span> <span class="citation">(7)</span>.</p>
 </div>
 <div id="one-to-one" class="section level4">
 <h4>One to one</h4>
-<p>The one to one method is similar to the inverse method, for the confidence interval <span class="math inline">\(\textrm{IC}_{RR}\)</span> is calculated. The difference lies on how uncertainty on <span class="math inline">\(\theta\)</span> is calculated. The inverse method uses simulations of <span class="math inline">\(\theta\)</span>, while the one to one method considers the upper and lower bounds of a <span class="math inline">\(1-\beta\)</span> confidence interval of <span class="math inline">\(\theta\)</span> to calculate a <span class="math inline">\(1-\alpha\)</span> confidence interval <span class="math inline">\(\textrm{IC}_{RR}\)</span>, where <span class="math inline">\(\alpha&gt;\beta\)</span>. This method can only be used if <span class="math inline">\(E[RR(X;\theta)]\)</span> is injective and increasing in <span class="math inline">\(\theta\)</span> <span class="citation">(6)</span>.</p>
+<p>The one to one method is similar to the inverse method, for the confidence interval <span class="math inline">\(\textrm{IC}_{RR}\)</span> is calculated. The difference lies on how uncertainty on <span class="math inline">\(\theta\)</span> is calculated. The inverse method uses simulations of <span class="math inline">\(\theta\)</span>, while the one to one method considers the upper and lower bounds of a <span class="math inline">\(1-\beta\)</span> confidence interval of <span class="math inline">\(\theta\)</span> to calculate a <span class="math inline">\(1-\alpha\)</span> confidence interval <span class="math inline">\(\textrm{IC}_{RR}\)</span>, where <span class="math inline">\(\alpha&gt;\beta\)</span>. This method can only be used if <span class="math inline">\(E[RR(X;\theta)]\)</span> is injective and increasing in <span class="math inline">\(\theta\)</span> <span class="citation">(7)</span>.</p>
 </div>
 </div>
 </div>
@@ -893,11 +931,14 @@ rr &lt;-<span class="st"> </span>function(X, theta){
 <div id="ref-lawes2006blood">
 <p>4. Lawes CM, Vander Hoorn S, Law MR, et al. Blood pressure and the global burden of disease 2000. part 1: Estimates of blood pressure levels. <em>Journal of hypertension</em>. 2006;24(3):413–422. </p>
 </div>
+<div id="ref-wasserman2006nonparametric">
+<p>5. Wasserman L. All of nonparametric statistics. Springer; 2006.</p>
+</div>
 <div id="ref-casella2002statistical">
-<p>5. Casella G, Berger RL. Statistical inference. Duxbury Pacific Grove, CA; 2002.</p>
+<p>6. Casella G, Berger RL. Statistical inference. Duxbury Pacific Grove, CA; 2002.</p>
 </div>
 <div id="ref-bar1999confidence">
-<p>6. Bar-Lev SK, Reiser B. On confidence intervals for nonmonotone parametric functions and an application to the squared mean of the normal distribution. <em>Statistical Papers</em>. 1999;40(1):89–98. </p>
+<p>7. Bar-Lev SK, Reiser B. On confidence intervals for nonmonotone parametric functions and an application to the squared mean of the normal distribution. <em>Statistical Papers</em>. 1999;40(1):89–98. </p>
 </div>
 </div>
 </div>
