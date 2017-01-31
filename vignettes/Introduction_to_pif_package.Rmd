@@ -1,6 +1,6 @@
 ---
 title: "Introduction to the pif package: Estimating Potential Impact and Population Attributable Fractions"
-author: Dalia Camacho García Formentí \& Rodrigo Zepeda Tello 
+author: Dalia Camacho-García-Formentí \& Rodrigo Zepeda-Tello 
 output: 
   rmarkdown::html_vignette:
      toc: true
@@ -20,33 +20,33 @@ set.seed(3256)
 
 ##Introduction
 
-The Potential Impact Fraction (PIF) quantifies the contribution of exposure to a risk-factor to either morbidity (or mortality). In particular, it compares the observed burden of disease (or death) with a hypothetical counterfactual scenario. PIF is usually defined [@murray2003comparative; @vander2004estimating] for some exposure $X$ with parametrical Relative Risk $RR(X;\theta)$ with parameter $\theta$, and counterfactual function $\textrm{cft}$ as:
+The Potential Impact Fraction (PIF) quantifies the contribution of risk-factor exposure to either morbidity (or mortality). In particular, it compares the observed burden of disease (or death) with a hypothetical counterfactual scenario. PIF is usually defined [@murray2003comparative; @vander2004estimating] for some exposure $X\in \mathbb{R}^p$ with parametrical Relative Risk $RR(X;\theta)$ with parameter $\theta$, and counterfactual function $\textrm{cft}$. If $X$ is categorical (discrete) then
 
 \begin{equation}
-\textrm{PIF} = \frac{\sum_{i=1}^m P_i \cdot RR(X_i;\theta) - \sum_{i=1}^m P_i \cdot RR(\textrm{cft}(X_i);\theta)}{\sum_{i=1}^m P_i \cdot RR(X_i;\theta)}
+\textrm{PIF} = \frac{\sum_{i=1}^m P_i \cdot RR(X_i;\theta) - \sum_{i=1}^m P_i \cdot RR\big(\textrm{cft}(X_i);\theta\big)}{\sum_{i=1}^m P_i \cdot RR(X_i;\theta)},
 \end{equation}
 
-if $X$ is categorical (discrete) and:
+ and if $X$ is continuous:
 
 \begin{equation}
-\textrm{PIF} = \frac{\int_{\mathcal{X}} RR(X;\theta)f(X)dX - \int_{\mathcal{X}} RR\big(\textrm{cft}(X);\theta \big)f(X)dX}{\int_{\mathcal{X}} RR(X;\theta)f(X)dX,}
+\textrm{PIF} = \frac{\int_{\mathbb{R}^p} RR(X;\theta)f(X)dX - \int_{\mathbb{R}^p} RR\big(\textrm{cft}(X);\theta \big)f(X)dX}{\int_{\mathbb{R}^p} RR(X;\theta)f(X)dX}.
 \end{equation}
 
-if $X$ is continuous. In the aforementioned equations $P_i$ represents the probability of $X$ being at the $i$-th category and $f$ the density function of $X$. 
+In the aforementioned equations $P_i$ represents the probability of $X$ being at the $i$-th category and $f$ the density function of $X$. 
 
 Some examples of Relative Risk functions include [@barendregt2010categorical]: 
 
-1. Linear: $R(X;\theta) = 1 + \theta X$,
-2. Exponential: $R(X;\theta) = e^{\theta X}$.
-3. Quadratic: $R(X;\theta_1, \theta_2) = 1 + \theta_1 X + \theta_2 X^2$
+1. Linear: $RR(X;\theta) = 1 + \theta X$,
+2. Exponential: $RR(X;\theta) = e^{\theta X}$,
+3. Quadratic: $RR(X;\theta_1, \theta_2) = 1 + \theta_1 X + \theta_2 X^2$.
 
-We remark that in both discrete and continuous cases, when the counterfactual is that of the "theoretical-minimum-risk-exposure" (i.e. the counterfactual corresponds to a Relative Risk of $0$) the PIF is equivalent to the Population Attributable Fraction (PAF) defined as:
+We remark that in both discrete and continuous cases, when the counterfactual is that of the "theoretical-minimum-risk-exposure" (i.e. the counterfactual corresponds to a Relative Risk of $1$) the PIF is equivalent to the Population Attributable Fraction (PAF) defined as:
 
 \begin{equation}
 \textrm{PAF} = 
 \begin{cases}
 \frac{\sum_{i=1}^m P_i \cdot RR(X_i;\theta) - 1}{\sum_{i=1}^m P_i \cdot RR(X_i;\theta)} & \textrm{if } X \textrm{ is categorical}, \\ \\
-\frac{\int_{\mathcal{X}} RR(X;\theta)f(X)dX - 1}{\int_{\mathcal{X}} RR(X;\theta)f(X)dX} & \textrm{if } X \textrm{ is continuous}. \\
+\frac{\int_{\mathbb{R}^p} RR(X;\theta)f(X)dX - 1}{\int_{\mathbb{R}^p}} RR(X;\theta)f(X)dX} & \textrm{if } X \textrm{ is continuous}. \\
 \end{cases}
 \end{equation}
 
@@ -63,16 +63,16 @@ In this document we present the ``pif`` package which allows the estimation of b
 
 The basic ingredients for using the package are:
 
-1. A Relative Risk function $RR$ which might depend on a parameter $\theta$ (usually it does).
-2. A sample $X_{(n)}$ of $n$ exposure values (or if it is not available, at least estimated mean $m$ and variance $s$ of the exposure). 
-3. A Maximum Likelihood Estimator $\hat{\theta}$ of $\theta$. 
-4. A function $cft$ that transforms the observed exposure into that of a counterfactual scenario.
+1. A Relative Risk function of the exposure $RR(X;\theta)$ which might depends on a parameter $\theta$.
+2. A sample $X_{(n)}$ of $n$ exposure values (or if it is not available, at least estimated mean $m$ and variance $s^2$ of the exposure). 
+3. A consistent and asymptotically normal estimator $\hat{\theta}$ of $\theta$. 
+4. A function $\textrm{cft}$ that transforms the observed exposure into that of a counterfactual scenario.
 
-If you have those you are ready to start with our examples which include: [sample of the exposure with continuous Relative Risks](#continuous-rr-example-ozone-exposure), [sample of the exposure with  categorical Relative Risks](#discrete-rr-example-tobacco-consumption), [only mean and variance of exposure with continuous Relative Risks](#incomplete-data-continuous-rr-example-systolic-blood-pressure), and [only mean and variance of exposure with categorical Relative Risks](#incomplete-data-categorical-rr-example-body-mass-index). 
+If you have those ingredients you are ready to start with our examples which include: [a complete sample of the exposure with continuous Relative Risks](#continuous-rr-example-ozone-exposure), [a complete sample of the exposure with categorical Relative Risks](#discrete-rr-example-tobacco-consumption), [only mean and variance of exposure with continuous Relative Risks](#incomplete-data-continuous-rr-example-systolic-blood-pressure), and [only mean and variance of exposure with categorical Relative Risks](#incomplete-data-categorical-rr-example-body-mass-index). 
 
-### Continuous RR example: Ozone Exposure
+### Continuous RR example: ozone exposure
 
-This example aims to estimate the PIF and PAF of Ozone on children's lung growth. The ``airquality`` dataset (included in R) has information on Ozone levels for New York City.
+This example aims to estimate the PIF and PAF of ozone on children's lung growth. The ``airquality`` dataset (included in R) has information on ozone levels (ppb) for New York City.
 
 ```{r}
 require(datasets)
@@ -80,16 +80,16 @@ ozone_exposure  <- na.omit(airquality$Ozone)
 ozone_exposure  <- as.data.frame(ozone_exposure) 
 ```
 
-Furthermore, assume normalized sampling weights for Ozone exposure are given by:
+Furthermore, assume normalized sampling weights for ozone exposure are given by:
 ```{r}
 sampling_weights <- c(rep(1/232, 58), rep(0.75/58, 58))
 ```
 
 Suppose the Relative Risk of reduced lung growth given exposure is defined by:
 \begin{equation}
-RR(X;\theta) = e^{\theta X}
+RR(X;\theta) = e^{\theta X/5},
 \end{equation}
-where $\theta$ is estimated by $\hat{\theta} = 0.11$ with variance $\sigma_\theta^2 = 0.0025$:
+where $\theta$ is estimated by $\hat{\theta} = 0.17$ with variance $\sigma_\theta^2 = 0.00025$:
 
 ```{r}
 thetahat <- 0.17
@@ -106,7 +106,7 @@ Notice that the parameters should be $X$ and $\theta$ **in that order**. Never f
 paf(X = ozone_exposure, thetahat = thetahat, rr = rr, weights = sampling_weights)
 ```
 
-We can estimate the Potential Impact Fraction provided we have a counterfactual. Let's assume we want to scale exposure to Ozone in 50\% and reduce it by $1$. The counterfactual function is thus:
+We can estimate the Potential Impact Fraction provided we have a counterfactual. Let's assume we want to scale exposure to ozone in 50\% and reduce it by $1$ ppb. The counterfactual function is:
 
 ```{r}
 cft <- function(X){0.5*X - 1}
@@ -117,7 +117,7 @@ Notice that the counterfactual is solely a function of the exposure $X$. We are 
 pif(X = ozone_exposure, thetahat = thetahat, rr = rr, cft = cft, weights = sampling_weights)
 ```
    
-No study is complete without confidence intervals. Let's calculate the confidence intervals for both PAF and PIF. 
+No study is complete without confidence intervals. Let's calculate the confidence intervals for both PAF and PIF: 
 
 ```{r }
 paf.confidence(X = ozone_exposure, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = sampling_weights)
@@ -135,37 +135,37 @@ counterfactual.plot(X = ozone_exposure, cft = cft, weights = sampling_weights)
 
 We can also conduct several sensitivity analysis: 
 
-1. To see how the PAF changes as $\theta$ changes between $0$ and $1/\pi$ (notice that it is nonlinear)
+1. To see how the PAF changes as $\theta$ changes between $0$ and $1/\pi$ (notice that it is nonlinear).
 
 ```{r, fig.width=7, fig.height=4}
 paf.plot(X = ozone_exposure, thetalow = 0, thetaup = 1/pi, rr = rr, weights = sampling_weights)
 ```
 
-same plot is available for the PIF:
+The same plot is available for the PIF:
 ```{r, fig.width=7, fig.height=4}
 pif.plot(X = ozone_exposure, thetalow = 0, thetaup = 1/pi, rr = rr, cft = cft, weights = sampling_weights)
 ```
 
-2. To evaluate the robustness of the PAF (*i.e.* would it change much had we a different sample?)
+2. To evaluate the robustness of the PAF (*i.e.* would it change much for a different sample?).
 
 ```{r, fig.width=7, fig.height=4}
 paf.sensitivity(X = ozone_exposure, thetahat = thetahat, rr = rr, weights = sampling_weights)
 ```
 
-the same can be done for the PIF:
+The same can be done for the PIF:
 
 ```{r, fig.width=7, fig.height=4}
 pif.sensitivity(X = ozone_exposure, thetahat = thetahat, rr = rr, weights = sampling_weights)
 ```
 
-3. A sensitivity analysis on how PIF changes as the parameters of the counterfactual change. Notice that in order to use this function we need to specify in the definition of counterfactual the parameters involved (maximum 2):
+3. To conduct a sensitivity analysis on how the PIF changes as the parameters of the counterfactual change. Notice that in order to use this function we need to specify in the definition of counterfactual the parameters involved (maximum 2):
 
 ```{r, fig.width=7, fig.height=4}
 #Change the counterfactual function to specify the parameters involved
 cft_sensitivity <- function(X, a, b){a*X - b}
 ```
 
-We can also specify the range at which we will change the counterfactual's parameters. For this example, let's change $b$ from $0$ to $2$ and $a$ from $0.5$ to $0.75$.
+We can also specify the range at which we will change the counterfactual's parameters. For this example, let's change $b$ from $0$ to $1$ and $a$ from $0.5$ to $0.75$.
 
 ```{r, fig.width=7, fig.height=4}
 #Do the sensitivity analysis
@@ -181,17 +181,17 @@ require(datasets)
 tobacco_consumption <- as.data.frame(esoph$tobgp)
 ```
 
-This variable contains categorical information on the number of grams/dat of tobacco consumed. Assume the Relative Risk function is given by:
+This variable contains categorical information on the number of grams/day of tobacco consumed. Assume the Relative Risk function is given by:
 \begin{equation}
 RR(X;\theta) = 
 \begin{cases}
-\theta_1 & \textrm{ if  consumption is } 0-9g/day,\\
+\theta_1 & \textrm{ if  consumption is } 0-9 \textrm{ g/day},\\
 \theta_2 & \textrm{ if  consumption is } 10-19,   \\
 \theta_3 & \textrm{ if  consumption is } 20-29,   \\
 \theta_4 & \textrm{ if  consumption is } 30_{+}.  \\
 \end{cases}
 \end{equation}
-with estimators $\hat{\theta_1} = 1$, $\hat{\theta_2} = 1.59$, $\hat{\theta_3} = 2.57$, $\hat{\theta_4} = 4.11$ of the respective $\theta$s. This can be programmed in R as follows:
+with estimators $\hat{\theta}_1 = 1$, $\hat{\theta}_2 = 1.59$, $\hat{\theta}_3 = 2.57$, $\hat{\theta}_4 = 4.11$ of the respective $\theta$s. This can be programmed in R as follows:
 
 ```{r}
 #Thetas
@@ -213,13 +213,13 @@ rr       <- function(X, theta){
 }
 ```
 
-Notice that the Relative Risk assumes the exposure $X$ is a matrix with each row representing an individual. We can estimate the Population Attributable Fraction:
+Notice that the Relative Risk assumes the exposure $X$ is a ``data.frame`` with each row representing an individual. We can estimate the Population Attributable Fraction:
 
 ```{r}
 paf(tobacco_consumption, thetahat, rr)
 ```
 
-Consider the counterfactual of every smoker of the categories $20-29$ and $30_{+}$ to the $10-19$ category. That can be coded as:
+Consider the counterfactual scenario where smokers in the categories $20-29$ and $30_{+}$ reduce their consumption to the $10-19$ category. This can be coded as:
 ```{r}
 cft <- function(X){
   
@@ -232,11 +232,13 @@ cft <- function(X){
   new_tobacco[which(X == "20-29")]    <- "10-19"
   new_tobacco[which(X == "30+")]      <- "10-19"
   
+  # X in relative risk is received as a data.frame
+  new_tobacco <- as.data.frame(new_tobacco)
   return(new_tobacco)
 }
 ```
 
-the Potential Impact Fraction is given by:
+The Potential Impact Fraction is given by:
 ```{r}
 pif(tobacco_consumption, thetahat, rr, cft)
 ```
@@ -263,7 +265,7 @@ The confidence interval for the PAF is:
 paf.confidence(X = tobacco_consumption, thetahat = thetahat, thetavar = thetavar, rr = rr,  confidence_method = "bootstrap")
 ```
 
-The confidence interval for the Impact Fraction is given by:
+The confidence interval for the Potential Impact Fraction is given by:
 ```{r}
 pif.confidence(X = tobacco_consumption, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, confidence_method = "bootstrap")
 ```
@@ -287,7 +289,7 @@ pif.sensitivity(tobacco_consumption, thetahat, rr, cft = cft)
 
 ### Incomplete data Continuous RR example: Systolic Blood Pressure
 
-Consider the following data on Systolic Blood Pressure (SBP) in females aged 30-44 by world region from [@lawes2006blood]:
+Consider the following data on Systolic Blood Pressure (SBP measured in mmHg) in females aged 30-44 by world region from [@lawes2006blood]:
 
 ```{r}
 sbp <- data.frame("Region"   = c("Afr D", "Afr E", "Amr A", "Amr B", "Amr D",
@@ -301,7 +303,7 @@ sbp <- data.frame("Region"   = c("Afr D", "Afr E", "Amr A", "Amr B", "Amr D",
 
 Furthermore, consider the Relative Risk of mortality given SBP as:
 \begin{equation}
-RR(SBP; \theta) = 1 + \theta (SBP - 115)^2
+RR(SBP; \theta) = 1 + \theta (SBP - 115)^2/121
 \end{equation}
 with $\hat{\theta} = 0.71$ estimator of $\theta$ with estimated variance $s^2 = 0.002$.
 In R this is given by:
@@ -314,12 +316,12 @@ thetavar <- 0.002
 rr       <- function(X, theta){ theta*(X - 115)^2/121 + 1} 
 ```
 
-In this case, only mean and standard deviation information is available for each region. Terrible calamity! However the ``pif`` package is prepared for such cases and the ``"approximate"`` method is in order. For example, let's calculate the Population Attributable Fraction for the ``"AFR E"`` region:
+In this case, only mean and standard deviation information is available for each region. Terrible calamity! However the ``pif`` package is prepared for such cases and the ``"approximate"`` method is in order. For example, let's calculate the Population Attributable Fraction for the ``"Afr E"`` region:
 
 ```{r}
 #Get mean and variance
 afr_mean <- as.data.frame(subset(sbp, Region == "Afr E")$SBP_mean)
-afr_var  <- subset(sbp, Region == "Afr E")$SBP_sd^2 #Notice that variance is enormous!
+afr_var  <- subset(sbp, Region == "Afr E")$SBP_sd^2 
 
 #Calculate paf using approximate method
 paf(X = afr_mean, thetahat = thetahat, rr = rr, method = "approximate", Xvar = afr_var, check_rr = FALSE)
@@ -331,12 +333,12 @@ We can also compute confidence intervals:
 paf.confidence(X = afr_mean, thetahat = thetahat,  thetavar = thetavar, rr = rr, method = "approximate", Xvar = afr_var, check_rr = FALSE)
 ```
 
-A counterfactual of reducing the overall blood pressure in 5 is given by:
+A counterfactual of reducing the overall SBP in 5 mmHg is given by:
 ```{r}
 cft <- function(X){X - 5}
 ```
 
-And the Potential Impact Fraction translates into:
+The Potential Impact Fraction translates into:
 
 ```{r}
 pif(X = afr_mean, thetahat = thetahat, rr = rr, cft = cft, method = "approximate", Xvar = afr_var, check_rr = FALSE)
@@ -349,16 +351,25 @@ pif.confidence(X = afr_mean, thetahat = thetahat, rr = rr, cft = cft, method = "
 
 We can plot how PAF (and PIF) estimates change as functions of $\theta$:
 ```{r, fig.width=7, fig.height=4}
-paf.plot(X = afr_mean, thetalow = 0, thetaup = 6, rr = rr, method = "approximate", Xvar = afr_var,  check_rr = FALSE)
+paf.plot(X = afr_mean, thetalow = 0, thetaup = 1, rr = rr, method = "approximate", Xvar = afr_var,  check_rr = FALSE)
 ```
 
 ```{r, fig.width=7, fig.height=4}
-pif.plot(X = afr_mean, thetalow = 0, thetaup = 6, rr = rr, cft = cft, method = "approximate", Xvar = afr_var,  check_rr = FALSE)
+pif.plot(X = afr_mean, thetalow = 0, thetaup = 1, rr = rr, cft = cft, method = "approximate", Xvar = afr_var,  check_rr = FALSE)
 ```
 
 ### Incomplete data Categorical RR example: Body Mass Index
 
-Consider the Relative Risk of dying associated to Body Mass Index (BMI) is given by: 1 if BMI is "Normal", $1.3*BMI/25$ if BMI is "Overweight" and $exp(0.62*BMI/30)$ for "Obese". Furthermore, assume only the proportion of individuals in each category is known as well as the per-category mean and variance:
+Consider the Relative Risk of dying associated to Body Mass Index (BMI) is given by: 
+\begin{equation}
+RR(BMI;\theta)=\begin{cases}
+1 & \textrm{if } BMI<25,\\
+1.3\times BMI/25 & \textrm{if } 25\leq BMI<30,\\
+e^{0.62\times BMI/30} & \textrm{if } BMI>30.
+\end{cases}
+\end{equation}
+
+Assume only the proportion of individuals in each category is known as well as the per-category mean and variance:
 
 ```{r}
 problem_data <- data.frame(Proportions   = c(  0.56,       0.21,       0.23),
@@ -368,7 +379,7 @@ problem_data <- data.frame(Proportions   = c(  0.56,       0.21,       0.23),
 rownames(problem_data) <- c("Normal", "Overweight", "Obese")
 ```
 
-The [approximate](#approximate-empirical-potential-impact-fraction) method [as used in the previous example](incomplete-data-continuous-rr-example-systolic-blood-pressure) cannot be directly used as the Relative Risk function is non-differentiable (i.e. it is defined "by parts"). However we can compute the PAF for each category (Normal, Overweight and Obese) and then combine them. For that purpose, we define the Relative Risks for each category:
+The [approximate](#approximate-empirical-potential-impact-fraction) method [as used in the previous example](#incomplete-data-continuous-rr-example-systolic-blood-pressure) cannot be directly used as the Relative Risk function is non-differentiable (i.e. it is defined "by parts"). However we can compute the PAF for each category (Normal, Overweight and Obese) and then combine them. For that purpose, we define the Relative Risks for each category:
 
 ```{r}
 rr_normal     <- function(X, theta){theta}
@@ -376,18 +387,15 @@ rr_overweight <- function(X, theta){theta*X/25}
 rr_obese      <- function(X, theta){exp(theta*X/30)}
 ```
 
-and then compute the pafs:
+and then compute the PAFs:
 ```{r}
 #Subpopulation PAF
-paf_normal     <- paf(as.data.frame(problem_data["Normal","Mean"]),     1.00, rr = rr_normal    , check_rr = FALSE,
-                      method = "approximate", Xvar = problem_data["Normal","Variance"])
-paf_overweight <- paf(as.data.frame(problem_data["Overweight","Mean"]), 1.39, rr = rr_overweight, check_rr = FALSE,
-                      method = "approximate", Xvar = problem_data["Overweight","Variance"])
-paf_obese      <- paf(as.data.frame(problem_data["Obese","Mean"]),      0.62, rr = rr_obese,      check_rr = FALSE,
-                      method = "approximate", Xvar = problem_data["Obese","Variance"])
+paf_normal     <- paf(as.data.frame(problem_data["Normal","Mean"]), 1.00, rr = rr_normal, check_rr = FALSE, method = "approximate", Xvar = problem_data["Normal","Variance"])
+paf_overweight <- paf(as.data.frame(problem_data["Overweight","Mean"]), 1.39, rr = rr_overweight, check_rr = FALSE, method = "approximate", Xvar = problem_data["Overweight","Variance"])
+paf_obese      <- paf(as.data.frame(problem_data["Obese","Mean"]), 0.62, rr = rr_obese, check_rr = FALSE, method = "approximate", Xvar = problem_data["Obese","Variance"])
 ```
 
-Finally pafs can be combined into the population PAF:
+Finally the PAFs can be combined into the population PAF:
 ```{r}
 #Population PAF
 paf.combine(c(paf_normal, paf_overweight, paf_obese), problem_data$Proportions)
@@ -397,11 +405,11 @@ If `pif`s are estimated you can use the `pif.combine` function. Notice that in t
 
 ## Methods
 
-A broader definition of the Population Impact Fraction (which includes both cases presented in the [Introduction](#introduction)) is given by:
+A broader definition of the Potential Impact Fraction (which includes both cases presented in the [Introduction](#introduction)) is given by:
 \begin{equation}
-\textrm{PIF} =   1 - \frac{E_{X}\left[RR\big(\textrm{cft}(X);\theta\big)\right] }{E_{X}\left[RR\big(X; \theta\big)\right]}.
+\textrm{PIF} =   1 - \frac{E_{X}\left[RR\big(\textrm{cft}(X);\theta\big)\right] }{E_{X}\left[RR\big(X; \theta\big)\right]},
 \end{equation}
-where $\textrm{cft}(X)$ denotes the counterfactual transform of the exposure $X$, $RR$ the relative risk function with parameter $\theta$. Note that PAF is a special case of the $\textrm{PIF}$ when the counterfactual corresponds to $X$ being the theoretical minimum risk exposure. We have developed three methods of estimation: [empirical](#the-empirical-potential-impact-fraction), [kernel](#kernel-based-potential-impact-fraction) and [approximate](#approximate-empirical-potential-impact-fraction). 
+where $\textrm{cft}(X)$ denotes the counterfactual transform of the exposure $X$, $RR$ the relative risk function with parameter $\theta$. Note that the PAF is a special case of the $\textrm{PIF}$ when the counterfactual scenario corresponds to the one of the theoretical minimum risk exposure ($RR=1$). We have developed three methods of estimation: [empirical](#the-empirical-potential-impact-fraction), [kernel](#kernel-based-potential-impact-fraction) and [approximate](#approximate-empirical-potential-impact-fraction). 
 
 
 ### The Empirical Potential Impact Fraction
@@ -421,10 +429,10 @@ are consistent estimators of the Potential Impact Fraction ($\textrm{PIF}$) and 
 
 ### Kernel Based Potential Impact Fraction
 
-Define the Relative Risk $RR:\mathcal{X} \times \Theta \to I \subset (0,\infty)$ (the additional hypothesis used for the [empirical method](#the-empirical-potential-impact-fraction) are not necessary).  Let $\hat{f}$ denote a kernel density obtained from the random sample of $X\in\mathcal{X}\subset\mathbb{R}^p$. Let $\hat{\theta} \in \Theta \subset \mathbb{R}^q$ be a consistent estimator of  $\theta$. We define the functions:
+Define the Relative Risk $RR:\mathcal{X} \times \Theta \to I \subset (0,\infty)$ (the additional hypotheses used for the [empirical method](#the-empirical-potential-impact-fraction) are not necessary).  Let $\hat{f}$ denote a kernel density obtained from the random sample of $X\in\mathcal{X}\subseteq\mathbb{R}^p$. Let $\hat{\theta} \in \Theta \subset \mathbb{R}^q$ be a consistent estimator of  $\theta$. We define the functions:
 
 \begin{equation}
-\hat{\nu}_n^{\textrm{obs}}(\theta) = \int\limits_{\mathbb{R}^p}  RR( x; \theta)\hat{f}(x), \quad \textrm{and} \quad \hat{\nu}_n^{\textrm{cft}}(\theta) = \int\limits_{\mathbb{R}^p}  RR\big( \textrm{cft}(x); \theta\big)\hat{f}(x)dx,
+\hat{\nu}_n^{\textrm{obs}}(\theta) = \int\limits_{\mathbb{R}^p}  RR( x; \theta)\hat{f}(x)dx, \quad \textrm{and} \quad \hat{\nu}_n^{\textrm{cft}}(\theta) = \int\limits_{\mathbb{R}^p}  RR\big( \textrm{cft}(x); \theta\big)\hat{f}(x)dx,
 \end{equation}
 then:
 
@@ -435,13 +443,13 @@ is a consistent estimator of the Potential Impact Fraction ($\textrm{PIF}$).
 
 ### Approximate Empirical Potential Impact Fraction
 
-Sometimes researchers do not have a random sample of the exposure $X$; nevertheless, they posess $m$, $s^2$ estimators of the exposure's mean and variance (respectively). Furthermore, assume that for each $\theta$ the Relative Risk function $RR(\cdot, \theta)$ has a second order Taylor Expansion for all $X$ and that the counter-factual function is twice differentiable. An approximate point estimate for PIF is given by the Laplace approximation:
+Sometimes researchers do not have a random sample of the exposure $X$; nevertheless, they possess $m$, $s^2$ estimators of the exposure's mean and variance (respectively). Furthermore, assume that for each $\theta \in \Theta$ the Relative Risk function $RR(\cdot, \theta)$ has a second order Taylor Expansion for all $X \in \mathcal{X}$ and that the counterfactual function is twice differentiable. An approximate point estimate for the PIF is given by the Laplace approximation:
 
 \begin{equation}
-\widehat{\textrm{PIF}}= 1-\frac{RR(\textrm{cft}(m),\theta) + \frac{1}{2}\sum\limits_{i=1}^n\sum\limits_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(\textrm{cft}(X),\theta\big)}{\partial X_i \partial X_j}\Big|_m}{RR(m;\hat{\theta})+\frac{1}{2} \sum\limits_{i=1}^n\sum\limits_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(X,\theta\big)}{\partial X_i \partial X_j}\Big|_m}.
+\widehat{\textrm{PIF}}= 1-\frac{RR\big(\textrm{cft}(m),\theta\big) + \frac{1}{2}\sum_{i=1}^n\sum_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(\textrm{cft}(X),\theta\big)}{\partial X_i \partial X_j}\Big|_m}{RR(m;\hat{\theta})+\frac{1}{2} \sum_{i=1}^n\sum_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(X,\theta\big)}{\partial X_i \partial X_j}\Big|_m}.
 \end{equation}
 
-The approximate method solely requires the sample mean and variance $m$, $s^2$ and not the whole sample. If the sample is available, the other methods should be prefered.  
+The approximate method solely requires the sample mean $m$ and variance $s^2$, not the whole sample. If the sample is available, the other methods should be preferred.  
 
 ### Methods in code
 
@@ -470,56 +478,72 @@ Note that for the approximate method the correct input is mean and variance of X
 
 
 ### Confidence Intervals
-The bootstrap method is the recommended method to calculate confidence intervals while using the kernel and empirical point estimate. However this method cannot be used while using the approximate point estimate, for only mean and variance are available. Therefore other methods such as the linear and log-linear methods were developed to calculate the confidence interval of the PIF, additionally the inverse and one to one methods can be used for some cases of the PAF.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal, i.e. $\hat{\theta} \dot{\sim} \mathcal{N}(\theta, \sigma_{\theta}^2)$ where $\hat{\sigma}_{\theta}^2$ is an estimator of $\sigma_{\theta}^2$. The confidence might change with the estimation method, however confidence intervals are calculated for the real value of the $\textrm{PIF}$. This is if there was a large number of random samples and a $(1-\alpha)$ confidence interval was calculated for each sample, then the real value of $\textrm{PIF}$ will be in $(1-\alpha)\times 100\%$ of the confidence intervals. This would happen with every estimation method. The following table shows the methods to estimate confidence intervals and when each of the methods can be used. 
+The ``"bootstrap"`` confidence method is the recommended method to calculate confidence intervals while using the kernel and empirical point estimate. However this method cannot be used for the approximate point estimate, since only mean and variance are available. Therefore other methods such as the ``"linear"´ and ``"loglinear"``  were developed to calculate the confidence interval of the PIF. The ``"inverse"`` and ``"one2one"`` methods can be used for some cases of the PAF resulting in additional precision.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal with mean $\theta$ and variance $\sigma_{\theta}^2$ where $\hat{\sigma}_{\theta}^2$ is an estimator of $\sigma_{\theta}^2$. The following table shows the methods to estimate confidence intervals and when each of the methods can be used. 
 
 
 |Confidence Interval |Point Estimate|PAF or PIF   |Extra Assumptions|
-|-----------|:----------------------:|:---------:|:--------------------------------:|
+|-----------|:----------------------:|:---------:|:---------------------------:|
 |Bootstrap  |Empirical & Kernel      | PIF & PAF  |None|
 |Linear     |Empirical & Appproximate| PIF & PAF  |None|
-|Log-linear |Empirical & Appproximate| PIF & PAF  |None|
-|Inverse    |Empirical & Appproximate| PAF        |$RR(X,\theta)$ is injective in $X$|
-|One to one |Empirical & Appproximate| PAF        |$RR(X,\theta)$ is injective in $X$ and $\theta$|
+|Loglinear |Empirical & Appproximate| PIF & PAF   |None|
+|Inverse    |Empirical & Appproximate| PAF        |None|
+|One to one |Empirical & Appproximate| PAF        |$E_X\big[RR(X,\theta)\big]$ is injective in $\theta$|
 
 
 
-Remember that to calculate the point estimate in the case of the approximate method the relative risk function $RR(X,\theta)$ and the counter-factual function $\textrm{cft}(X)$ must be continuously differentiable in terms of $X$. A brief explanation of each of the methods is given below.
+Remember that to calculate the point estimate in the case of the approximate method the relative risk function $RR(X,\theta)$ and the counterfactual function $\textrm{cft}(X)$ must be continuously differentiable in terms of $X$. 
+To get the confidence intervals of the PIF we  calculate the variance of PIF (or of a transformation $f(\textrm{PIF})$). Notice that uncertainty comes from two sources: the exposure  $X$ and the Relative Risk's parameter $\theta$. The estimation process is done in three steps for the methods: linear, loglinear, and inverse:
 
-#### Bootstrap
-Bootstrap consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each re-sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\hat{\sigma}^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is calculated with the selected method (empirical or kernel). Once  $\widehat{\textrm{PIF}}_j$ has been calculated for every sample $X^j$ a confidence interval for $\textrm{PIF}$ is calculated using the pivotal method  @wasserman2006nonparametric.
+1. We estimate the variance and expected value of $f(\textrm{PIF})$ as a function of $\theta$.
+2. We use the fact that $\theta$ is asymptotically normal to estimate the unconditional variance:
+
+\begin{equation}\label{conditioningvar}
+\textrm{Var} \left(A \right)  = E_{B} \left[ \textrm{Var} \left( A \left. \right| B \right) \right] + \textrm{Var}_{B} \left[ E\left( A \left. \right| B\right)  \right].
+\end{equation}
+
+3. We assume asymptotic normality of $f(\widehat{\textrm{PIF}})$ to estimate confidence intervals. 
+
+Further explanation of each of the methods is given below.
+
+####Bootstrap
+Bootstrap consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each re-sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\hat{\sigma}^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is estimated with the selected method (empirical or kernel). From the $\widehat{\textrm{PIF}}_j$s a confidence interval for $\textrm{PIF}$ is calculated using the pivotal method  @wasserman2006nonparametric.
 
 
-#### Linear
-The linear method considers Taylor's first order approximation (linearization) of $\widehat{\textrm{PIF}}$ and the variance for $\widehat{\textrm{PIF}}$ is calculated as the variance of the linearization. This approach is better known as the Delta Method @casella2002statistical. 
+####Linear
+The linear method considers Taylor's first order approximation (linearization) of $\widehat{\textrm{PIF}}$ and the variance for the $\widehat{\textrm{PIF}}$ is calculated as the variance of the linearization. This approach is better known as the Delta Method @casella2002statistical. 
 
-#### Log-linear
-The log-linear method uses the $(1-\alpha)$ confidence interval for $\textrm{log}(1-\textrm{PIF})$ ($\textrm{IC}_{\textrm{log}}$) generated from the delta method applied to  $\textrm{log}(\widehat{\textrm{PIF}})$. The transformation $1-e^{\textrm{IC}_{\textrm{log}}}$ (which is a one to one function)  ensures that the confidence interval is at least a  $(1-\alpha)$  @bar1999confidence.
+####Loglinear
+The loglinear method uses the $(1-\alpha)\times 100\%$ confidence interval for $\textrm{log}(1-\textrm{PIF})$. The transformation $1-e^{y}$ (a one to one function) ensures that the confidence interval is at least  $(1-\alpha)\times 100\%$  @bar1999confidence.
 
 #### Inverse
-The inverse method can be used only for confidence intervals of  for $\textrm{PAF}$. The confidence interval ($\textrm{IC}_{RR}$) for $E[RR(X,\theta)]$  is calculated and then transformed to a confidence interval of $\textrm{PAF}$ by $1-1/\textrm{IC}_{RR}$. Once again (as in the loglinear case) the transformation $1-1/x$ is injective and thus the transform confidence interval of  $1 - 1/\textrm{IC}_{RR}$ is at least  $(1-\alpha)$ for $\textrm{PAF}$ @bar1999confidence.
+The inverse method can be used only for confidence intervals of the $\textrm{PAF}$. The confidence interval ($\textrm{IC}_{RR}$) for $E[RR(X,\theta)]$  is calculated and then transformed to a confidence interval of $\textrm{PAF}$ by $1-1/\textrm{IC}_{RR}$. Once again (as in the loglinear case) the transformation $1-1/x$ is injective and thus the transform confidence interval of  $1 - 1/\textrm{IC}_{RR}$ is at least  $(1-\alpha)$ for the $\textrm{PAF}$ @bar1999confidence.
 
 #### One to one
-The one to one method is similar to the inverse method, for the confidence interval $\textrm{IC}_{RR}$ is calculated. The difference lies on how uncertainty on $\theta$ is calculated. The inverse method uses simulations of $\theta$, while the one to one method considers the upper and lower bounds of a $1-\beta$ confidence interval of $\theta$ to calculate a $1-\alpha$ confidence interval $\textrm{IC}_{RR}$, where $\alpha>\beta$. This method can only be used if $E[RR(X;\theta)]$ is injective and increasing in $\theta$ @bar1999confidence.
+The one to one method is similar to the inverse method, since the confidence interval $\textrm{IC}_{RR}$ is calculated. The difference lies on how uncertainty on $\theta$ is calculated. The inverse method uses simulations of $\theta$, while the one to one method considers the upper and lower bounds of a $1-\beta$ confidence interval of $\theta$ to calculate a $1-\alpha$ confidence interval $\textrm{IC}_{RR}$, where $\alpha>\beta$. This method can only be used if $E[RR(X;\theta)]$ is injective in $\theta$ @bar1999confidence.
 
+#### Extra option: ``force.min``
+For the inverse and one to one confidence intervals the option `force.min` is available. This option guarantees that the lower bound of the confidence intervals of the expected relative risk takes values greater or equal to one. This option is not recommended, as in most cases there is uncertainty on whether the relative risk can be less than 1 (albeit with "small" probability).  However this option can be useful when one is absolutely certain the relative risk can't be less than one.
 
 ## Advanced examples
 
-This section is concerned with more advanced options of the `pif` package functions. We first analyze [how to choose an estimation method](#deciding-on-the-estimation-method); secondly, we show [how to choose a confidence interval](#deciding-on-the-confidence-interval), finally we show [how to work with the plots](#working-with-the-plots). 
+This section is concerned with more advanced options of the `pif` package functions. We first analyze [how to choose an estimation method](#deciding-on-the-estimation-method); secondly, we show [how to choose a confidence interval](#deciding-on-the-confidence-interval); finally we show [how to work with the plots](#working-with-the-plots). 
 
 ### Deciding on the estimation method
 
-[The previous section](#methods) discussed the three estimation methods used in the package. In this section we discuss some advanced options as well as how to choose the method
+[The previous section](#methods) discussed the three estimation methods used in the package. In this section we discuss some advanced options as well as how to choose the method.
 
 #### Method choosing 
 
-- If a complete sample of the exposure is available, the [empirical](#the-empirical-potential-impact-fraction), or [kernel](#kernel-based-potential-impact-fraction) methods are valid choices. The [approximate method](#approximate-empirical-potential-impact-fraction) should be discarded as there is no need to approximate the result from [empirical](#the-empirical-potential-impact-fraction) if the sample is available.  The [empirical](#the-empirical-potential-impact-fraction) method works for linear, polynomial and exponential Relative Risks: it rests on the assumption that the function $RR$ of the Relative Risk is convex, concave or Lipschitz (which almost all functions we have encountered in this setting are). Functions that do not comply with this characteristics and have a continuous exposure can be estimated via the [kernel](#kernel-based-potential-impact-fraction) method which works for all functions of interest in applications. 
-
-- If only mean and variance of the exposure are known, the [approximate method](#approximate-empirical-potential-impact-fraction)  is the only choice.
+|Method |Exposure|Relative Risk |Other|
+|------------|:------------------------:|:-------------------------------------:|:----------------------------:|
+|Kernel      |Continuous              |Continuous                           |One dimensional   |
+|Empirical   |Continuous & Discrete   |Continuous & Discrete                |Convex, Concave, or Lipschitz|
+|Approximate |Continuous              |Continuous or Discrete (without CI)  |Twice differentiable  & Convex, Concave, or Lipschitz |
 
 
 #### Kernel
 
-A kernel density is an approximation to the probability density function of a random variable constructed from the variable's sample. For instance the following image shows the real density for a Normally distributed random variable with mean $0$ and variance $1$ as well as the kernel approximation to said density from a sample of size 45. 
+A kernel density is an approximation to the probability density function of a random variable constructed from the variable's sample. For instance the following image shows the real density for a normally distributed random variable with mean $0$ and variance $1$ as well as the kernel approximation to said density from a sample of size 45. 
 
 ```{r, fig.width=7, fig.height=4, echo = FALSE}
 
@@ -541,7 +565,7 @@ ggplot() +
 
 ```
 
-There are several kernel types that provide different forms of approximation. For example, consider the follwing sample:
+There are several kernel types that provide different forms of approximation. For example, consider the following sample:
 
 ```{r}
 set.seed(46)
@@ -584,7 +608,7 @@ kplot + scale_color_manual("Kernel type", values = color_k) + theme_classic() +
 
 ```
 
-Notice that different kernels have different approximations to the sample's density.  Henceforth, if we were to estimate the Impact Fraction, different values would result from different kernels:
+Notice that different kernels have different approximations to the sample's density.  Henceforth, if we were to estimate the Potential Impact Fraction, different values would result from different kernels:
 
 ```{r}
 X        <- as.data.frame(X)
@@ -611,13 +635,13 @@ pif.confidence(X, thetahat, rr, cft = cft, method = "kernel", ktype = "rectangul
 
 #### Approximate
 
-As stated previously, the [approximate method](#approximate-empirical-potential-impact-fraction) should only be utilized if the only information known to the researcher is sample mean and variance but **the sample is not available**. The approximate method works with numerical derivatives from using `numDeriv` package and as such options for derivatives are available. Consider the theoretical function:
+As stated previously, the [approximate method](#approximate-empirical-potential-impact-fraction) should only be used if the only information known to the researcher is sample mean and variance but **the sample is not available**. The approximate method works with numerical derivatives from the `numDeriv` package inheriting its  options for derivatives. Consider the theoretical function:
 
 ```{r}
 rr <- function(X, theta){ theta[1]*X^2/(X + 1) + theta[2]*X + 1}
 ```
 
-Assume the following information is available of $X$:
+Assume the following information is available for $X$:
 ```{r}
 Xmean    <- as.data.frame(0.365)
 Xvar     <- 0.25
@@ -631,27 +655,20 @@ paf(Xmean, thetahat, rr, Xvar = Xvar, method = "approximate")
 
 Additional options can be changed to improve the derivation method:
 ```{r}
-paf(Xmean, thetahat, rr, Xvar = Xvar, 
-    method = "approximate", 
-    deriv.method = "Richardson", 
-    deriv.method.args = list(eps=0.03, d=0.0001, zero.tol=1.e-8, r=4, v=2))
+paf(Xmean, thetahat, rr, Xvar = Xvar, method = "approximate", deriv.method = "Richardson", deriv.method.args = list(eps=0.03, d=0.0001, zero.tol=1.e-8, r=4, v=2))
 ```
 
 
 ### Deciding on the confidence interval 
 
-By default, confidence intervals for the [empirical](#the-empirical-potential-impact-fraction) and [kernel](#kernel-based-potential-impact-fraction) methods are [bootstrap](#bootstrap); for the [approximate](#approximate-empirical-potential-impact-fraction) method default is [loglinear](#loglinear). 
-
-When calculating confidence intervals for the Population Attributable Fraction additional methods are available: `"one2one"` and `"inverse"`. These are "smaller" confidence intervals, however additional assumptions are required. The `"inverse"` method requires that the Relative Risk is injective as a function of $X$. The `"one2one"` requires that the Relative Risk is injective as a function of $X$ and $\theta$. The `"one2one"` instead of receiving the estimated variance of $\theta$ it receives $\theta$'s confidence interval $[\theta_{\textrm{low}}, \theta_{\textrm{high}}]$]. 
-
+By default, confidence intervals for the [empirical](#the-empirical-potential-impact-fraction) and [kernel](#kernel-based-potential-impact-fraction) methods are [bootstrap](#bootstrap); for the [approximate](#approximate-empirical-potential-impact-fraction) method default is [loglinear](#loglinear). When calculating confidence intervals for the Population Attributable Fraction additional methods are available: `"one2one"` and `"inverse"`. 
 #### Force min
 
 The `force.min` option of `"inverse"` confidence method forces the Population Attributable Fraction's interval to be > 0. This option is not recommended as it artificially reduces the uncertainty around estimates. 
 
 ```{r}
 X <- as.data.frame(rnorm(100))
-paf.confidence(X, 0.12, rr = function(X, theta){exp(theta*X)}, thetavar = 0.1, 
-               check_exposure = F, confidence_method = "inverse",force.min = FALSE)
+paf.confidence(X, 0.12, rr = function(X, theta){exp(theta*X)}, thetavar = 0.1, check_exposure = F, confidence_method = "inverse",force.min = FALSE)
 ```
 
 ```{r}
@@ -676,25 +693,21 @@ thetaup  <- 5
 pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft)
 ```
 
-Methods can be specified as for [``pif``](#methods-in-code):
+Methods can be specified as in [``pif``](#methods-in-code):
 
 ```{r fig.width=7, fig.height=4}
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft,
-         method = "kernel", n = 100, adjust = 2, ktype = "triangular",
-         confidence_method = "bootstrap", confidence = 99)
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, method = "kernel", n = 100, adjust = 2, ktype = "triangular", confidence_method = "bootstrap", confidence = 99)
 ```
 
 Plot options include color and label titles:
 ```{r fig.width=7, fig.height=4}
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft,
-         colors = rainbow(2), xlab = "Exposure to hideous things.",
-         ylab = "PIF PIF PIF!", title = "This analyisis is the best")
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, colors = rainbow(2), xlab = "Exposure to hideous things.", ylab = "PIF PIF PIF!", title = "This analyisis is the best")
 ```
 
 ``pif.plot`` is a `ggplot` object and thus one can work with it as one:
 ```{r fig.width=7, fig.height=4}
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft,
-         colors = rainbow(2)) + theme_dark()
+#require(ggplot2)
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, colors = rainbow(2)) + theme_dark()
 ```
 
 ####Sensitivity Analysis
@@ -728,7 +741,7 @@ cft      <- function(X){
 pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft = cft)
 ```
 
-The default sensitivity analysis removes `mremove` elements from the sample `X` and calculates the `pif` with them `nsim` times. It is possible to modify those parameters:
+The default sensitivity analysis removes `mremove` elements from the sample `X` and re-calculates the `pif` with them `nsim` times. It is possible to modify those parameters:
 
 ```{r fig.width=7, fig.height=4}
 pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft = cft, nsim = 20, mremove = 50)
@@ -745,11 +758,11 @@ pif.sensitivity(X = X, thetahat = thetahat, rr = rr,
   theme(axis.line = element_line(colour = "purple"))
 ```
 
-The sensitivity analysis can only be performed when a sample of exposure values is available, therefore no sensitivity analysis can be made for the PIF (resp. PAF) when only mean and variance of exposure is known.
+The sensitivity analysis can only be performed when a sample of exposure values is available, therefore no sensitivity analysis can be made for the PIF (resp. PAF) when only mean and variance of exposure are known.
 
 ####Heatmap for counterfactuals
 
-To evaluate different counterfactual scenarios a heatmap is a useful tool, for one can have an idea of the possible outcomes from different counterfactuals. The counterfactual scenarios analyzed by default are those with the counterfactual function $\text{cft}(X)=aX+b$, where $a\in(0.01, 1)$ and $b\in(-1,0)$. These counterfactual scenarios can be plotted as:
+To evaluate scenarios a heatmap is a useful tool, for one can have an idea of the possible outcomes from different counterfactuals. The counterfactual scenarios analyzed by default are those with the counterfactual function $\text{cft}(X)=aX+b$, where $a\in[0, 1]$ and $b\in[-1,0]$. These counterfactual scenarios can be plotted as:
 
 ```{r fig.width=7, fig.height=4}
 X        <- as.data.frame(runif(100, 0, 2*pi) + 1)
@@ -760,7 +773,7 @@ pif.heatmap(X = X, thetahat = thetahat, rr = rr,
 ```
 
 Other counterfactual scenarios can be represented. 
-For example, the same counterfactual function can be analyzed for different values of $a$ and $b$. If $a\in(0.5, 1)$ and $b\in(-3,-1)$ 
+For example, the same counterfactual function can be analyzed for different values of $a$ and $b$. If $a\in[0.5, 1]$ and $b\in[-3,-1]$ 
 
 ```{r fig.width=7, fig.height=4}
 mina <- 0.5
@@ -782,7 +795,7 @@ cft <- function(X, a, b){sin(a*X+b)}
 #Counterfactual
 pif.heatmap(X=X, thetahat = thetahat, rr = rr, 
             mina = mina, maxa = maxa, minb = minb, maxb = maxb,
-            cft = cft, check_rr = FALSE, check_integrals = FALSE)
+            cft = cft, check_rr = FALSE, check_integrals = FALSE,  title = "PIF with counterfactual sin(aX+b)")
 ```
 
 We can also analyze how the counterfactual changes solely as a function of $a$. For that purpose, set ``minb`` and ``maxb`` to the same value
@@ -794,10 +807,10 @@ cft <- function(X, a, b){sin(a*X+b)}
 #Counterfactual
 pif.heatmap(X=X, thetahat = thetahat, rr = rr, 
             mina = mina, maxa = maxa, minb = 2, maxb = 2,
-            cft = cft, check_rr = FALSE, check_integrals = FALSE)
+            cft = cft, check_rr = FALSE, check_integrals = FALSE, title = "PIF with counterfactual sin(aX+2)")
 ```
 
-The title (`title`), axis names (`xlab`, `ylab`), colors (`colors`), and number of squares in grid (`nmesh`) can also be changed 
+The title (`title`), axis names (`xlab`, `ylab`), colors (`colors`), and number of squares in grid (`nmesh`) can also be changed: 
 
 ```{r fig.width=7, fig.height=4}
 
@@ -916,7 +929,7 @@ paf(X, 0, rr)
 
 ###Relative Risk must equal 1 when evaluated in 0
 
-Warning  `Relative Risk by definition must equal 1 when evaluated in 0. Are you using displaced RRs?` establishes the Relative Risk is not $1$ when the exposure $X$ is set to no exposure $0$. This is just a reminder to avoid careless definitions of  Relative Risk functions; however it is not always the case that exposure ought to be $0$ as the [Systolic Blood Pressure example](incomplete-data-continuous-rr-example-systolic-blood-pressure) establishes. If that is the case, set  `check_rr`  to false:
+Warning  `Relative Risk by definition must equal 1 when evaluated in 0. Are you using displaced RRs?` establishes the Relative Risk is not $1$ when the exposure $X$ is set to $0$. This is just a reminder to avoid careless definitions of  Relative Risk functions; however it is not always the case that exposure ought to be $0$ as the [Systolic Blood Pressure example](#incomplete-data-continuous-rr-example-systolic-blood-pressure) establishes. If that is the case, set  `check_rr`  to `FALSE`:
 
 ```{r}
 pif(data.frame(rlnorm(100)), 0, function(X, thetahat){X}, check_rr = FALSE)
@@ -932,7 +945,7 @@ paf(data.frame(runif(100, -1, 1)), 0, rr = function(X, theta){exp(X)}, check_exp
 
 ###Counterfactual is increasing the Risk
 
-Warning `Counterfactual is increasing the Risk. Are you sure you are specifying it correctly?` establishes that under current counterfactual the Relative Risk associated to that exposure is increasing (and not decreasing as the usual counterfactual practice of setting counterfactuals that reduce Risks would suggest). To dismiss the warning, set `check_integrals = FALSE`. 
+Warning `Counterfactual is increasing the Risk. Are you sure you are specifying it correctly?` establishes that under current counterfactual the Relative Risk associated to that exposure is increasing (and not decreasing as the usual practice of setting counterfactuals that reduce Risks would suggest). To dismiss the warning, set `check_integrals = FALSE`. 
 
 ```{r}
 pif(data.frame(rbeta(100, 2, 3)), 0, rr = function(X, theta){exp(X)}, cft = function(X){2*X}, check_integrals = FALSE)
@@ -940,7 +953,7 @@ pif(data.frame(rbeta(100, 2, 3)), 0, rr = function(X, theta){exp(X)}, cft = func
 
 ###Expected value is not finite
 
-Both  `pif` and `paf` are, [by definition](introduction), expected values. As such, there are certain distributions for which the theoretical expected values do not exist. The warnings `Expected value of Relative Risk is not finite`, and `Expected value of Relative Risk under counterfactual is not finite` establish that the estimator of the expected value of the Relative Risk of the exposure (or the Relative Risk over the Counterfactual exposure) is (for all computational purposes) infinite.
+Both  `pif` and `paf` are, [by definition](#introduction), expected values. As such, there are certain distributions for which the theoretical expected values do not exist. The warnings `Expected value of Relative Risk is not finite`, and `Expected value of Relative Risk under counterfactual is not finite` establish that the estimator of the expected value of the Relative Risk of the exposure (or the Relative Risk over the counterfactual exposure) is (for all computational purposes) infinite.
 
 ```{r, error=TRUE}
 paf(data.frame(rlnorm(100, 23, 12)), 1, rr = function(X, theta){exp(theta*X)})
@@ -977,12 +990,12 @@ X <- data.frame(runif(100))
 w <- rep(1/12, 12)
 pif(X, 0.12, rr = function(X, theta){theta*X + 1}, weights = w)
 
-#The Relative Risk function result might have a different length than weights
+#The Relative Risk function has a different length than exposure X
 X  <- data.frame(runif(100))
 rr <- function(X, theta){1}
 pif(X, 8, rr)
 
-#The Counterfactual function result might have a different length than exposure X
+#The counterfactual function result might have a different length than exposure X
 X   <- as.data.frame(runif(100))
 rr  <- function(X, theta){X + 1}
 cft <- function(X){2}
@@ -1008,7 +1021,7 @@ paf(as.data.frame(0), 1, rr = rr, method = "approximate", Xvar = 1, check_rr = F
 
 ###Under this density some values are NA
 
-Warning message `Under this kernel density some values of cft are NA` and  `Under this kernel density some values of rr are NA` indicate that the density has adjusted R to be in a domain where the `rr` or the `cft` are not defined. For example consider the following `rr` and `X`:
+Warning message `Under this kernel density some values of cft are NA` and  `Under this kernel density some values of rr are NA` indicate that the adjusted density is in a domain where the `rr` or the `cft` are not defined. For example consider the following `rr` and `X`:
 
 ```{r}
 X  <- rlnorm(100)
