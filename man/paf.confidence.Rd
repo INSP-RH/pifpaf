@@ -18,9 +18,9 @@ paf.confidence(X, thetahat, rr, thetavar = NA, thetalow = NA,
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function. That is asymptotically normal with mean \code{theta} and 
-variance \code{var_of_theta}}
+\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the 
+Relative Risk function. That is asymptotically normal with mean \code{theta} and 
+variance \code{var_of_theta}.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
 \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -31,11 +31,11 @@ variance \code{var_of_theta}}
 \item{thetavar}{Estimator of variance \code{var_of_theta} of asymptotic 
 normality of \code{thetahat}.}
 
-\item{thetalow}{(\code{vector}) Lower bound of the confidence interval of 
-\code{theta}}
+\item{thetalow}{(\code{vector}) lower bound of the confidence interval of 
+\code{theta}.}
 
-\item{thetaup}{(\code{vector}) Upper band of the confidence interval of 
-\code{theta}}
+\item{thetaup}{(\code{vector}) upper bound of the confidence interval of 
+\code{theta}.}
 
 \item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
 \code{"approximate"}. For details on estimation methods see 
@@ -47,7 +47,7 @@ explanation.}
 
 \item{confidence}{Confidence level \% (default \code{95}). If 
 \code{confidence_method} \code{"one2one"} is selected, \code{confidence} 
-should be at least the one from \code{theta}'s confidence interval.}
+should be at most the one from \code{theta}'s confidence interval.}
 
 \item{nsim}{Number of simulations for estimation of variance.}
 
@@ -63,7 +63,7 @@ method).}
 Don't change this unless you know what you are doing (for 
 \code{"approximate"} method).}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
+\item{adjust}{Adjust bandwith parameter (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
@@ -75,31 +75,31 @@ method) from \code{\link[stats]{density}}.}
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 method). Additional information on kernels in \code{\link[stats]{density}}.}
 
-\item{bw}{Smoothing bandwith parameter from density (for 
+\item{bw}{Smoothing bandwith parameter (for 
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
-positive and numeric}
+positive and numeric.}
 
 \item{check_cft}{\code{boolean}  Check that counterfactual function 
 \code{cft} reduces exposure.}
 
-\item{check_rr}{\code{boolean} Check that Relative Risk function \code{rr} equals 
-\code{1} when evaluated at \code{0}}
+\item{check_rr}{\code{boolean} Check that Relative Risk function 
+\code{rr} equals \code{1} when evaluated at \code{0}.}
 
-\item{check_xvar}{\code{boolean} Check if it is covariance matrix.}
+\item{check_xvar}{\code{boolean} Check \code{Xvar} is a covariance matrix.}
 
 \item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
 and relative risk's \code{rr} expected values are well defined for this 
-scenario}
+scenario.}
 
 \item{check_thetas}{\code{boolean} Check that theta associated parameters are
 correctly inputed for the model.}
 
 \item{force.min}{Boolean indicating whether to force the \code{rr} to have a 
 minimum value of 1 instead of 0 (not recommended). This works only for 
-\code{confidence_method} \code{"inverse"} and \code{"one2one"}}
+\code{confidence_method} \code{"inverse"}.}
 }
 \value{
 pafvec Vector with lower (\code{"Lower_CI"}), and upper 
@@ -111,28 +111,29 @@ pafvec Vector with lower (\code{"Lower_CI"}), and upper
 Function that estimates confidence intervals for the Population 
   Attributable Fraction \code{\link{paf}} from a cross-sectional sample of 
   the exposure \code{X} with a known Relative Risk function \code{rr} with 
-  parameter \code{theta}. Where the Population Attributable Fraction is given
+  parameter \code{theta}, where the Population Attributable Fraction is given
   by: \deqn{ PAF = 
   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} }{ PAF 
   = mean(rr(X; theta) - 1)/mean(rr(X; theta)) }
 }
 \details{
-The \code{confidence_method} confidence intervals according
-to different methods. A bootstrap approximation is conducted by 
-\code{"bootstrap"}; whilst the Delta Method is applied to \code{\link{pif}}
+The \code{confidence_method} estimates confidence intervals with
+different methods. A bootstrap approximation is conducted by 
+\code{"bootstrap"}. The Delta Method is applied to \code{\link{pif}}
 or \code{log(pif)} when choosing \code{"linear"} and \code{"loglinear"}
 respectively. The \code{"inverse"} method estimates confidence intervals
 for the Relative Risk function \code{rr} and applies the transformation
 \code{1 - 1/rr}. Finally, \code{"one2one"} works with functions for which
-the expected value of the relative risk over \code{X} is injective and 
-increasing in  \code{theta}.
+the expected value over \code{X} of the relative risk is injective in 
+\code{theta}.
 
 Additional information on confidence method estimations can be found
-in the package's vignette: \code{browseVignettes("pif")}
+in the package's vignette: \code{browseVignettes("pif")}.
 }
 \note{
 \code{\link{paf.confidence}} is a wrapper for
-  \code{\link{pif.confidence}} with counterfactual of \code{0} exposure.
+  \code{\link{pif.confidence}} with counterfactual of theoretical
+  minimum risk exposure (\code{rr = 1}) .
 
 For more information on kernels see \code{\link[stats]{density}}.
 
@@ -208,7 +209,7 @@ rr_better <- function(X, theta){
 paf.confidence(Xmean, thetahat, rr_better, thetavar,
                method = "approximate", Xvar = Xvar)
 }
-\donttest{
+\dontrun{
 #Warning: $ operator in rr definitions don't work in approximate
 paf.confidence(Xmean, thetahat, rr_not, thetavar,
                method = "approximate", Xvar = Xvar)
@@ -249,7 +250,7 @@ set.seed(18427)
 #Assume we have BMI from a sample
 BMI          <- data.frame(Exposure = rlnorm(100, 3.1, sdlog = 0.1))
 
-#Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+#Theoretical minimum risk exposure is at 20kg/m^2 in borderline "Normal" category
 BMI_adjusted <- BMI - 20
 
 thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, 
@@ -305,7 +306,7 @@ thetahat <- c(-0.1, 0.05, 0.2, -0.4, 0.3, 0.1)
 
 #Create variance of theta
 almostvar <- matrix(runif(6^2), ncol = 6)
-thetavar <- t(almostvar) \%*\% almostvar
+thetavar  <- t(almostvar) \%*\% almostvar
 rr <- function(X, theta){
      #Create risk vector
      Risk    <- rep(1, nrow(X))
@@ -330,15 +331,15 @@ paf.confidence(X, thetahat, rr, thetavar)
 }
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
 \code{\link{pif.confidence}} for confidence interval estimation of
-  \code{\link{pif}}. And  \code{\link{paf}} for only point estimate.
+  \code{\link{pif}}, and  \code{\link{paf}} for only point estimates.
   
-  Sensitivity analysis graphics can be done with \code{\link{paf.plot}}, and 
-  \code{\link{paf.sensitivity}}
+  Sensitivity analysis plots can be done with \code{\link{paf.plot}}, and 
+  \code{\link{paf.sensitivity}}.
 }
 

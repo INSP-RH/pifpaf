@@ -2,25 +2,26 @@
 % Please edit documentation in R/paf_combine.R
 \name{paf.combine}
 \alias{paf.combine}
-\title{Combine point estimates of PAF of same exposure for exclusive 
-  subpopulations}
+\title{Combine point estimates of PAF from different subpopulations.}
 \usage{
 paf.combine(paf_vector, proportions)
 }
 \arguments{
-\item{paf_vector}{Vector of the \code{\link{paf}} for each specific 
+\item{paf_vector}{Vector containing \code{\link{paf}}s of each specific 
 subpopulation.}
 
 \item{proportions}{Vector establishing the proportion of individuals in each 
-subpopulation of \code{paf_vector}.}
+subpopulation.}
 }
 \value{
-An overall point-estimate of \code{\link{paf}} combining all 
+overall_paf An overall point-estimate of \code{\link{paf}} combining all 
   subpopulations.
 }
 \description{
-Function for fast-computing an overall PAF from subpopulation 
-  PAF
+Function for fast-computing an overall  \code{\link{paf}} 
+ from subpopulation  \code{\link{paf}}s. 
+ 
+ @details The subpopulations considered should not contain common elements.
 }
 \examples{
 
@@ -41,13 +42,13 @@ paf.combine(c(pafmen, pafwomen), c(0.45, 0.55))
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
 \code{\link{paf}} for Population Attributable Fraction estimation, 
-  \code{\link{pif}} for Population Impact Fraction estimation, and 
-  \code{\link{pif.combine}} for combining several PIF
+  \code{\link{pif}} for Potential Impact Fraction estimation, and 
+  \code{\link{pif.combine}} for combining several PIF.
 }
 

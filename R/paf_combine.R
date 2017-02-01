@@ -1,24 +1,25 @@
-#' @title Combine point estimates of PAF of same exposure for exclusive 
-#'   subpopulations
+#' @title Combine point estimates of PAF from different subpopulations.
 #'   
-#' @description Function for fast-computing an overall PAF from subpopulation 
-#'   PAF
+#' @description Function for fast-computing an overall  \code{\link{paf}} 
+#'  from subpopulation  \code{\link{paf}}s. 
+#'  
+#'  @details The subpopulations considered should not contain common elements.
 #'   
-#' @param paf_vector Vector of the \code{\link{paf}} for each specific 
+#' @param paf_vector Vector containing \code{\link{paf}}s of each specific 
 #'   subpopulation.
 #'   
 #' @param proportions Vector establishing the proportion of individuals in each 
-#'   subpopulation of \code{paf_vector}.
+#'   subpopulation.
 #'   
-#' @return An overall point-estimate of \code{\link{paf}} combining all 
+#' @return overall_paf An overall point-estimate of \code{\link{paf}} combining all 
 #'   subpopulations.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @seealso \code{\link{paf}} for Population Attributable Fraction estimation, 
-#'   \code{\link{pif}} for Population Impact Fraction estimation, and 
-#'   \code{\link{pif.combine}} for combining several PIF
+#'   \code{\link{pif}} for Potential Impact Fraction estimation, and 
+#'   \code{\link{pif.combine}} for combining several PIF.
 #'   
 #' @examples 
 #' 

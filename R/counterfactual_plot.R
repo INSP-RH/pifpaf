@@ -1,11 +1,12 @@
-#' @title Create a plot of the distribution of exposure under counterfactual 
+#' @title Plot exposure's distribution under counterfactual 
 #'   scenario
 #'   
-#' @description Function that creates a plot of the distribution of exposure 
-#'   \code{X} under counterfactual scenario \code{cft}.
+#' @description Generates a \code{\link{ggplot2}} plot of the current distribution
+#' of exposure \code{X} (continuous or discrete) as well as the distribution of
+#' \code{X} after a counterfactual function  \code{cft(X)}  is applied.
 #'   
-#' @param X         Random sample (one-dimensional \code{data.frame}) which of
-#'   exposure
+#' @param X         Random sample (one-dimensional \code{data.frame}) of
+#'   exposure.
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual.
 #'   
@@ -18,52 +19,54 @@
 #'   
 #' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
 #'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
-#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
-#'   method). Additional information on kernels in \code{\link[stats]{density}}.
+#'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"}
+#'  (for \code{"continuous"} exposure) . Additional information on 
+#'  kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
-#'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
-#'   \code{"SJ"}.
+#' @param bw        Smoothing bandwith parameter
+#' (for \code{"continuous"} exposure)  from \code{\link[stats]{density}}. 
+#' Default \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
-#'   method) from \code{\link[stats]{density}}.
+#' @param adjust    Adjust bandwith parameter (for \code{"continuous"} exposure) 
+#' from \code{\link[stats]{density}}.
 #'   
-#' @param n   Number of equally spaced points at which the density (for 
-#'   \code{"kernel"} method) is to be estimated (see 
-#'   \code{\link[stats]{density}}).
+#' @param n   Number of equally spaced points at which the density 
+#' (for \code{"continuous"} exposure)  is to be estimated (see 
+#'  \code{\link[stats]{density}}).
 #'   
-#' @param check_exposure  Check exposure \code{X} is positive and numeric. (if
-#'   \code{"continuous"})
+#' @param check_exposure  Check exposure \code{X} is positive and numeric (if
+#'   \code{"continuous"}).
 #'   
-#' @param dnames    String vector indicating the names of the distributions for 
-#'   the legend.
+#' @param dnames    String vector indicating the labels for the plot's
+#'  legend.
 #'   
-#' @param title     String with plot title.
+#' @param title     String with plot's title.
 #'   
-#' @param legendtitle   String title for the legend of plot.
+#' @param legendtitle   String title for the plot's legend.
 #'   
-#' @param xlab          String label for the X-axis of the plot (corresponding 
-#'   to "a").
+#' @param xlab          String label for the X-axis of the plot.
 #'   
-#' @param ylab          String label for the Y-axis of the plot (corresponding 
-#'   to "b").
+#' @param ylab          String label for the Y-axis of the plot.
 #'   
-#' @param colors        String vector with colors for plots.
+#' @param colors        String vector specifying the fill-colors for
+#' the plotted distributions.
 #'   
-#' @param x_axis_order  Order of names in xaxis for plot (\code{"discrete"}. 
-#'   case)
+#' @param x_axis_order  String vector of names in X-axis for 
+#' plot (\code{"discrete"} case).
 #'   
-#' @param fill          Colour the densities? Default \code{TRUE}.
+#' @param fill          Color the densities? Default \code{TRUE}.
 #'   
-#' @param fill_limits   Vector. Limits of subset of the exposure \code{X} such 
-#'   that only \code{fill_limits[1]} < \code{X} < \code{fill_limits[2]} are
-#'   filled with color.
+#' @param fill_limits   Vector with lower and upper bounds of a subset of the 
+#' exposure \code{X} such that only  the \code{X}s satisfying 
+#' \code{fill_limits[1]} < \code{X} < \code{fill_limits[2]} are
+#' filled with color.
 #'   
 #' @return cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift 
-#'   from observed to counterfactual distribution
+#'   from observed to counterfactual distribution of exposure \code{X} 
+#'   under \code{cft}.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @import ggplot2
 #'   
@@ -80,8 +83,8 @@
 #'   
 #' @seealso \code{\link{pif}} for Potential Impact Fraction estimation, 
 #'   \code{\link{pif.heatmap}} for sensitivity analysis of the counterfactual, 
-#'   \code{\link{pif.plot}} for a plot of \code{pif} as a function of its 
-#'   parameter \code{theta}.
+#'   \code{\link{pif.plot}} for a plot of \code{pif} as a function of the relative
+#'   risk's  parameter \code{theta}.
 #'   
 #'   
 #' @examples
@@ -157,13 +160,14 @@
 #' X   <- data.frame(Exposure = rnorm(1000, 150, 15))
 #' cft <- function(X){0.35*X + 75}  
 #' counterfactual.plot(X, cft, xlab = "Usual SBP (mmHg)", 
-#' ylab = "Relative risk of ischaemic heart disease",
+#' ylab = "Relative risk of ischemic heart disease",
 #' dnames = c("Current distribution", "Theoretical Minimum Risk Distribution"),
 #' title = paste0("Effect of a non-linear hazard function and choice", 
 #'                "\nof baseline on total population risk", 
 #'                "\n(Fig 25 from Vander Hoorn et al)"))
 #'   
-#' #Example 4: Counterfactual of BMI reduction only for those with excess-weight (BMI > 25)
+#' #Example 4: Counterfactual of BMI reduction only for those 
+#' #with excess-weight (BMI > 25)
 #' #--------------------------------------------------------
 #' set.seed(2783569)
 #' X <- data.frame(Exposure = rlnorm(1000, 3, 0.2))
@@ -180,7 +184,7 @@
 #' 
 #' counterfactual.plot(X, cft, ktype = "epanechnikov")   
 #' 
-#' #Change bandwidth method to reduce noice
+#' #Change bandwidth method to reduce noise
 #' counterfactual.plot(X, cft, ktype = "epanechnikov", bw = "nrd0")   
 #'   
 #'   

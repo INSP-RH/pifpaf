@@ -16,10 +16,10 @@ and covariates or sample \code{mean} if \code{"approximate"} method is
 selected.}
 
 \item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function.}
+Risk function \code{rr}.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 
 
 **Optional**}
@@ -40,7 +40,7 @@ method).}
 Don't change this unless you know what you are doing (for 
 \code{"approximate"} method).}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
+\item{adjust}{Adjust bandwith parameter (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
@@ -52,19 +52,19 @@ method) from \code{\link[stats]{density}}.}
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 method). Additional information on kernels in \code{\link[stats]{density}}.}
 
-\item{bw}{Smoothing bandwith parameter from density (for 
+\item{bw}{Smoothing bandwith parameter (for 
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
-positive and numeric}
+positive and numeric.}
 
 \item{check_rr}{\code{boolean} Check that Relative Risk function
-\code{rr} equals \code{1} when evaluated at \code{0}}
+\code{rr} equals \code{1} when evaluated at \code{0}.}
 
 \item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
 and relative risk's \code{rr} expected values are well defined for this 
-scenario}
+scenario.}
 }
 \value{
 paf      Estimate of Population Attributable Fraction.
@@ -79,18 +79,19 @@ Function for estimating the Population Attributable Fraction
 }
 \details{
 The Relative Risk function \code{rr} and counterfactual \code{cft} 
-  should consider \code{X} to be a code \code{data.frame}. Each row of 
-  \code{X} is an "individual" and each column a variable of said individual.
+  should consider \code{X} to be a \code{data.frame}. Each row of 
+  \code{X} is an "individual" and each column a variable (exposure or covariate) 
+  of said individual.
 }
 \note{
 \code{"approximate"} method should be the last choice. In practice 
-  \code{"empirical"} should be prefered as convergence is faster in 
-  simulations than \code{"kernel"} for most functions. In addition, the scope
+  \code{"empirical"} should be preferred as convergence is faster in 
+  simulations than \code{"kernel"}. In addition, the scope
   of \code{"kernel"} is limited as it does not work with multivariate 
   exposures \code{X}.
 
 \code{\link{paf}} is a wrapper for \code{\link{pif}} with 
-  counterfactual of \code{0} exposure.
+  counterfactual of theoretical minimum risk exposure (\code{rr} = 1).
 
 For more information on kernels see \code{\link[stats]{density}}.
 
@@ -165,7 +166,7 @@ Xmean <- data.frame(Exposure = mean(X[,"Exposure"]),
 Xvar  <- var(X)
 
 paf(Xmean, thetahat, rr_better, method = "approximate", Xvar = Xvar)
-\donttest{
+\dontrun{
 #Warning: $ operator in rr definitions don't work in approximate
 paf(Xmean, thetahat, rr_not, method = "approximate", Xvar = Xvar)
 }
@@ -208,7 +209,7 @@ set.seed(18427)
 #Assume we have BMI from a sample
 BMI          <- data.frame(Exposure = rlnorm(100, 3.1, sdlog = 0.1))
 
-#Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+#Theoretical minimum risk exposure is at 20kg/m^2 in borderline "Normal" category
 BMI_adjusted <- BMI - 20
 
 thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, 
@@ -261,6 +262,7 @@ X <- data.frame(Exposure = rbeta(100, 2, 3),
 thetahat <- c(-0.1, 0.05, 0.2, -0.4, 0.3, 0.1)
 
 rr <- function(X, theta){
+
      #Create risk vector
      Risk    <- rep(1, nrow(X))
      
@@ -285,9 +287,9 @@ paf(X, thetahat, rr)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
@@ -301,10 +303,10 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   \code{\link{pif}} for Potential Impact Fraction estimation.
   
   See \code{\link{paf.exponential}} and \code{\link{paf.linear}} for 
-  fractions with ready-to-use exponential and linear relative risk 
+  fractions with ready-to-use exponential and linear Relative Risks 
   respectively.
   
-  Sensitivity analysis graphics can be done with \code{\link{paf.plot}}, and 
-  \code{\link{paf.sensitivity}}
+  Sensitivity analysis plots can be done with \code{\link{paf.plot}}, and 
+  \code{\link{paf.sensitivity}}.
 }
 
