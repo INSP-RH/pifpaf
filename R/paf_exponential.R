@@ -1,13 +1,13 @@
 #' @title Population Attributable Fraction with Exponential Relative Risk 
 #'   Function
 #'   
-#' @description Function that calculates the Population Attributable Fraction 
+#' @description Function that estimates the Population Attributable Fraction 
 #'   \code{\link{paf}} with exponential relative risk function  \code{rr} given 
 #'   by 
 #'   \deqn{
-#'   rr(X; \theta) = e^{\sum\limits_{i=1}^{n} \theta_i X_i}
+#'   rr(X; \theta) = \textrm{exp}\Big(\sum_{i=1}^{n} \theta_i X_i\Big).
 #'   }{
-#'   rr(X, \theta) = exp(sum(theta*X))
+#'   rr(X, \theta) = exp(X%*%theta).
 #'   }
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
@@ -15,7 +15,7 @@
 #'   selected.
 #'   
 #' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-#'   Risk function.
+#'   Risk function \code{rr}.
 #'   
 #'   **Optional**
 #'   
@@ -40,11 +40,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -53,19 +53,19 @@
 #'   
 #' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
 #'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario
+#'   scenario.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
-#'   positive and numeric
+#'   positive and numeric.
 #'   
 #' @param check_rr        \code{boolean} Check that Relative Risk function
-#'   \code{rr} equals \code{1} when evaluated at \code{0}
+#'   \code{rr} equals \code{1} when evaluated at \code{0}.
 #'   
 #' @return paf      Estimate of Population Attributable Fraction with 
 #'   exponential relative risk.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #'   
 #' @note \code{\link{paf.exponential}} is a wrapper for \code{\link{paf}} with 
 #'   exponential relative risk.
@@ -96,8 +96,10 @@
 #' theta <- c(0.3,0.1)
 #' paf.exponential(X,theta) #Exponential risk given exp(0.3*X1 + 0.1*X2)
 #' 
-#' @seealso  \code{\link{paf}} for Population Attributable Fraction (with 
-#'   arbitrary relative risk) \code{\link{pif}} for Potential Impact Fraction 
+#' @seealso  
+#' 
+#' See \code{\link{paf}} for Population Attributable Fraction (with 
+#'   arbitrary relative risk), and \code{\link{pif}} for Potential Impact Fraction 
 #'   estimation.
 #'   
 #'   See \code{\link{paf.linear}} for PAF with ready-to-use linear relative risk

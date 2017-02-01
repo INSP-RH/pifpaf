@@ -2,10 +2,10 @@
 #'   
 #' @description Function for estimating the Population Attributable Fraction 
 #'   \code{paf} from a cross-sectional sample of the exposure \code{X} with a 
-#'   known Relative Risk function \code{rr} with parameter \code{theta}. Where 
+#'   known Relative Risk function \code{rr} with parameter \code{theta}, where 
 #'   the Population Attributable Fraction is given by: \deqn{ PAF = 
-#'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} }{ PAF 
-#'   = mean(rr(X; theta) - 1)/mean(rr(X; theta)) }
+#'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} .}{ PAF 
+#'   = mean(rr(X; theta) - 1)/mean(rr(X; theta)).}
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 

@@ -152,7 +152,7 @@
 #' #Objects returned are ggplot objects and you can play with them
 #' #require(ggplot2)
 #' #cftplot + coord_flip() + theme_grey()
-#' }
+#' 
 #' 
 #' #Example 3: Normal distribution and linear counterfactual
 #' #--------------------------------------------------------
@@ -186,7 +186,7 @@
 #' 
 #' #Change bandwidth method to reduce noise
 #' counterfactual.plot(X, cft, ktype = "epanechnikov", bw = "nrd0")   
-#'   
+#' } 
 #'   
 #' @export
 

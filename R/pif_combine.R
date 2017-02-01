@@ -1,29 +1,32 @@
-#' @title Combine point estimates of PIF of same exposure for exclusive
-#'   subpopulations
+#' @title Combine point estimates of PIF from different subpopulations
 #'   
 #' @description Function for fast-computing an overall \code{\link{pif}} from
-#'   subpopulation \code{\link{pif}}s and \code{\link{paf}}s
+#'   subpopulation \code{\link{pif}}s and \code{\link{paf}}s.
 #'   
-#' @param paf_vector Vector of the \code{\link{paf}} for each specific
+#' @details The subpopulations considered should not contain common elements.    
+#' 
+#' @param paf_vector Vector containing \code{\link{paf}}s for each specific
 #'   subpopulation.
 #'   
-#' @param pif_vector Vector of the \code{\link{pif}} for each specific
+#' @param pif_vector Vector containing \code{\link{pif}}s for each specific
 #'   subpopulation.
 #'   
 #' @param proportions Vector establishing the proportion of individuals in each
-#'   subpopulation of \code{pif_vector}.
+#'   subpopulation.
 #'   
 #' @note To combine \code{pif}s both \code{pif}s and \code{paf}s are required.
 #'   
-#' @return An overall point-estimate of \code{pif} combining all subpopulations.
+#' @return overall_pif An overall point-estimate of \code{pif} combining all subpopulations.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' 
-#' @seealso \code{\link{paf}} for Population Attributable Fraction estimation, 
+#' @seealso 
+#' 
+#' See \code{\link{paf}} for Population Attributable Fraction estimation, 
 #'   \code{\link{pif}} for Population Impact Fraction estimation, and 
-#'   \code{\link{paf.combine}} for combining several PAF
+#'   \code{\link{paf.combine}} for combining several PAF.
 #'   
 #' @examples 
 #' 

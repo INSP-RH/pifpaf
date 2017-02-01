@@ -1,20 +1,22 @@
-#' @title Confidence intervals for the Potential Impact Fraction
+#' @title Confidence Intervals for the Potential Impact Fraction
 #' 
 #' @description Function that estimates confidence intervals for the Potential 
 #'   Impact Fraction \code{\link{pif}} from a cross-sectional sample of 
 #'   the exposure \code{X} with a known Relative Risk function \code{rr} with 
-#'   parameter \code{theta}. Where the Potential Impact Fraction is given
+#'   parameter \code{theta}, where the Potential Impact Fraction is given
 #'   by: \deqn{ PIF = 
-#'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} }{ PAF 
-#'   = mean(rr(X; theta) - 1)/mean(rr(X; theta)) }
+#'   \frac{E_X\left[rr(X;\theta)\right] - 
+#'   E_X\left[rr\big(\textrm{cft}(X);\theta\big)\right]} 
+#'   {E_X\left[rr(X;\theta)\right]}. }{ PIF = (mean(rr(X; theta)) - 
+#'   mean(rr(cft(X);theta)))/mean(rr(X; theta)) .}
 #' 
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
 #' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-#'   Risk function. That is asymptotically normal with mean \code{theta} and 
-#'   variance \code{var_of_theta}
+#'   Risk function. \code{thetahat} should be asymptotically normal with mean 
+#'   \code{theta} and variance \code{var_of_theta}.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -27,8 +29,8 @@
 #' 
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
-#'   counterfactualis the theoretical minimum risk exposure \code{X0} such that 
-#'   \code{rr(X0,theta) = 1}.
+#'   counterfactual is that of the theoretical minimum risk exposure \code{X0} 
+#'   such that \code{rr(X0,theta) = 1}.
 #' 
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -36,9 +38,8 @@
 #'   
 #' @param confidence Confidence level \% (default \code{95}). 
 #'   
-#' @param confidence_method  Either \code{bootstrap} (default) \code{inverse}, 
-#'   \code{one2one}, \code{linear}, \code{loglinear}. See \code{\link{paf}} 
-#'   details for additional information.
+#' @param confidence_method  Either \code{bootstrap} (default), \code{linear}, 
+#' \code{loglinear}. See \code{\link{paf}} details for additional information.
 #' 
 #' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
 #'   \code{"approximate"}. For details on estimation methods see 
@@ -59,11 +60,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -74,27 +75,27 @@
 #'   correctly inputed for the model.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
-#'   positive and numeric
+#'   positive and numeric.
 #'   
 #' @param check_cft  \code{boolean}  Check that counterfactual function 
 #'   \code{cft} reduces exposure.
 #'   
-#' @param check_xvar \code{boolean} Check if it is covariance matrix.
+#' @param check_xvar \code{boolean} Check \code{Xvar} is covariance matrix.
 #'   
 #' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
 #'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario
+#'   scenario.
 #'   
 #' @param check_rr        \code{boolean} Check that Relative Risk function \code{rr} equals 
-#'   \code{1} when evaluated at \code{0}
+#'   \code{1} when evaluated at \code{0}.
 #'   
 #' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}. This forces
-#'   the \code{pif} function ignore the inputed counterfactual and set it to the
-#'   theoretical minimum risk value of \code{1}.
+#'   the \code{\link{pif}} function to ignore the inputed counterfactual and set 
+#'   it to the theoretical minimum risk value of \code{rr = 1}.
 #' 
 #' @return pifvec Vector with lower (\code{"Lower_CI"}), and upper 
 #'   (\code{"Upper_CI"}) confidence bounds for the \code{\link{pif}} as well as
-#'   point estimate \code{"Point_Estimate"} and estimated variance or variance
+#'   point estimate \code{"Point_Estimate"} and estimated variance 
 #'   of \code{log(pif)} (if \code{confidence_method} is \code{"loglinear"}).
 #'   
 #' @note For more information on kernels see \code{\link[stats]{density}}.
@@ -103,13 +104,15 @@
 #'   \code{method}.
 #'   
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #' 
-#' @seealso  \code{\link{paf.confidence}} for confidence interval estimation of
-#'   \code{\link{paf}}. And  \code{\link{pif}} for only point estimate.
+#' @seealso  
+#' 
+#' See \code{\link{paf.confidence}} for confidence interval estimation of
+#'   \code{\link{paf}}, and  \code{\link{pif}} for only point estimate.
 #'   
-#'   Sensitivity analysis graphics can be done with \code{\link{paf.plot}}, and 
+#'   Sensitivity analysis plots can be done with \code{\link{paf.plot}}, and 
 #'   \code{\link{paf.sensitivity}}
 #'   
 #' @examples 
@@ -122,7 +125,7 @@
 #' rr       <- function(X, theta){exp(theta*X)}
 #' 
 #' 
-#' #Counterfactual of halfing exposure
+#' #Counterfactual of halving exposure
 #' cft   <- function(X){ 0.5*X }
 #' 
 #' #Using bootstrap method
@@ -149,7 +152,7 @@
 #' pif.confidence(X, thetahat, rr, thetavar, cft, weights = normalized_weights)
 #' 
 #' #Same example with more complex counterfactual that reduces 
-#' #only the values for those that exceed a quantity
+#' #only the values > 0.75 are halved
 #' cft       <- function(X){
 #' 
 #'    #Indentify the ones with "a lot" of exposure:
@@ -197,7 +200,7 @@
 #' method = "approximate", Xvar = Xvar) 
 #' }
 #' 
-#' \donttest{
+#' \dontrun{
 #' #Warning: $ operator in rr definitions don't work in approximate
 #' pif.confidence(Xmean, thetahat, rr_not, thetavar, cft, method = "approximate", Xvar = Xvar)
 #' }
@@ -242,7 +245,7 @@
 #' set.seed(18427)
 #' BMI      <- data.frame(Exposure = rlnorm(100, 3.1, sdlog = 0.1))
 #' 
-#' #Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+#' #Theoretical minimum risk exposure is 20kg/m^2 in borderline "Normal" category
 #' BMI_adjusted <- BMI - 20
 #' 
 #' thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, 

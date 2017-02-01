@@ -1,8 +1,8 @@
-#' @title Population Attributable Fraction Sensitivity Analysis plot
+#' @title Population Attributable Fraction Sensitivity Analysis Plot
 #'   
 #' @description Function that plots a sensitivity analysis for the Population 
 #'   Attributable Fraction \code{\link{paf}} by checking how estimates vary when
-#'   reducing the exposure sample \code{X}.
+#'   reducing the exposure's sample \code{X}.
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
@@ -12,7 +12,7 @@
 #'   Relative Risk function.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
-#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
 #'   **Optional**
 #'   
@@ -27,11 +27,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -40,61 +40,58 @@
 #'   
 #' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
 #'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario
+#'   scenario.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
-#'   positive and numeric
+#'   positive and numeric.
 #'   
 #' @param check_rr        \code{boolean} Check that Relative Risk function 
-#'   \code{rr} equals \code{1} when evaluated at \code{0}
+#'   \code{rr} equals \code{1} when evaluated at \code{0}.
 #'   
 #' @param nsim      Integer with number of samples to include (for each removal)
-#'   in order to conduct sensitivity analysis.
+#'   in order to conduct sensitivity analysis. See details for additional information.
 #'   
 #' @param mremove   Limit number of measurements of \code{X} to remove when
-#'   resampling.
+#'   resampling. See details for additional information.
 #'   
 #' @param title \code{string} Title of plot.
 #'   
 #' @param legendtitle   String title for the legend of plot.
 #'   
-#' @param xlab          \code{string} label for the X-axis of the plot
-#'   (corresponding to "a").
+#' @param xlab          \code{string} label for the X-axis of the plot.
 #'   
-#' @param ylab          \code{string} label for the Y-axis of the plot
-#'   (corresponding to "b").
+#' @param ylab          \code{string} label for the Y-axis of the plot.
 #'   
-#' @param colors        String vector with colors for plots.
+#' @param colors        String vector with colors for the plot.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #'   
 #' @details \code{paf.sensitivity} conducts a sensitivity analysis of the 
 #'   \code{\link{paf}} estimate by removing \code{mremove} elements \code{nsim}
-#'   times.
+#'   times and re-estimating \code{\link{paf}} with the reduced sample.
 #'   
 #' @return plotpaf      \code{\link[ggplot2]{ggplot}} object plotting a 
-#'   sensitivity analysis of \code{\link{paf}}
+#'   sensitivity analysis of \code{\link{paf}}.
 #'   
 #' @seealso \code{\link{paf}} for Population Attributable Fraction estimation, 
 #'   \code{\link{paf.plot}} for a plot of Population Attributable Fraction as a 
 #'   function of the relative risk's parameter \code{theta}.
 #'   
 #' @examples 
-#' 
+#' \dontrun{
 #' #Example 1
 #' #------------------------------------------------------------------
 #' set.seed(3284)
 #' X  <- data.frame(rnorm(250,3))            #Sample
 #' rr <- function(X,theta){exp(X*theta)}     #Relative risk
 #' theta <- 0.1                              #Estimate of theta
-#' \dontrun{
 #' paf.sensitivity(X, thetahat = theta, rr = rr)
 #' 
 #' 
 #' #Save file
 #' #require(ggplot2)
-#' #ggsave("My Potential Impact Fraction Sensitivity Analysis.pdf")
+#' #ggsave("My Population Attributable Fraction Sensitivity Analysis.pdf")
 #' 
 #' #Example 2
 #' #--------------------------------------------------------------

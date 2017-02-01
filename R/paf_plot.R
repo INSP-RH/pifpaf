@@ -1,8 +1,8 @@
 #' @title Plot of Population Attributable Fraction under different values of 
-#'   Relative Risk's parameter theta (univariate)
+#'   Relative Risk's parameter theta
 #'   
 #' @description Function that plots the \code{\link{paf}} under different values
-#'   of an univariate parameter theta of the relative risk function \code{rr} 
+#'   of a univariate parameter \code{theta} of the relative risk function \code{rr} 
 #'   which depends on the exposure \code{X} and a \code{theta} parameter 
 #'   (\code{rr(X, theta)})
 #'   
@@ -17,7 +17,7 @@
 #'   \code{rr}) for plot.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
-#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
 #'   **Optional**
 #'   
@@ -48,11 +48,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -63,7 +63,7 @@
 #'   
 #' @param mpoints Number of points in plot.
 #'   
-#' @param colors \code{vector} Colours of plot.
+#' @param colors \code{vector} Colors of plot.
 #'   
 #' @param xlab \code{string} Label of x-axis in plot.
 #'   
@@ -73,19 +73,19 @@
 #'   
 #' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
 #'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario
+#'   scenario.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
-#'   positive and numeric
+#'   positive and numeric.
 #'   
 #' @param check_rr        \code{boolean} Check that Relative Risk function
-#'   \code{rr} equals \code{1} when evaluated at \code{0}
+#'   \code{rr} equals \code{1} when evaluated at \code{0}.
 #'   
 #' @return paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of 
-#'   Population Attributable Fraction as function of \code{theta}
+#'   Population Attributable Fraction as function of \code{theta}.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #'   
 #' @import ggplot2
 #'   
@@ -110,10 +110,12 @@
 #' method = "approximate", Xvar = Xvar, title = "Approximate method example")
 #' }
 #' 
-#' @seealso \code{\link{paf}} for Population Attributable Fraction estimation 
+#' @seealso 
+#' 
+#' See \code{\link{paf}} for Population Attributable Fraction estimation 
 #'   with confidence intervals \code{\link{paf.confidence}}.
 #'   
-#'   \code{\link{pif.plot}} for same plot with Potential Impact Fraction 
+#' See \code{\link{pif.plot}} for same plot with Potential Impact Fraction 
 #'   \code{\link{pif}}.
 #'   
 #' @export

@@ -2,27 +2,29 @@
 % Please edit documentation in R/pif_combine.R
 \name{pif.combine}
 \alias{pif.combine}
-\title{Combine point estimates of PIF of same exposure for exclusive
-  subpopulations}
+\title{Combine point estimates of PIF from different subpopulations}
 \usage{
 pif.combine(pif_vector, paf_vector, proportions)
 }
 \arguments{
-\item{pif_vector}{Vector of the \code{\link{pif}} for each specific
+\item{pif_vector}{Vector containing \code{\link{pif}}s for each specific
 subpopulation.}
 
-\item{paf_vector}{Vector of the \code{\link{paf}} for each specific
+\item{paf_vector}{Vector containing \code{\link{paf}}s for each specific
 subpopulation.}
 
 \item{proportions}{Vector establishing the proportion of individuals in each
-subpopulation of \code{pif_vector}.}
+subpopulation.}
 }
 \value{
-An overall point-estimate of \code{pif} combining all subpopulations.
+overall_pif An overall point-estimate of \code{pif} combining all subpopulations.
 }
 \description{
 Function for fast-computing an overall \code{\link{pif}} from
-  subpopulation \code{\link{pif}}s and \code{\link{paf}}s
+  subpopulation \code{\link{pif}}s and \code{\link{paf}}s.
+}
+\details{
+The subpopulations considered should not contain common elements.
 }
 \note{
 To combine \code{pif}s both \code{pif}s and \code{paf}s are required.
@@ -50,13 +52,13 @@ pif.combine(c(pifmen, pifwomen), c(pafmen, pafwomen), c(0.45, 0.55))
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
-\code{\link{paf}} for Population Attributable Fraction estimation, 
+See \code{\link{paf}} for Population Attributable Fraction estimation, 
   \code{\link{pif}} for Population Impact Fraction estimation, and 
-  \code{\link{paf.combine}} for combining several PAF
+  \code{\link{paf.combine}} for combining several PAF.
 }
 

@@ -55,7 +55,7 @@ be used under careful consideration. The confidence interval to acheive such an 
 by Do Le Minh and Y. .s. Sherif
 }
 \examples{
-
+ \dontrun{
 #Example 1: Exponential Relative Risk
 #--------------------------------------------
 set.seed(18427)
@@ -64,7 +64,7 @@ thetahat <- 0.4
 thetavar <- 0.1
 paf.confidence.inverse(X, thetahat, function(X, theta){exp(theta*X)}, thetavar)
 
-\dontrun{
+
 #With approximate method
 Xmean <- mean(X)
 Xvar  <- var(X)

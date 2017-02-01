@@ -1,8 +1,8 @@
 #' @title Plot of Potential Impact Fraction under different values of Relative 
-#'   Risk's parameter theta (univariate)
+#'   Risk's parameter theta
 #'   
 #' @description Function that plots the \code{\link{pif}} under different values
-#'   of an univariate parameter theta of the relative risk function \code{rr} 
+#'   of a univariate parameter \code{theta} of the relative risk function \code{rr} 
 #'   which depends on the exposure \code{X} and a \code{theta} parameter 
 #'   (\code{rr(X, theta)})
 #'   
@@ -23,8 +23,8 @@
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
-#'   counterfactualis the theoretical minimum risk exposure \code{X0} such that 
-#'   \code{rr(X0,theta) = 1}.
+#'   counterfactual is that of the theoretical minimum risk exposure 
+#'   \code{X0} such that \code{rr(X0,theta) = 1}.
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -34,9 +34,8 @@
 #'   
 #' @param confidence Confidence level \% (default \code{95}).
 #'   
-#' @param confidence_method  Either \code{bootstrap} (default) \code{inverse}, 
-#'   \code{one2one}, \code{linear}, \code{loglinear}. See \code{\link{paf}} 
-#'   details for additional information.
+#' @param confidence_method  Either \code{bootstrap} (default), \code{linear}, 
+#' \code{loglinear}. See \code{\link{paf}} details for additional information.
 #'   
 #' @param Xvar      Variance of exposure levels (for \code{"approximate"} 
 #'   method).
@@ -53,11 +52,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -68,7 +67,7 @@
 #'   
 #' @param mpoints Number of points in plot.
 #'   
-#' @param colors \code{vector} Colours of plot.
+#' @param colors \code{vector} Colors of plot.
 #'   
 #' @param xlab \code{string} Label of x-axis in plot.
 #'   
@@ -78,23 +77,23 @@
 #'   
 #' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
 #'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario
+#'   scenario.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
-#'   positive and numeric
+#'   positive and numeric.
 #'   
 #' @param check_rr        \code{boolean} Check that Relative Risk function
-#'   \code{rr} equals \code{1} when evaluated at \code{0}
+#'   \code{rr} equals \code{1} when evaluated at \code{0}.
 #'   
 #' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}. This forces
 #'   the \code{pif} function ignore the inputed counterfactual and set it to the
 #'   theoretical minimum risk value of \code{1}.
 #'   
 #' @return pif.plot       \code{\link[ggplot2]{ggplot}} object with plot of 
-#'   Potential Impact Fraction as function of \code{theta}
+#'   Potential Impact Fraction as function of \code{theta}.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #'   
 #' @import ggplot2
 #'   
@@ -108,10 +107,11 @@
 #' pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)})
 #' 
 #' #Same example with kernel method
-#' pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, method = "kernel",
-#' title = "Kernel method example") 
+#' pif.plot(X, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, 
+#' method = "kernel", title = "Kernel method example") 
 #'  
-#' #Same example for approximate method. Notice that approximate method has more uncertainty
+#' #Same example for approximate method. Notice that approximate method has 
+#' #more uncertainty
 #' Xmean <- data.frame(mean(X[,"Exposure"]))
 #' Xvar  <- var(X)
 #' pif.plot(Xmean, thetalow = 0, thetaup = 10, rr =  function(X, theta){exp(theta*X)}, 
@@ -128,10 +128,13 @@
 #' cft = function(X){sqrt(X)}, method = "approximate", Xvar = Xvar) 
 #' }
 #' 
-#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation with
+#' @seealso 
+#' 
+#' See \code{\link{pif}} for Potential Impact Fraction estimation with
 #'   confidence intervals \code{\link{pif.confidence}}.
 #'   
-#'   \code{\link{paf.plot}} for same plot with Population Attributable Fraction \code{\link{paf}}.
+#' See \code{\link{paf.plot}} for same plot with 
+#' Population Attributable Fraction \code{\link{paf}}.
 #'   
 #' @export
 

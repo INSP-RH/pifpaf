@@ -29,6 +29,9 @@
 #'   method).
 #'   
 #' @param confidence Confidence level \% (default: \code{95})
+#' 
+#' @param confidence_theta Confidence level \% of \code{theta} corresponding to
+#' the interval [\code{thetalow}, \code{thetaup}] (default: \code{99}\%).
 #'   
 #' @param check_thetas Check that thetas are correctly specified
 #'   
@@ -92,7 +95,9 @@
 
 paf.confidence.one2one <- function(X, thetahat, rr, thetalow, thetaup, 
                                    weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
-                                   confidence = 95, check_thetas = TRUE,
+                                   confidence = 95, 
+                                   confidence_theta = 99,
+                                   check_thetas = TRUE,
                                    deriv.method.args = list(), 
                                    deriv.method = c("Richardson", "complex"),
                                    method = c("empirical","approximate"), Xvar = var(X),
@@ -105,13 +110,16 @@ paf.confidence.one2one <- function(X, thetahat, rr, thetalow, thetaup,
   #Get thetavar as matrix
   .thetavar <- matrix(0, ncol = length(thetahat), nrow = length(thetahat))
   
+  #Get new confidence assuming worst-case scenario
+  .confidence <- confidence/confidence_theta
+    
   #Calculate the PIF with confidence intervals
   .upper <- paf.confidence.inverse(X, thetahat = thetaup,  thetavar = .thetavar, rr = rr,
-                                   method = .method, weights = weights, confidence = confidence,
+                                   method = .method, weights = weights, confidence = .confidence,
                                    nsim = 1, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                                    force.min = FALSE, check_thetas = check_thetas, Xvar = Xvar)
   .lower <- paf.confidence.inverse(X, thetahat = thetalow,  thetavar = .thetavar, rr = rr,
-                                   method = .method, weights = weights, confidence = confidence,
+                                   method = .method, weights = weights, confidence = .confidence,
                                    nsim = 1, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                                    force.min = FALSE, check_thetas = FALSE, Xvar = Xvar)
   .point <- paf(X, thetahat, rr = rr, weights = weights, method = .method, 

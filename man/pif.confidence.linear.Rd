@@ -51,7 +51,7 @@ Function that calculates approximate confidence intervals
 to the potential impact fraction.
 }
 \examples{
-
+\dontrun{
 #Example with risk given by HR (PAF)
 set.seed(18427)
 X <- rnorm(100,3,.5)
@@ -66,7 +66,6 @@ pif.confidence.linear(X, thetahat, function(X, theta){exp(theta*X)},
                      thetavar, cft, nsim = 100)
 
 #Example with theta and X multivariate
-\dontrun{
 set.seed(18427)
 X1 <- rnorm(100, 3,.5)
 X2 <- rnorm(100,3,.5)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/paf_sensitivity.R
 \name{paf.sensitivity}
 \alias{paf.sensitivity}
-\title{Population Attributable Fraction Sensitivity Analysis plot}
+\title{Population Attributable Fraction Sensitivity Analysis Plot}
 \usage{
 paf.sensitivity(X, thetahat, rr, method = "empirical",
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), nsim = 50,
@@ -24,7 +24,7 @@ selected.}
 Relative Risk function.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 
 **Optional**}
 
@@ -35,12 +35,12 @@ Relative Risk function.}
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
 \item{nsim}{Integer with number of samples to include (for each removal)
-in order to conduct sensitivity analysis.}
+in order to conduct sensitivity analysis. See details for additional information.}
 
 \item{mremove}{Limit number of measurements of \code{X} to remove when
-resampling.}
+resampling. See details for additional information.}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
+\item{adjust}{Adjust bandwith parameter (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
@@ -52,61 +52,58 @@ method) from \code{\link[stats]{density}}.}
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 method). Additional information on kernels in \code{\link[stats]{density}}.}
 
-\item{bw}{Smoothing bandwith parameter from density (for 
+\item{bw}{Smoothing bandwith parameter (for 
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
-\item{ylab}{\code{string} label for the Y-axis of the plot
-(corresponding to "b").}
+\item{ylab}{\code{string} label for the Y-axis of the plot.}
 
-\item{xlab}{\code{string} label for the X-axis of the plot
-(corresponding to "a").}
+\item{xlab}{\code{string} label for the X-axis of the plot.}
 
 \item{legendtitle}{String title for the legend of plot.}
 
 \item{title}{\code{string} Title of plot.}
 
-\item{colors}{String vector with colors for plots.}
+\item{colors}{String vector with colors for the plot.}
 
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
-positive and numeric}
+positive and numeric.}
 
 \item{check_rr}{\code{boolean} Check that Relative Risk function 
-\code{rr} equals \code{1} when evaluated at \code{0}}
+\code{rr} equals \code{1} when evaluated at \code{0}.}
 
 \item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
 and relative risk's \code{rr} expected values are well defined for this 
-scenario}
+scenario.}
 }
 \value{
 plotpaf      \code{\link[ggplot2]{ggplot}} object plotting a 
-  sensitivity analysis of \code{\link{paf}}
+  sensitivity analysis of \code{\link{paf}}.
 }
 \description{
 Function that plots a sensitivity analysis for the Population 
   Attributable Fraction \code{\link{paf}} by checking how estimates vary when
-  reducing the exposure sample \code{X}.
+  reducing the exposure's sample \code{X}.
 }
 \details{
 \code{paf.sensitivity} conducts a sensitivity analysis of the 
   \code{\link{paf}} estimate by removing \code{mremove} elements \code{nsim}
-  times.
+  times and re-estimating \code{\link{paf}} with the reduced sample.
 }
 \examples{
-
+\dontrun{
 #Example 1
 #------------------------------------------------------------------
 set.seed(3284)
 X  <- data.frame(rnorm(250,3))            #Sample
 rr <- function(X,theta){exp(X*theta)}     #Relative risk
 theta <- 0.1                              #Estimate of theta
-\dontrun{
 paf.sensitivity(X, thetahat = theta, rr = rr)
 
 
 #Save file
 #require(ggplot2)
-#ggsave("My Potential Impact Fraction Sensitivity Analysis.pdf")
+#ggsave("My Population Attributable Fraction Sensitivity Analysis.pdf")
 
 #Example 2
 #--------------------------------------------------------------
@@ -164,9 +161,9 @@ pafplot
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
 \code{\link{paf}} for Population Attributable Fraction estimation, 

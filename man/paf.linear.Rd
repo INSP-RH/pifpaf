@@ -16,7 +16,7 @@ and covariates or sample \code{mean} if \code{"approximate"} method is
 selected.}
 
 \item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function.
+Risk function \code{rr}.
 
 **Optional**}
 
@@ -36,7 +36,7 @@ method).}
 Don't change this unless you know what you are doing (for 
 \code{"approximate"} method).}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
+\item{adjust}{Adjust bandwith parameter (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
@@ -48,19 +48,19 @@ method) from \code{\link[stats]{density}}.}
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 method). Additional information on kernels in \code{\link[stats]{density}}.}
 
-\item{bw}{Smoothing bandwith parameter from density (for 
+\item{bw}{Smoothing bandwith parameter (for 
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
-positive and numeric}
+positive and numeric.}
 
 \item{check_rr}{\code{boolean} Check that Relative Risk function
-\code{rr} equals \code{1} when evaluated at \code{0}}
+\code{rr} equals \code{1} when evaluated at \code{0}.}
 
 \item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
 and relative risk's \code{rr} expected values are well defined for this 
-scenario}
+scenario.}
 }
 \value{
 paf      Estimate of Population Attributable Fraction with linear
@@ -70,14 +70,14 @@ paf      Estimate of Population Attributable Fraction with linear
 Function that calculates the Population Attributable Fraction
   \code{\link{paf}} with linear relative risk function \code{rr} given by 
   \deqn{
-  rr(X; \theta) = \theta_1 + \sum\limits_{i=1}^{n} \theta_{i+1} X_i
+  rr(X; \theta) = \theta_1 + \sum\limits_{i=1}^{n} \theta_{i+1} X_i.
   }{
-  rr(X, theta) = theta[1] + theta[2]*X[,1] + theta[3]*X[,2] + ... + theta[n+1]*X[,n]
+  rr(X, theta) = theta[1] + theta[2]*X[,1] + theta[3]*X[,2] + ... + theta[n+1]*X[,n].
   }
 }
 \note{
 \code{"approximate"} method should be the last choice. In practice 
-  \code{"empirical"} should be prefered as convergence is faster than 
+  \code{"empirical"} should be preferred as convergence is faster than 
   \code{"kernel"} for most functions. In addition, the scope of
   \code{"kernel"} is limited as it does not work with multivariate exposure
   data \code{X}.
@@ -122,9 +122,9 @@ paf.linear(matX,theta) #Polynomial risk: 1 + 0.3*X + 0.1*X^2 + 0.4*X^3
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
@@ -134,8 +134,8 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   factors}. Geneva: World Health Organization, 2129-40.
 }
 \seealso{
-\code{\link{paf}} for Population Attributable Fraction (with
-  arbitrary relative risk) \code{\link{pif}} for Potential Impact Fraction
+See \code{\link{paf}} for Population Attributable Fraction (with
+  arbitrary relative risk), and \code{\link{pif}} for Potential Impact Fraction
   estimation.
   
   See \code{\link{paf.exponential}} for PAF with ready-to-use exponential

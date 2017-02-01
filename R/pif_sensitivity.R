@@ -1,8 +1,8 @@
 #' @title Potential Impact Fraction Sensitivity Analysis plot
 #'   
 #' @description Function that plots a sensitivity analysis for the Potential 
-#'   Impact Fraction \code{\link{pif}} by checking how estimates vary when reducing the exposure 
-#'   sample \code{X}.
+#'   Impact Fraction \code{\link{pif}} by checking how estimates vary when reducing 
+#'   the exposure's sample \code{X}.
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
@@ -19,8 +19,8 @@
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
-#'   counterfactualis the theoretical minimum risk exposure \code{X0} such that 
-#'   \code{rr(X0,theta) = 1}.
+#'   counterfactual is that of a theoretical minimum risk exposure 
+#'   \code{X0} such that \code{rr(X0,theta) = 1}.
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -33,11 +33,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -46,61 +46,62 @@
 #'   
 #' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
 #'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario
+#'   scenario.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
-#'   positive and numeric
+#'   positive and numeric.
 #'   
 #' @param check_rr        \code{boolean} Check that Relative Risk function 
-#'   \code{rr} equals \code{1} when evaluated at \code{0}
+#'   \code{rr} equals \code{1} when evaluated at \code{0}.
 #'   
 #' @param nsim      Integer with number of samples to include (for each removal)
-#'   in order to conduct sensitivity analysis.
+#'   in order to conduct sensitivity analysis. See details for additional information.
 #'   
 #' @param mremove   Limit number of measurements of \code{X} to remove when
-#'   resampling.
+#'   resampling. See details for additional information.
 #'   
-#' @param title \code{string} Title of plot.
+#' @param title \code{string} title of plot.
 #'   
-#' @param legendtitle   String title for the legend of plot.
+#' @param legendtitle   \code{string} title for the legend of plot.
 #'   
-#' @param xlab          \code{string} label for the X-axis of the plot
-#'   (corresponding to "a").
+#' @param xlab          \code{string} label for the X-axis of the plot.
 #'   
-#' @param ylab          \code{string} label for the Y-axis of the plot
-#'   (corresponding to "b").
+#' @param ylab          \code{string} label for the Y-axis of the plot.
 #'   
-#' @param colors        String vector with colors for plots.
+#' @param colors        \code{string} vector with colors for plots.
 #'   
 #' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}. This forces
-#'   the \code{pif} function ignore the inputed counterfactual and set it to the
+#'   the \code{\link{pif}} function ignore the inputed counterfactual and set it to the
 #'   theoretical minimum risk value of \code{1}.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #'   
 #' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a
-#'   sensitivity analysis of \code{\link{pif}}
+#'   sensitivity analysis of \code{\link{pif}}.
 #'   
-#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation, 
+#' @seealso 
+#' 
+#' See \code{\link{pif}} for Potential Impact Fraction estimation, 
 #'   \code{\link{pif.heatmap}} for sensitivity analysis of counterfactual, 
 #'   \code{\link{pif.plot}} for a plot of Potential Impact Fraction as a
 #'   function of the relative risk's parameter \code{theta}.
 #'   
 #' @details \code{pif.sensitivity} conducts a sensitivity analysis of the 
-#' \code{\link{pif}} estimate by removing \code{mremove} elements \code{nsim} times.
+#'   \code{\link{pif}} estimate by removing \code{mremove} elements \code{nsim}
+#'   times and re-estimating \code{\link{pif}} with the reduced sample.
 #'    
 #' @examples 
-#' 
+#' \dontrun{
 #' #Example 1
 #' #------------------------------------------------------------------
 #' set.seed(3284)
 #' X  <- data.frame(Exposure = rnorm(250,3)) #Sample
 #' rr <- function(X,theta){exp(X*theta)}     #Relative risk
 #' theta <- 0.1                              #Estimate of theta
-#' \dontrun{
+#' 
 #' pif.sensitivity(X, thetahat = theta, rr = rr)
-#' }
+#' 
 #' 
 #' #Save file
 #' #require(ggplot2)
@@ -114,7 +115,7 @@
 #' rr    <- function(X, theta){X*theta[1] + theta[2]}
 #' cft   <- function(X){X/2}
 #' 
-#' \dontrun{
+#' 
 #' #Using empirical method
 #' pif.sensitivity(X, thetahat = theta, rr = rr, cft = cft,
 #'                 mremove = 100, nsim = 50, 

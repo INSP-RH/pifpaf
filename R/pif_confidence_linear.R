@@ -43,7 +43,7 @@
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' #Example with risk given by HR (PAF)
 #' set.seed(18427)
 #' X <- rnorm(100,3,.5)
@@ -58,7 +58,6 @@
 #'                      thetavar, cft, nsim = 100)
 #' 
 #' #Example with theta and X multivariate
-#' \dontrun{
 #' set.seed(18427)
 #' X1 <- rnorm(100, 3,.5)
 #' X2 <- rnorm(100,3,.5)

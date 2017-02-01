@@ -45,7 +45,7 @@
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
-#' 
+#'  \dontrun{
 #' #Example 1: Exponential Relative Risk
 #' #--------------------------------------------
 #' set.seed(18427)
@@ -54,7 +54,7 @@
 #' thetavar <- 0.1
 #' paf.confidence.inverse(X, thetahat, function(X, theta){exp(theta*X)}, thetavar)
 #' 
-#' \dontrun{
+#'
 #' #With approximate method
 #' Xmean <- mean(X)
 #' Xvar  <- var(X)

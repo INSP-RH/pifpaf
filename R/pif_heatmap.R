@@ -1,12 +1,12 @@
 #' @title  Graphical Sensitivity Analysis of Potential Impact Fraction's Counterfactual
 #'   
-#' @description Provides a graphic sensitivity analysis for \code{\link{pif}} by
+#' @description Provides a graphical sensitivity analysis for \code{\link{pif}} by
 #'   varying the parameters of a bivariate counterfactual function \code{cft}.
 #'   By default it evaluates the counterfactual:
 #'   \deqn{
-#'   \textrm{cft}(X) = aX + b
+#'   \textrm{cft}(X) = aX + b.
 #'   }{
-#'   cft(X) = aX + b
+#'   cft(X) = aX + b.
 #'   }
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
@@ -22,8 +22,8 @@
 #'   **Optional**
 #'   
 #' @param cft       Function \code{cft(X, a, b)} for counterfactual dependent on
-#'   one dimensional parameters \code{a} and \code{b}. Default counterfactual is linear:
-#'   \code{aX + b}.
+#'   one dimensional parameters \code{a} and \code{b}. Default counterfactual is 
+#'   affine: \code{aX + b}.
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -46,11 +46,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -59,23 +59,27 @@
 #'   
 #' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
 #'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario
+#'   scenario.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
-#'   positive and numeric
+#'   positive and numeric.
 #'   
 #' @param check_rr        \code{boolean} Check that Relative Risk function
-#'   \code{rr} equals \code{1} when evaluated at \code{0}
+#'   \code{rr} equals \code{1} when evaluated at \code{0}.
 #'   
 #' @param legendtitle   \code{string} title for the legend of plot.
 #'   
-#' @param mina          Minimum for parameter \code{a} for the counterfactual.
+#' @param mina          Minimum for parameter \code{a} for the counterfactual 
+#' (default \code{0}).
 #'   
-#' @param minb          Minimum for parameter \code{b} for the counterfactual.
+#' @param minb          Minimum for parameter \code{b} for the counterfactual 
+#' (default \code{-1}).
 #'   
-#' @param maxa          Maximum for parameter \code{a} for the counterfactual.
+#' @param maxa          Maximum for parameter \code{a} for the counterfactual 
+#' (default \code{1}).
 #'   
-#' @param maxb          Maximum for parameter \code{b} for the counterfactual.
+#' @param maxb          Maximum for parameter \code{b} for the counterfactual 
+#' (default \code{0}).
 #'   
 #' @param nmesh         Number of tiles in plot (default \code{10}).
 #'   
@@ -92,12 +96,14 @@
 #' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a heatmap
 #'   with sensitivity analysis of the counterfactual.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #'   
-#' @seealso \code{\link{pif}} for Potential Impact Fraction estimation,
-#'   \code{\link{pif.sensitivity}} for data-driven for sensitivity analysis of
-#'   empirical process,  \code{\link{pif.plot}} for a plot of Potential Impact
+#' @seealso 
+#' 
+#' See \code{\link{pif}} for Potential Impact Fraction estimation,
+#'   \code{\link{pif.sensitivity}} for sensitivity analysis of the convergence
+#'  process,  \code{\link{pif.plot}} for a plot of Potential Impact
 #'   Fraction as a function of the relative risk's parameter \code{theta}.
 #'   
 #' @examples 
@@ -111,7 +117,7 @@
 #' 
 #' #Save file using ggplot2
 #' #require(ggplot2)
-#' #ggsave("My Potential Impact Fraction Analysis.pdf")
+#' #ggsave("My Potential Impact Fraction Heatmap Analysis.pdf")
 #' 
 #' #Change pif estimation method to kernel
 #' 
@@ -194,7 +200,7 @@
 #' }
 #' 
 #' pif.heatmap(X, thetahat = thetahat, rr = rr, cft = cft, mina = 0, minb = 0, maxa = 1, 
-#'             maxb = 1, title = "PIF after reduction of excess-weight",
+#'             maxb = 1, title = "PIF of excess-weight reduction",
 #'             xlab = "% Overweight cases", ylab = "% Obese cases",
 #'             check_exposure = FALSE, check_rr = FALSE)
 #' }

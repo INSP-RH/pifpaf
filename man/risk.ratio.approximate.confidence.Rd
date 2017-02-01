@@ -58,7 +58,7 @@ The \code{force.min} option forces the relative risk \code{rr} to have a
  \code{rr} is based on the paper by Do Le Minh and Y. .s. Sherif
 }
 \examples{
-
+\dontrun{
 #' #Example 1: Exponential Relative Risk
 #--------------------------------------------
 set.seed(18427)
@@ -86,7 +86,7 @@ thetahat  <- c(0.02, 0.01)
 thetavar  <- matrix(c(0.1, 0, 0, 0.4), byrow = TRUE, nrow = 2)
 rr        <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 risk.ratio.approximate.confidence(X, Xvar, thetahat, rr, thetavar) 
-
+}
 
 }
 \author{

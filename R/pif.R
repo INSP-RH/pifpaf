@@ -2,12 +2,12 @@
 #'   
 #' @description Function for estimating the Potential Impact Fraction \code{pif}
 #'   from a cross-sectional sample of the exposure \code{X} with known Relative 
-#'   Risk function \code{rr} with parameter \code{theta}. Where the Potential 
+#'   Risk function \code{rr} with parameter \code{theta}, where the Potential 
 #'   Impact Fraction is given by: \deqn{ PIF = 
 #'   \frac{E_X\left[rr(X;\theta)\right] - 
 #'   E_X\left[rr\big(\textrm{cft}(X);\theta\big)\right]} 
-#'   {E_X\left[rr(X;\theta)\right]} }{ PIF = (mean(rr(X; theta)) - 
-#'   mean(rr(cft(X);theta)))/mean(rr(X; theta)) }
+#'   {E_X\left[rr(X;\theta)\right]}. }{ PIF = (mean(rr(X; theta)) - 
+#'   mean(rr(cft(X);theta)))/mean(rr(X; theta)) .}
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
@@ -24,8 +24,8 @@
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
-#'   counterfactualis the theoretical minimum risk exposure \code{X0} such that 
-#'   \code{rr(X0,theta) = 1}.
+#'   counterfactual is that of a theoretical minimum risk exposure \code{X0} 
+#'   such that \code{rr(X0,theta) = 1}.
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -47,11 +47,11 @@
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 #'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
-#' @param bw        Smoothing bandwith parameter from density (for 
+#' @param bw        Smoothing bandwith parameter (for 
 #'   \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 #'   \code{"SJ"}.
 #'   
-#' @param adjust    Adjust bandwith parameter from density (for \code{"kernel"} 
+#' @param adjust    Adjust bandwith parameter (for \code{"kernel"} 
 #'   method) from \code{\link[stats]{density}}.
 #'   
 #' @param n   Number of equally spaced points at which the density (for 
@@ -68,15 +68,15 @@
 #'   \code{1} when evaluated at \code{0}.
 #'   
 #' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}. This forces
-#'   the \code{pif} function ignore the inputed counterfactual and set it to the
-#'   theoretical minimum risk value of \code{1}.
+#'   the \code{pif} function ignore the inputed counterfactual and set the 
+#'   relative risk to the theoretical minimum risk value of \code{1}.
 #'   
-#' @return pif      Estimate of Potential Impact Fraction
+#' @return pif      Estimate of Potential Impact Fraction.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
 #'   
-#' @note For more information on kernels see \code{\link[stats]{density}}
+#' @note For more information on kernels see \code{\link[stats]{density}}.
 #'   
 #' @note Do not use the \code{$} operator when using \code{"approximate"}
 #'   \code{method}.
@@ -85,7 +85,7 @@
 #'   = 1 - \frac{\sum\limits_{i=1}^{n}w_i rr\big(cft(X_i); 
 #'   \theta\big)}{\sum\limits_{i=1}^{n} w_i rr(X_i; \theta)}. }{ PIF = 1 - 
 #'   weighted.mean(rr(cft(X), theta), weights)/ weighted.mean(rr(cft(X), theta),
-#'   weights) }
+#'   weights). }
 #'   
 #'   The \code{"kernel"} method approximates the \code{\link[stats]{density}} of
 #'   the exposure \code{X} and estimates its expected value from that 
@@ -93,12 +93,12 @@
 #'   \deqn{ PIF = 1 - 
 #'         \frac{\int\limits_{-\infty}^{\infty} rr\big(cft(X);\theta \big) \hat{f}(x) dx
 #'   }{
-#'         \int\limits_{-\infty}^{\infty} rr\big(cft(X);\theta \big) \hat{f}(x) dx}
+#'         \int\limits_{-\infty}^{\infty} rr\big(cft(X);\theta \big) \hat{f}(x) dx}.
 #'   }{ 
-#'   PIF = 1 - integrate(rr(cft(X), theta)*f(x))/integrate(rr(X, theta)*f(x))  
+#'   PIF = 1 - integrate(rr(cft(X), theta)*f(x))/integrate(rr(X, theta)*f(x)).
 #'   }
 #'   
-#'   The \code{"approximate"} method conducts a Laplace approximation of the PIF.
+#'   The \code{"approximate"} method conducts a Laplace approximation of the \code{pif}.
 #'   Additional information on the methods is dicussed in the package's vignette:
 #'   \code{browseVignettes("pif")}.
 #'   
@@ -117,8 +117,7 @@
 #' thetahat <- 0.12
 #' rr       <- function(X, theta){exp(theta*X)}
 #' 
-#' #Using the empirical method. Without specifying counterfactual 
-#' #it matches paf
+#' #Without specifying counterfactual pif matches paf
 #' pif(X, thetahat, rr)
 #' paf(X, thetahat, rr)
 #' 
@@ -130,7 +129,7 @@
 #' Xvar  <- var(X[,"Exposure"])
 #' pif(Xmean, thetahat, rr, method = "approximate", Xvar = Xvar)
 #' 
-#' #Same example considering counterfactual of halfing exposure
+#' #Same example considering counterfactual of halving exposure
 #' cft   <- function(X){ 0.5*X }
 #' pif(X, thetahat, rr, cft, method = "empirical")
 #' 
@@ -146,7 +145,7 @@
 #' pif(X, thetahat, rr, cft, weights = normalized_weights)
 #' 
 #' #Same example with more complex counterfactual that reduces 
-#' #only the values for those that exceed a quantity
+#' #only the values > 0.75 are halved
 #' cft       <- function(X){
 #' 
 #'    #Indentify the ones with "a lot" of exposure:
@@ -193,7 +192,7 @@
 #' Xvar  <- var(X)
 #' pif(Xmean, thetahat, rr_better, method = "approximate", Xvar = Xvar)
 #' 
-#' \donttest{
+#' \dontrun{
 #' #The one with $ operators doesn't work:
 #' pif(Xmean, thetahat, rr_not, method = "approximate", Xvar = Xvar)
 #' }
@@ -240,7 +239,7 @@
 #' set.seed(18427)
 #' BMI      <- data.frame(Exposure = rlnorm(100, 3.1, sdlog = 0.1))
 #' 
-#' #Theoretical minimum of 0 exposure is at 20 in borderline "Normal" category
+#' #Theoretical minimum risk exposure is at 20kg/m^2 in borderline "Normal" category
 #' BMI_adjusted <- BMI - 20
 #' 
 #' thetahat <- c(Malnourished = 2.2, Normal = 1, Overweight = 1.8, 
@@ -346,11 +345,11 @@
 #' 
 #' pif(X, thetahat, rr, cft)
 #' 
-#' @seealso  \code{\link{pif.confidence}} for confidence interval estimation, 
-#'   \code{\link{paf}} for Population Attributable Fraction estimation.
+#' @seealso  See \code{\link{pif.confidence}} for confidence interval estimation, 
+#'   and \code{\link{paf}} for Population Attributable Fraction estimation.
 #'   
-#'   Sensitivity analysis graphics can be done with \code{\link{pif.plot}}, 
-#'   \code{\link{pif.sensitivity}}, and \code{\link{pif.heatmap}}
+#'   Sensitivity analysis plots can be done with \code{\link{pif.plot}}, 
+#'   \code{\link{pif.sensitivity}}, and \code{\link{pif.heatmap}}.
 #'   
 #' @references Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
 #'   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 

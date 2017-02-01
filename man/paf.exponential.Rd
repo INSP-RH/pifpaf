@@ -17,7 +17,7 @@ and covariates or sample \code{mean} if \code{"approximate"} method is
 selected.}
 
 \item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function.
+Risk function \code{rr}.
 
 **Optional**}
 
@@ -37,7 +37,7 @@ method).}
 Don't change this unless you know what you are doing (for 
 \code{"approximate"} method).}
 
-\item{adjust}{Adjust bandwith parameter from density (for \code{"kernel"} 
+\item{adjust}{Adjust bandwith parameter (for \code{"kernel"} 
 method) from \code{\link[stats]{density}}.}
 
 \item{n}{Number of equally spaced points at which the density (for 
@@ -49,32 +49,32 @@ method) from \code{\link[stats]{density}}.}
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{"kernel"}
 method). Additional information on kernels in \code{\link[stats]{density}}.}
 
-\item{bw}{Smoothing bandwith parameter from density (for 
+\item{bw}{Smoothing bandwith parameter (for 
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
-positive and numeric}
+positive and numeric.}
 
 \item{check_rr}{\code{boolean} Check that Relative Risk function
-\code{rr} equals \code{1} when evaluated at \code{0}}
+\code{rr} equals \code{1} when evaluated at \code{0}.}
 
 \item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
 and relative risk's \code{rr} expected values are well defined for this 
-scenario}
+scenario.}
 }
 \value{
 paf      Estimate of Population Attributable Fraction with 
   exponential relative risk.
 }
 \description{
-Function that calculates the Population Attributable Fraction 
+Function that estimates the Population Attributable Fraction 
   \code{\link{paf}} with exponential relative risk function  \code{rr} given 
   by 
   \deqn{
-  rr(X; \theta) = e^{\sum\limits_{i=1}^{n} \theta_i X_i}
+  rr(X; \theta) = \textrm{exp}\Big(\sum_{i=1}^{n} \theta_i X_i\Big).
   }{
-  rr(X, \theta) = exp(sum(theta*X))
+  rr(X, \theta) = exp(X%*%theta).
   }
 }
 \note{
@@ -109,9 +109,9 @@ paf.exponential(X,theta) #Exponential risk given exp(0.3*X1 + 0.1*X2)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
@@ -121,8 +121,8 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   factors}. Geneva: World Health Organization, 2129-40.
 }
 \seealso{
-\code{\link{paf}} for Population Attributable Fraction (with 
-  arbitrary relative risk) \code{\link{pif}} for Potential Impact Fraction 
+See \code{\link{paf}} for Population Attributable Fraction (with 
+  arbitrary relative risk), and \code{\link{pif}} for Potential Impact Fraction 
   estimation.
   
   See \code{\link{paf.linear}} for PAF with ready-to-use linear relative risk

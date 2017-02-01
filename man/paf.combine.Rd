@@ -2,7 +2,7 @@
 % Please edit documentation in R/paf_combine.R
 \name{paf.combine}
 \alias{paf.combine}
-\title{Combine point estimates of PAF from different subpopulations.}
+\title{Combine point estimates of PAF from different subpopulations}
 \usage{
 paf.combine(paf_vector, proportions)
 }
@@ -19,9 +19,10 @@ overall_paf An overall point-estimate of \code{\link{paf}} combining all
 }
 \description{
 Function for fast-computing an overall  \code{\link{paf}} 
- from subpopulation  \code{\link{paf}}s. 
- 
- @details The subpopulations considered should not contain common elements.
+ from subpopulation  \code{\link{paf}}s.
+}
+\details{
+The subpopulations considered should not contain common elements.
 }
 \examples{
 

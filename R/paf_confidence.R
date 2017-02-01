@@ -1,20 +1,20 @@
-#' @title Confidence intervals for the Population Attributable Fraction
+#' @title Confidence Intervals for the Population Attributable Fraction
 #'   
 #' @description Function that estimates confidence intervals for the Population 
 #'   Attributable Fraction \code{\link{paf}} from a cross-sectional sample of 
 #'   the exposure \code{X} with a known Relative Risk function \code{rr} with 
 #'   parameter \code{theta}, where the Population Attributable Fraction is given
 #'   by: \deqn{ PAF = 
-#'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} }{ PAF 
-#'   = mean(rr(X; theta) - 1)/mean(rr(X; theta)) }
+#'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]}. }{ PAF 
+#'   = mean(rr(X; theta) - 1)/mean(rr(X; theta)).}
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the 
-#' Relative Risk function. That is asymptotically normal with mean \code{theta} and 
-#' variance \code{var_of_theta}.
+#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+#'   Risk function. \code{thetahat} should be asymptotically normal with mean 
+#'   \code{theta} and variance \code{var_of_theta}.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -37,11 +37,15 @@
 #'   
 #' @param confidence Confidence level \% (default \code{95}). If 
 #'   \code{confidence_method} \code{"one2one"} is selected, \code{confidence} 
-#'   should be at most the one from \code{theta}'s confidence interval.
+#'   should be at most the one from \code{theta}'s confidence interval 
+#'   (\code{confidence_theta}\%).
 #'   
 #' @param confidence_method  Either \code{bootstrap} (default) \code{inverse}, 
 #'   \code{one2one}, \code{linear}, \code{loglinear}. See details for additional
 #'   explanation.
+#'   
+#' @param confidence_theta Confidence level \% of \code{theta} corresponding to
+#' the interval [\code{thetalow}, \code{thetaup}] (default: \code{99}\%).
 #'   
 #' @param method    Either \code{"empirical"} (default), \code{"kernel"} or 
 #'   \code{"approximate"}. For details on estimation methods see 
@@ -117,7 +121,7 @@
 #' for the Relative Risk function \code{rr} and applies the transformation
 #' \code{1 - 1/rr}. Finally, \code{"one2one"} works with functions for which
 #' the expected value over \code{X} of the relative risk is injective in 
-#' \code{theta}.
+#' \code{theta}. 
 #' 
 #' Additional information on confidence method estimations can be found
 #' in the package's vignette: \code{browseVignettes("pif")}.
@@ -155,9 +159,9 @@
 #' paf.confidence(X, thetahat, rr, thetavar, confidence_method = "inverse")
 #' 
 #' #Same example with one2one method 
-#' #assume ci of theta is [0.27, 0.35]
+#' #assume 99% ci of theta is [0.27, 0.35]
 #' paf.confidence(X, thetahat, rr, thetalow = 0.27, thetaup = 0.35, 
-#' confidence_method = "one2one")
+#' confidence_method = "one2one", confidence_theta = 99)
 #' 
 #' #Example 2: Linear Relative Risk with weighted sample
 #' #--------------------------------------------
@@ -327,6 +331,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = NA,
                            method  = "empirical",
                            confidence_method = "bootstrap",
                            confidence = 95,
+                           confidence_theta = 99,
                            nsim    =  1000, 
                            weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                            Xvar    = var(X), 
@@ -355,7 +360,7 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = NA,
             "one2one" ={
               if(any(is.na(thetalow)) || any(is.na(thetaup))){stop("Please specify thetalow and thetaup bounds of thetahat's CI")}
               paf.confidence.one2one(X = X, thetahat = thetahat, thetalow = thetalow, thetaup = thetaup, rr = rr, 
-                                     weights =  weights, confidence = confidence,
+                                     weights =  weights, confidence = confidence, confidence_theta = confidence_theta,
                                      check_thetas = check_thetas, deriv.method.args = deriv.method.args,
                                      deriv.method = deriv.method, method = method, Xvar = Xvar,
                                      check_exposure = check_exposure, check_rr = check_rr, 

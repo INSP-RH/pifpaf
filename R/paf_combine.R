@@ -1,9 +1,9 @@
-#' @title Combine point estimates of PAF from different subpopulations.
+#' @title Combine point estimates of PAF from different subpopulations
 #'   
 #' @description Function for fast-computing an overall  \code{\link{paf}} 
 #'  from subpopulation  \code{\link{paf}}s. 
 #'  
-#'  @details The subpopulations considered should not contain common elements.
+#' @details The subpopulations considered should not contain common elements.
 #'   
 #' @param paf_vector Vector containing \code{\link{paf}}s of each specific 
 #'   subpopulation.
