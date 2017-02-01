@@ -111,7 +111,7 @@ Provides a graphic sensitivity analysis for \code{\link{pif}} by
   }
 }
 \examples{
-
+\dontrun{
 #Example 1
 #------------------------------------------------------------------
 X  <- data.frame(rnorm(25,3))            #Sample
@@ -124,7 +124,7 @@ pif.heatmap(X, theta = theta, rr = rr)
 #ggsave("My Potential Impact Fraction Analysis.pdf")
 
 #Change pif estimation method to kernel
-\dontrun{
+
 pif.heatmap(X, theta = theta, rr = rr, method = "kernel")
 
 #Example 2

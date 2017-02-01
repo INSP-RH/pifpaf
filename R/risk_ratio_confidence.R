@@ -46,7 +46,7 @@
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #'   
 #' @examples 
-#' 
+#' \dontrun{
 #' #Example 1: Exponential Relative Risk
 #' #--------------------------------------------
 #' set.seed(18427)
@@ -61,7 +61,7 @@
 #' #RR>= 1 should only be assumed with absolute mathematical certainty
 #' risk.ratio.confidence(X, thetahat, rr, thetavar, force.min = TRUE)
 #' 
-#' \dontrun{
+#' 
 #' #Example 2: Multivariate Relative Risk
 #' #--------------------------------------------
 #' set.seed(18427)

@@ -62,7 +62,7 @@ Don't change this unless you know what you are doing.}
 Function that calculates approximate confidence intervals to the population attributable fraction
 }
 \examples{
-
+\dontrun{
 #Example 1: Exponential Relative risk
 #--------------------------------------------
 set.seed(46987)
@@ -88,7 +88,7 @@ thetavar  <- matrix(c(0.001, 0.00001, 0.00001, 0.004), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr, 
 cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
-
+}
 }
 \author{
 Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}

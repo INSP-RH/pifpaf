@@ -48,7 +48,7 @@ The \code{force.min} option forces the relative risk \code{rr} to have
   an \code{rr} is based on the paper by Do Le Minh and Y. .s. Sherif
 }
 \examples{
-
+\dontrun{
 #Example 1: Exponential Relative Risk
 #--------------------------------------------
 set.seed(18427)
@@ -63,7 +63,7 @@ risk.ratio.confidence(X, thetahat, rr, thetavar)
 #RR>= 1 should only be assumed with absolute mathematical certainty
 risk.ratio.confidence(X, thetahat, rr, thetavar, force.min = TRUE)
 
-\dontrun{
+
 #Example 2: Multivariate Relative Risk
 #--------------------------------------------
 set.seed(18427)

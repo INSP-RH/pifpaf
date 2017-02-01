@@ -101,7 +101,7 @@
 #'   Fraction as a function of the relative risk's parameter \code{theta}.
 #'   
 #' @examples 
-#' 
+#' \dontrun{
 #' #Example 1
 #' #------------------------------------------------------------------
 #' X  <- data.frame(rnorm(25,3))            #Sample
@@ -114,7 +114,7 @@
 #' #ggsave("My Potential Impact Fraction Analysis.pdf")
 #' 
 #' #Change pif estimation method to kernel
-#' \dontrun{
+#' 
 #' pif.heatmap(X, theta = theta, rr = rr, method = "kernel")
 #' 
 #' #Example 2

@@ -51,7 +51,7 @@
 #' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' #Example 1: Exponential Relative risk
 #' #--------------------------------------------
 #' set.seed(46987)
@@ -77,7 +77,7 @@
 #' rr       <- function(X, theta){exp(theta[1]*X[,1] + theta[2]*X[,2])}
 #' pif.confidence.approximate(Xmean, Xvar, theta, thetavar, rr, 
 #' cft = function(X){cbind(0.5*X[,1],0.4*X[,2])})
-#' 
+#' }
 #' @importFrom stats qnorm
 #' @keywords internal
 #' @export
