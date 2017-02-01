@@ -13,7 +13,7 @@
 <meta name="author" content="Dalia Camacho-García-Formentí &amp; Rodrigo Zepeda-Tello" />
 
 
-<title>Introduction to the pif package: Estimating Potential Impact and Population Attributable Fractions</title>
+<title>Introduction to the pifpaf package: Estimating Potential Impact and Population Attributable Fractions from Cross-Sectional data</title>
 
 
 
@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">Introduction to the pif package: Estimating Potential Impact and Population Attributable Fractions</h1>
+<h1 class="title toc-ignore">Introduction to the pifpaf package: Estimating Potential Impact and Population Attributable Fractions from Cross-Sectional data</h1>
 <h4 class="author"><em>Dalia Camacho-García-Formentí &amp; Rodrigo Zepeda-Tello</em></h4>
 
 
@@ -132,7 +132,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 \end{cases}
 \end{equation}\]</span>
 <!--Although the PIF has been widely used, the selection process for a distribution of the exposure values in the continuous case tends to be unclear. This can lead to a number of issues and miscalculations as has been discussed elsewhere .  -->
-<p>In this document we present the <code>pif</code> package which allows the estimation of both PIF and PAF when using information from cross-sectional data. This document is structured as follows:</p>
+<p>In this document we present the <code>pifpaf</code> package which allows the estimation of both PIF and PAF when using information from cross-sectional data. This document is structured as follows:</p>
 <ol style="list-style-type: decimal">
 <li>We present a <a href="#quick-start">“quick start”</a> guide if you really cannot resist the urge of using the package.</li>
 <li>We briefly discuss the <a href="#methods">methods involved</a> and their implementations.</li>
@@ -326,7 +326,7 @@ thetavar &lt;-<span class="st"> </span><span class="fl">0.002</span>
 
 <span class="co">#Notice that the theoretical minimum risk value is 115 and not 0</span>
 rr       &lt;-<span class="st"> </span>function(X, theta){ theta*(X -<span class="st"> </span><span class="dv">115</span>)^<span class="dv">2</span>/<span class="dv">121</span> +<span class="st"> </span><span class="dv">1</span>} </code></pre></div>
-<p>In this case, only mean and standard deviation information is available for each region. Terrible calamity! However the <code>pif</code> package is prepared for such cases and the <code>&quot;approximate&quot;</code> method is in order. For example, let’s calculate the Population Attributable Fraction for the <code>&quot;Afr E&quot;</code> region:</p>
+<p>In this case, only mean and standard deviation information is available for each region. Terrible calamity! However the <code>pifpaf</code> package is prepared for such cases and the <code>&quot;approximate&quot;</code> method is in order. For example, let’s calculate the Population Attributable Fraction for the <code>&quot;Afr E&quot;</code> region:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Get mean and variance</span>
 afr_mean &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">subset</span>(sbp, Region ==<span class="st"> &quot;Afr E&quot;</span>)$SBP_mean)
 afr_var  &lt;-<span class="st"> </span><span class="kw">subset</span>(sbp, Region ==<span class="st"> &quot;Afr E&quot;</span>)$SBP_sd^<span class="dv">2</span> 
@@ -541,7 +541,7 @@ meanX &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span 
 </div>
 <div id="advanced-examples" class="section level2">
 <h2>Advanced examples</h2>
-<p>This section is concerned with more advanced options of the <code>pif</code> package functions. We first analyze <a href="#deciding-on-the-estimation-method">how to choose an estimation method</a>; secondly, we show <a href="#deciding-on-the-confidence-interval">how to choose a confidence interval</a>; finally we show <a href="#working-with-the-plots">how to work with the plots</a>.</p>
+<p>This section is concerned with more advanced options of the <code>pifpaf</code> package functions. We first analyze <a href="#deciding-on-the-estimation-method">how to choose an estimation method</a>; secondly, we show <a href="#deciding-on-the-confidence-interval">how to choose a confidence interval</a>; finally we show <a href="#working-with-the-plots">how to work with the plots</a>.</p>
 <div id="deciding-on-the-estimation-method" class="section level3">
 <h3>Deciding on the estimation method</h3>
 <p><a href="#methods">The previous section</a> discussed the three estimation methods used in the package. In this section we discuss some advanced options as well as how to choose the method.</p>

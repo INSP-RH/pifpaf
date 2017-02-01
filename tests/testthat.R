@@ -1,4 +1,4 @@
 library(testthat)
-library(pif)
+library(pifpaf)
 
-test_check("pif")
+test_check("pifpaf")
