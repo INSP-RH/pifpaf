@@ -18,6 +18,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
+VignetteBuilder: knitr
 LazyLoad: yes
 Imports:
     ggplot2,
@@ -26,7 +27,5 @@ Imports:
     sfsmisc,
     stats,
     gridExtra,
-    shiny,
-    numDeriv,
-    tools
+    numDeriv
 RoxygenNote: 5.0.1
