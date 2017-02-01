@@ -1,22 +1,22 @@
-pif: **Potential Impact Fraction**
+pifpaf: **Potential Impact Fraction and Population Attributable Fraction for Cross-Sectional Data**
 ================
 
 Installing the package
 ----------------------
 
-The R package `pif` was developed to calculate the Population Attributable Fraction (PAF) and the Population Impact Fraction (PIF) via the empirical, kernel, and approximate methods. Confidence intervals for the PAF and the PIF using different approaches have been programmed. Along with the confidence intervals several sensitivity analysis can be conducted.
+The R package `pifpaf` was developed to calculate the Population Attributable Fraction (PAF) and the Potential Impact Fraction (PIF) via the empirical, kernel, and approximate methods. Confidence intervals for the PAF and the PIF using different approaches have been programmed. Along with the confidence intervals several sensitivity analysis can be conducted.
 
 We suggest installing the package from Github to get the latest version by using the following code:
 
 ``` r
 install.packages("devtools")
-devtools::install_github("INSP-RH/pif")
+devtools::install_github("INSP-RH/pifpaf")
 ```
 
 Recall that, once installed, to use a package in R you need to call the associated `library`:
 
 ``` r
-library(pif)
+library(pifpaf)
 ```
 
 In the following sections we show how the package can be used to estimate both `paf`and `pif`
@@ -131,5 +131,5 @@ pif.confidence(X = X, thetahat = thetahat, rr = rr, cft = cft,
 Additional functions in the package include sensitivity analysis plots `pif.sensitivity`, `paf.sensitivity`, `pif.plot`, `paf.plot`, `pif.heatmap` and `counterfactual.plot` for display of the counterfactual function. An exploration of this functions as well as additional examples of usage and utilization of advanced options can be found in the package's vignettes:
 
 ``` r
-browseVignettes("pif")
+browseVignettes("pifpaf")
 ```
