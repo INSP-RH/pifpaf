@@ -132,7 +132,7 @@ the expected value over \code{X} of the relative risk is injective in
 \code{theta}. 
 
 Additional information on confidence method estimations can be found
-in the package's vignette: \code{browseVignettes("pif")}.
+in the package's vignette: \code{browseVignettes("pifpaf")}.
 }
 \note{
 \code{\link{paf.confidence}} is a wrapper for

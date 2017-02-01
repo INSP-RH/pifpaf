@@ -124,7 +124,7 @@
 #' \code{theta}. 
 #' 
 #' Additional information on confidence method estimations can be found
-#' in the package's vignette: \code{browseVignettes("pif")}.
+#' in the package's vignette: \code{browseVignettes("pifpaf")}.
 #'   
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}

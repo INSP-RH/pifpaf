@@ -100,7 +100,7 @@
 #'   
 #'   The \code{"approximate"} method conducts a Laplace approximation of the \code{pif}.
 #'   Additional information on the methods is dicussed in the package's vignette:
-#'   \code{browseVignettes("pif")}.
+#'   \code{browseVignettes("pifpaf")}.
 #'   
 #'   In practice \code{"approximate"} method should be the last choice. 
 #'   Simulations have shown that \code{"empirical"}'s convergence is faster than
