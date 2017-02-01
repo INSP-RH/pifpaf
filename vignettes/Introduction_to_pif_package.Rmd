@@ -1,5 +1,5 @@
 ---
-title: "Introduction to the pif package: Estimating Potential Impact and Population Attributable Fractions"
+title: "Introduction to the pifpaf package: Estimating Potential Impact and Population Attributable Fractions from Cross-Sectional data"
 author: Dalia Camacho-García-Formentí \& Rodrigo Zepeda-Tello 
 output: 
   rmarkdown::html_vignette:
@@ -7,13 +7,13 @@ output:
 bibliography: Referencias.bib
 csl: american-journal-of-epidemiology.csl
 vignette: >
-  %\VignetteIndexEntry{Introduction to the pif package: Estimating Potential Impact and Population Attributable Fractions}
+  %\VignetteIndexEntry{Introduction to the pifpaf package: Estimating Potential Impact and Population Attributable Fractions from Cross-Sectional data}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
  
 ```{r, echo=FALSE, message= FALSE, warning=FALSE}
-require(pif)
+require(pifpaf)
 require(ggplot2)
 set.seed(3256)
 ```
@@ -46,13 +46,13 @@ We remark that in both discrete and continuous cases, when the counterfactual is
 \textrm{PAF} = 
 \begin{cases}
 \frac{\sum_{i=1}^m P_i \cdot RR(X_i;\theta) - 1}{\sum_{i=1}^m P_i \cdot RR(X_i;\theta)} & \textrm{if } X \textrm{ is categorical}, \\ \\
-\frac{\int_{\mathbb{R}^p} RR(X;\theta)f(X)dX - 1}{\int_{\mathbb{R}^p}} RR(X;\theta)f(X)dX} & \textrm{if } X \textrm{ is continuous}. \\
+\frac{\int_{\mathbb{R}^p} RR(X;\theta)f(X)dX - 1}{\int_{\mathbb{R}^p} RR(X;\theta)f(X)dX} & \textrm{if } X \textrm{ is continuous}. \\
 \end{cases}
 \end{equation}
 
 <!--Although the PIF has been widely used, the selection process for a distribution of the exposure values in the continuous case tends to be unclear. This can lead to a number of issues and miscalculations as has been discussed elsewhere .  -->
 
-In this document we present the ``pif`` package which allows the estimation of both PIF and PAF when using information from cross-sectional data. This document is structured as follows:
+In this document we present the ``pifpaf`` package which allows the estimation of both PIF and PAF when using information from cross-sectional data. This document is structured as follows:
 
 1. We present a ["quick start"](#quick-start) guide if you really cannot resist the urge of using the package.
 2. We briefly discuss the [methods involved](#methods) and their implementations.
@@ -316,7 +316,7 @@ thetavar <- 0.002
 rr       <- function(X, theta){ theta*(X - 115)^2/121 + 1} 
 ```
 
-In this case, only mean and standard deviation information is available for each region. Terrible calamity! However the ``pif`` package is prepared for such cases and the ``"approximate"`` method is in order. For example, let's calculate the Population Attributable Fraction for the ``"Afr E"`` region:
+In this case, only mean and standard deviation information is available for each region. Terrible calamity! However the ``pifpaf`` package is prepared for such cases and the ``"approximate"`` method is in order. For example, let's calculate the Population Attributable Fraction for the ``"Afr E"`` region:
 
 ```{r}
 #Get mean and variance
@@ -526,7 +526,7 @@ For the inverse and one to one confidence intervals the option `force.min` is av
 
 ## Advanced examples
 
-This section is concerned with more advanced options of the `pif` package functions. We first analyze [how to choose an estimation method](#deciding-on-the-estimation-method); secondly, we show [how to choose a confidence interval](#deciding-on-the-confidence-interval); finally we show [how to work with the plots](#working-with-the-plots). 
+This section is concerned with more advanced options of the `pifpaf` package functions. We first analyze [how to choose an estimation method](#deciding-on-the-estimation-method); secondly, we show [how to choose a confidence interval](#deciding-on-the-confidence-interval); finally we show [how to work with the plots](#working-with-the-plots). 
 
 ### Deciding on the estimation method
 
@@ -785,7 +785,7 @@ pif.heatmap(X = X, thetahat = thetahat, rr = rr, mina = mina,
             check_integrals = FALSE)
 ```
 
-Not only linear counterfactuals can be shown in the heatmap. You can define your own counterfactual! For example $sin(aX + b)$:
+Not only affine counterfactuals can be shown in the heatmap. You can define your own counterfactual! For example $sin(aX + b)$:
 
 ```{r fig.width=7, fig.height=4}
 
