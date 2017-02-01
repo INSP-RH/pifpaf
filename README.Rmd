@@ -1,5 +1,5 @@
 ---
-title: "pifpaf: **Potential Impact Fraction and Population Attributable Fraction for Cross-Sectional data**"
+title: "pifpaf: **Potential Impact Fraction and Population Attributable Fraction for Cross-Sectional Data**"
 output: github_document
 ---
 
