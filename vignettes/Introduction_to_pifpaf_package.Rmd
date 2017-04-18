@@ -534,11 +534,13 @@ This section is concerned with more advanced options of the `pifpaf` package fun
 
 #### Method choosing 
 
-|Method |Exposure|Relative Risk |Other|
+|Method |Exposure|Relative Risk |$\theta$ Estimator|
 |------------|:------------------------:|:-------------------------------------:|:----------------------------:|
-|Kernel      |Continuous              |Continuous                           |One dimensional   |
-|Empirical   |Continuous & Discrete   |Continuous & Discrete                |Convex, Concave, or Lipschitz|
-|Approximate |Continuous              |Continuous or Discrete (without CI)  |Twice differentiable  & Convex, Concave, or Lipschitz |
+|Kernel      |Continuous              |Continuous (One dimensional in `pifpaf` package)|Asymptotically consistent|
+|Empirical   |Continuous or Discrete  |Convex, Concave, or Lipschitz|Asymptotically consistent|
+|Empirical   |Continuous or Discrete  |Any|Fisher consistent|
+|Approximate |Only mean and variance  |Twice differentiable & Convex, Concave, or Lipschitz |Asymptotically consistent|
+|Approximate |Only mean and variance  |Twice differentiable |Fisher consistent|
 
 
 #### Kernel
