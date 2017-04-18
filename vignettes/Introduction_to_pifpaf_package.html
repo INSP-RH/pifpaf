@@ -398,7 +398,7 @@ A broader definition of the Potential Impact Fraction (which includes both cases
 <p>where <span class="math inline">\(\textrm{cft}(X)\)</span> denotes the counterfactual transform of the exposure <span class="math inline">\(X\)</span>, <span class="math inline">\(RR\)</span> the relative risk function with parameter <span class="math inline">\(\theta\)</span>. Note that the PAF is a special case of the <span class="math inline">\(\textrm{PIF}\)</span> when the counterfactual scenario corresponds to the one of the theoretical minimum risk exposure (<span class="math inline">\(RR=1\)</span>). We have developed three methods of estimation: <a href="#the-empirical-potential-impact-fraction">empirical</a>, <a href="#kernel-based-potential-impact-fraction">kernel</a> and <a href="#approximate-empirical-potential-impact-fraction">approximate</a>.</p>
 <div id="the-empirical-potential-impact-fraction" class="section level3">
 <h3>The Empirical Potential Impact Fraction</h3>
-<p>Let the Relative Risk function <span class="math inline">\(RR:\mathcal{X} \times \Theta \to I \subset (0,\infty)\)</span> be either convex, concave or Lipschitz continuous as a function of <span class="math inline">\(\theta\)</span>. For <span class="math inline">\(X_1, X_2, \dots, X_n\)</span> a random sample of <span class="math inline">\(X\in\mathcal{X}\subset\mathbb{R}^p\)</span> with normalized sampling weights <span class="math inline">\(w_1, w_2, \dots, w_n\)</span> and <span class="math inline">\(\hat{\theta} \in \Theta \subset \mathbb{R}^q\)</span> a consistent estimator of <span class="math inline">\(\theta\)</span> with <span class="math inline">\(\Theta, \mathcal{X}, I\)</span> compact sets. We define the functions:</p>
+<p>Assume a Relative Risk <span class="math inline">\(RR:\mathcal{X} \times \Theta \to I \subseteq (0,\infty)\)</span> for exposure <span class="math inline">\(X\)</span> and with parameter <span class="math inline">\(\theta\)</span>. Let <span class="math inline">\(X_1, X_2, \dots, X_n\)</span> be a random sample of exposure and covariates <span class="math inline">\(X\in\mathcal{X}\subset\mathbb{R}^p\)</span> with normalized sampling weights <span class="math inline">\(w_1, w_2, \dots, w_n\)</span> and <span class="math inline">\(\hat{\theta} \in \Theta \subseteq \mathbb{R}^q\)</span> estimator of <span class="math inline">\(\theta\)</span> with <span class="math inline">\(\Theta, \mathcal{X}\)</span> compact sets. Define the functions:</p>
 <span class="math display">\[\begin{equation}
 \hat{\mu}_n^{\textrm{obs}}(\theta) = \sum\limits_{i=1}^{n}  w_i RR\big( X_i; \theta \big), \quad \textrm{and} \quad \hat{\mu}_n^{\textrm{cft}}(\theta) = \sum\limits_{i=1}^{n}  w_i RR\big( \textrm{cft}(X_i); \theta \big),
 \end{equation}\]</span>
@@ -406,7 +406,7 @@ A broader definition of the Potential Impact Fraction (which includes both cases
 <span class="math display">\[\begin{equation}\label{pafestimate}
 \widehat{\textrm{PIF}} = 1 - \dfrac{\hat{\mu}_n^{\textrm{cft}}(\hat{\theta})}{\hat{\mu}_n^{\textrm{obs}}(\hat{\theta})}, \qquad \textrm{and} \qquad \widehat{\textrm{PAF}} = 1 - \dfrac{1}{\hat{\mu}_n^{\textrm{obs}}(\hat{\theta})} 
 \end{equation}\]</span>
-<p>are consistent estimators of the Potential Impact Fraction (<span class="math inline">\(\textrm{PIF}\)</span>) and the Population Attributable Fraction (<span class="math inline">\(\textrm{PAF}\)</span>) respectively.</p>
+<p>are Fisher-consistent estimators of the PIF and the PAF if <span class="math inline">\(\hat{\theta}\)</span> is Fisher-consistent. Furthermore if the Relative Risk <span class="math inline">\(RR\)</span> is either convex, concave or Lipschitz continuous as a function of <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\hat{\theta}\)</span> is (asymptotically) consistent the estimators have asymptotic consistency.</p>
 </div>
 <div id="kernel-based-potential-impact-fraction" class="section level3">
 <h3>Kernel Based Potential Impact Fraction</h3>
@@ -559,27 +559,39 @@ meanX &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span 
 <th>Method</th>
 <th align="center">Exposure</th>
 <th align="center">Relative Risk</th>
-<th align="center">Other</th>
+<th align="center"><span class="math inline">\(\theta\)</span> Estimator</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Kernel</td>
-<td align="center">Continuous</td>
-<td align="center">Continuous</td>
-<td align="center">One dimensional</td>
+<td>Kernel    </td>
+<td align="center">Continuous            </td>
+<td align="center">Continuous (One dimensional in <code>pifpaf</code> package)</td>
+<td align="center">Asymptotically consistent</td>
 </tr>
 <tr class="even">
 <td>Empirical</td>
-<td align="center">Continuous &amp; Discrete</td>
-<td align="center">Continuous &amp; Discrete</td>
+<td align="center">Continuous or Discrete</td>
 <td align="center">Convex, Concave, or Lipschitz</td>
+<td align="center">Asymptotically consistent</td>
+</tr>
+<tr class="odd">
+<td>Empirical</td>
+<td align="center">Continuous or Discrete</td>
+<td align="center">Any</td>
+<td align="center">Fisher consistent</td>
+</tr>
+<tr class="even">
+<td>Approximate</td>
+<td align="center">Only mean and variance</td>
+<td align="center">Twice differentiable &amp; Convex, Concave, or Lipschitz</td>
+<td align="center">Asymptotically consistent</td>
 </tr>
 <tr class="odd">
 <td>Approximate</td>
-<td align="center">Continuous</td>
-<td align="center">Continuous or Discrete (without CI)</td>
-<td align="center">Twice differentiable &amp; Convex, Concave, or Lipschitz</td>
+<td align="center">Only mean and variance</td>
+<td align="center">Twice differentiable</td>
+<td align="center">Fisher consistent</td>
 </tr>
 </tbody>
 </table>
