@@ -413,8 +413,7 @@ where $\textrm{cft}(X)$ denotes the counterfactual transform of the exposure $X$
 
 
 ### The Empirical Potential Impact Fraction
-
-Let the Relative Risk function $RR:\mathcal{X} \times \Theta \to I \subset (0,\infty)$ be either convex, concave or Lipschitz continuous as a function of $\theta$. For $X_1, X_2, \dots, X_n$ a random sample of $X\in\mathcal{X}\subset\mathbb{R}^p$ with normalized sampling weights  $w_1, w_2, \dots, w_n$ and $\hat{\theta} \in \Theta \subset \mathbb{R}^q$ a consistent estimator of  $\theta$ with $\Theta, \mathcal{X}, I$ compact sets. We define the functions:
+Assume a Relative Risk $RR:\mathcal{X} \times \Theta \to I \subseteq (0,\infty)$ for exposure $X$ and with parameter $\theta$. Let $X_1, X_2, \dots, X_n$ be a random sample of exposure and covariates  $X\in\mathcal{X}\subset\mathbb{R}^p$ with normalized sampling weights  $w_1, w_2, \dots, w_n$ and $\hat{\theta} \in \Theta \subseteq \mathbb{R}^q$ estimator of  $\theta$ with $\Theta, \mathcal{X}$ compact sets. Define the functions:
 
 \begin{equation}
 \hat{\mu}_n^{\textrm{obs}}(\theta) = \sum\limits_{i=1}^{n}  w_i RR\big( X_i; \theta \big), \quad \textrm{and} \quad \hat{\mu}_n^{\textrm{cft}}(\theta) = \sum\limits_{i=1}^{n}  w_i RR\big( \textrm{cft}(X_i); \theta \big),
@@ -424,8 +423,7 @@ then:
 \begin{equation}\label{pafestimate}
 \widehat{\textrm{PIF}} = 1 - \dfrac{\hat{\mu}_n^{\textrm{cft}}(\hat{\theta})}{\hat{\mu}_n^{\textrm{obs}}(\hat{\theta})}, \qquad \textrm{and} \qquad \widehat{\textrm{PAF}} = 1 - \dfrac{1}{\hat{\mu}_n^{\textrm{obs}}(\hat{\theta})} 
 \end{equation}
-are consistent estimators of the Potential Impact Fraction ($\textrm{PIF}$) and the Population Attributable Fraction ($\textrm{PAF}$) respectively. 
-
+are Fisher-consistent estimators of the PIF and the PAF if $\hat{\theta}$ is Fisher-consistent. Furthermore if the Relative Risk $RR$ is either convex, concave or Lipschitz continuous as a function of $\theta$ and $\hat{\theta}$ is (asymptotically) consistent the estimators have asymptotic consistency. 
 
 ### Kernel Based Potential Impact Fraction
 
