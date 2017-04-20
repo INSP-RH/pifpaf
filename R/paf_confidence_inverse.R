@@ -41,8 +41,8 @@
 #' be used under careful consideration. The confidence interval to acheive such an \code{rr} is based on the paper
 #' by Do Le Minh and Y. .s. Sherif                  
 #' 
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #' 
 #' @examples 
 #'  \dontrun{

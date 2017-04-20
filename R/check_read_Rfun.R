@@ -5,6 +5,9 @@
 #' @param file  Contains file information from "fileInput"
 #' @param fname Name of the function as a string
 #' 
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#' 
 #' @import tools
 #' @export 
 check.read.Rfun <- function(file, fname){

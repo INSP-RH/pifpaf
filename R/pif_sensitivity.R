@@ -74,8 +74,8 @@
 #'   the \code{\link{pif}} function ignore the inputed counterfactual and set it to the
 #'   theoretical minimum risk value of \code{1}.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a
 #'   sensitivity analysis of \code{\link{pif}}.

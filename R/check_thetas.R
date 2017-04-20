@@ -16,8 +16,8 @@
 #'   
 #' @return bool     Boolean variable indicating if hypothesis are matched.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @seealso \code{\link{check.confidence}}, \code{\link{check.xvar}}, 
 #'   \code{\link{check.cft}}, \code{\link{check.rr}}, 

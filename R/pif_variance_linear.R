@@ -37,8 +37,8 @@
 #'@importFrom MASS mvrnorm
 #'@importFrom stats weighted.mean
 #'  
-#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#'@author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#'@author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'  
 #'@seealso \code{\link{pif.variance.approximate.linear}} for \code{\link{pif}} 
 #'  variance and \code{\link{pif.confidence}} for confidence intervals of

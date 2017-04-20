@@ -68,9 +68,9 @@ pif.conditional.variance.linear(X, thetahat, rr, cft)
 
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
 \code{pif.variance.linear} for \code{pif} variance without

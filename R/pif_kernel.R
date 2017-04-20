@@ -48,8 +48,8 @@
 #'  
 #'@return pif      Estimate of Potential Impact Fraction
 #'  
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'  
 #'@note In practice \code{\link{pif.empirical}} should be prefered as
 #'  convergence is faster than \code{\link{pif.kernel}} for most functions. In

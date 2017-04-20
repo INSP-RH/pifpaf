@@ -64,8 +64,8 @@
 #'   
 #' @param colors        String vector with colors for the plot.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @details \code{paf.sensitivity} conducts a sensitivity analysis of the 
 #'   \code{\link{paf}} estimate by removing \code{mremove} elements \code{nsim}

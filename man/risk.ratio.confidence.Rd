@@ -143,9 +143,9 @@ risk.ratio.confidence(data.frame(X), thetahat, rr, thetavar)
 }
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \references{
 Sherif, Y. .s. (1989). The lower confidence limit for the mean of

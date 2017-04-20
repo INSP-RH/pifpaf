@@ -49,8 +49,8 @@
 #'  
 #'@param is_paf Force evaluation as paf
 #'  
-#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'  
 #'@seealso \code{\link{pif.variance.linear}} for \code{\link{pif}} variance and 
 #'  \code{\link{pif.confidence}} for confidence intervals of \code{\link{pif}}

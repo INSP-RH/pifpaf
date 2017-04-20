@@ -46,8 +46,8 @@
 #'  
 #'@param is_paf Boolean forcing evaluation of \code{paf}
 #'  
-#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'  
 #' @examples 
 #' 

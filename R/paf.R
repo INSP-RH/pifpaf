@@ -64,8 +64,8 @@
 #'   
 #' @return paf      Estimate of Population Attributable Fraction.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @note \code{"approximate"} method should be the last choice. In practice 
 #'   \code{"empirical"} should be preferred as convergence is faster in 

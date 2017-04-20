@@ -35,8 +35,8 @@
 #'  
 #' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}.
 #'  
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'  
 #'@note The empirical method converges for relative risk \code{rr} functions 
 #'  that are Lipschitz, convex or concave on \code{thetahat}. For stranger 

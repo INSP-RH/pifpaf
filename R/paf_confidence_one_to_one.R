@@ -49,8 +49,9 @@
 #' @param deriv.method      \code{method} for \code{\link[numDeriv]{hessian}}. 
 #'   Don't change this unless you know what you are doing.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#'
 #'   
 #' @examples 
 #' 

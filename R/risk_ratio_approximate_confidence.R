@@ -51,8 +51,8 @@
 #'@references Sherif, Y. .s. (1989). The lower confidence limit for the mean of 
 #'  positive random variables. Microelectronics Reliability, 29(2), 151-152.
 #'  
-#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'  
 #' @examples 
 #' \dontrun{

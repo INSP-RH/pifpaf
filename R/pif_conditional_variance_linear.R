@@ -26,8 +26,8 @@
 #'  
 #'@param is_paf     Force evaluation of \code{\link{paf}}
 #'  
-#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'  
 #'@seealso \code{pif.variance.linear} for \code{pif} variance without
 #'  conditioning on \code{theta}  and \code{pif.variance.loglinear} for variance

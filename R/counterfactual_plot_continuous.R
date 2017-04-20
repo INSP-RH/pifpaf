@@ -51,9 +51,9 @@
 #' @return cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
 #'   from actual to counterfactual distribution
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
-#'   
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#'    
 #' @import ggplot2
 #' @importFrom stats density approx
 #'   

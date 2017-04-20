@@ -73,8 +73,8 @@
 #'   
 #' @return pif      Estimate of Potential Impact Fraction.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @note For more information on kernels see \code{\link[stats]{density}}.
 #'   

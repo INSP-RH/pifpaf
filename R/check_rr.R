@@ -16,8 +16,8 @@
 #'   
 #' @return boolean Indicating \code{TRUE} if relative risk \code{rr} is as desired.
 #'   
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @seealso \code{\link{check.confidence}}, \code{\link{check.thetas}}, 
 #'   \code{\link{check.cft}}, \code{\link{check.xvar}}, 

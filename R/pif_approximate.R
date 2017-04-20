@@ -40,8 +40,9 @@
 #'  
 #'@param is_paf    Boolean forcing evaluation of \code{\link{paf}}.
 #'  
-#'@author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#'@author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#'@author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#'@author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#'  
 #'  
 #'@note \code{pif.approximate} method should be the last choice for the case
 #'  when no information on the exposure \code{X} (except for mean and standard

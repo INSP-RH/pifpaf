@@ -90,9 +90,9 @@ cft = function(X){cbind(0.5*X[,1],0.4*X[,2])}, check_integrals = FALSE)
 }
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
 \code{\link{pif.variance.linear}} for \code{\link{pif}} variance and 

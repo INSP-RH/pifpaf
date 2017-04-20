@@ -79,9 +79,9 @@ pif.variance.linear(X, thetahat, rr, thetavar, cft, nsim = 100)
 }
 }
 \author{
-Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
-Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \seealso{
 \code{\link{pif.variance.approximate.linear}} for \code{\link{pif}} 

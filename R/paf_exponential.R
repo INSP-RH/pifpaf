@@ -64,8 +64,8 @@
 #' @return paf      Estimate of Population Attributable Fraction with 
 #'   exponential relative risk.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @note \code{\link{paf.exponential}} is a wrapper for \code{\link{paf}} with 
 #'   exponential relative risk.

@@ -126,8 +126,9 @@
 #' Additional information on confidence method estimations can be found
 #' in the package's vignette: \code{browseVignettes("pifpaf")}.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#'  
 #' 
 #' @seealso  \code{\link{pif.confidence}} for confidence interval estimation of
 #'   \code{\link{pif}}, and  \code{\link{paf}} for only point estimates.

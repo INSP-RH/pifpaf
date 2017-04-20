@@ -84,8 +84,8 @@
 #' @return paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of 
 #'   Population Attributable Fraction as function of \code{theta}.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @import ggplot2
 #'   

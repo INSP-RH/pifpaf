@@ -4,6 +4,9 @@
 #' 
 #' @param file  Contains file information from "fileInput"
 #' 
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#' 
 #' @import tools
 #' @export 
 check.read.csv <- function(file){

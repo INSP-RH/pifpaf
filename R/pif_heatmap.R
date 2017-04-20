@@ -96,9 +96,9 @@
 #' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a heatmap
 #'   with sensitivity analysis of the counterfactual.
 #'   
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@@gmail.com}
-#' @author Dalia Camacho-García-Formentí \email{daliaf172@@gmail.com}
-#'   
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#'  
 #' @seealso 
 #' 
 #' See \code{\link{pif}} for Potential Impact Fraction estimation,

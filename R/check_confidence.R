@@ -14,8 +14,8 @@
 #' confidence <- 95
 #' check.confidence(confidence)
 #' 
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @seealso \code{\link{check.thetas}}, \code{\link{check.xvar}}, 
 #'   \code{\link{check.cft}}, \code{\link{check.rr}},
