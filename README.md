@@ -128,7 +128,7 @@ pif.confidence(X = X, thetahat = thetahat, rr = rr, cft = cft,
     ## Estimated_Variance 
     ##        0.002492649
 
-Additional functions in the package include sensitivity analysis plots `pif.sensitivity`, `paf.sensitivity`, `pif.plot`, `paf.plot`, `pif.heatmap` and `counterfactual.plot` for display of the counterfactual function. An exploration of this functions as well as additional examples of usage and utilization of advanced options can be found in the [package's vignettes](vignettes/Introduction_to_pifpaf_package.html):
+Additional functions in the package include sensitivity analysis plots `pif.sensitivity`, `paf.sensitivity`, `pif.plot`, `paf.plot`, `pif.heatmap` and `counterfactual.plot` for display of the counterfactual function. An exploration of this functions as well as additional examples of usage and utilization of advanced options can be found in the [package's vignettes](https://insp-rh.github.io/pifpaf/vignettes/Introduction_to_pifpaf_package.html):
 
 ``` r
 browseVignettes("pif")
