@@ -1,16 +1,16 @@
 ---
-title: "pifpaf: **Potential Impact Fraction and Population Attributable Fraction for Cross-Sectional Data**"
+title: "pifpaf: **Potential Impact Fraction and Population Attributable Fraction Estimation**"
 output: github_document
 ---
 
 ## Installing the package
 
-The R package ``pifpaf`` was developed to calculate the Population Attributable Fraction (PAF) and the Potential Impact Fraction (PIF) via the empirical, kernel, and approximate methods. Confidence intervals for the PAF and the PIF using different approaches have been programmed. Along with the confidence intervals several sensitivity analysis can be conducted. 
+The R package ``pifpaf`` was developed to calculate the Population Attributable Fraction (PAF) and the Population Impact Fraction (PIF) via the empirical, kernel, and approximate methods. Confidence intervals for the PAF and the PIF using different approaches have been programmed. Along with the confidence intervals several sensitivity analysis can be conducted. 
 
 We suggest installing the package from Github to get the latest version by using the following code:
 
 ```{r, eval = FALSE}
-install.packages("devtools")
+if(!require(devtools)){install.packages("devtools")}
 devtools::install_github("INSP-RH/pifpaf")
 ```
 
@@ -24,7 +24,7 @@ In the following sections we show how the package can be used to estimate both `
 
 ##Potential Attributable Fraction (PAF)
 
-Let X denote exposure values to something. And define the exponential relative risk function RR(X|ø)=exp(ø X), where the parameter ø is estimated to be 0.11. 
+Let X denote exposure values to something. And define the exponential relative risk function RR(X;ø)=exp(ø X), where the parameter ø is estimated to be 0.11. 
 
 ```{r}
 rr       <- function(x, theta){exp(theta*x)}
@@ -109,8 +109,8 @@ pif.confidence(X = X, thetahat = thetahat, rr = rr, cft = cft,
                confidence_method = "bootstrap")
 ```
 
-Additional functions in the package include sensitivity analysis plots ``pif.sensitivity``, ``paf.sensitivity``, ``pif.plot``, ``paf.plot``, ``pif.heatmap`` and ``counterfactual.plot`` for display of the counterfactual function. An exploration of this functions as well as additional examples of usage and utilization of advanced options can be found in the package's vignettes:
+Additional functions in the package include sensitivity analysis plots ``pif.sensitivity``, ``paf.sensitivity``, ``pif.plot``, ``paf.plot``, ``pif.heatmap`` and ``counterfactual.plot`` for display of the counterfactual function. An exploration of this functions as well as additional examples of usage and utilization of advanced options can be found in the [package's vignettes]("vignettes/Introduction_to_pifpaf_package.html"):
 
 ```{r, eval = FALSE}
-browseVignettes("pifpaf")
+browseVignettes("pif")
 ```
