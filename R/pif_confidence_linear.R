@@ -46,7 +46,7 @@
 #' \dontrun{
 #' #Example with risk given by HR (PAF)
 #' set.seed(18427)
-#' X <- rnorm(100,3,.5)
+#' X <- as.data.frame(rnorm(100,3,.5))
 #' thetahat <- 0.12
 #' thetavar <- 0.1
 #' pif.confidence.linear(X, thetahat, function(X, theta){exp(theta*X)}, 
@@ -61,7 +61,7 @@
 #' set.seed(18427)
 #' X1 <- rnorm(100, 3,.5)
 #' X2 <- rnorm(100,3,.5)
-#' X  <- as.matrix(cbind(X1,X2))
+#' X  <- as.data.frame(as.matrix(cbind(X1,X2)))
 #' thetahat <- c(0.1, 0.03)
 #' thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 #' rr       <- function(X, theta){
@@ -81,7 +81,7 @@ pif.confidence.linear <- function(X, thetahat, rr, thetavar,
                                   cft = NA,
                                   weights =  rep(1/nrow(as.matrix(X)),nrow(as.matrix(X))), 
                                   confidence = 95, nsim = 1000, check_thetas = TRUE,
-                                  check_exposure = TRUE,
+                                  check_exposure = TRUE, check_cft=TRUE,
                                   check_rr = TRUE, check_integrals = TRUE,
                                   is_paf = FALSE){
   
@@ -103,26 +103,16 @@ pif.confidence.linear <- function(X, thetahat, rr, thetavar,
   
   #Get the point estimate and variance
   .ci["Point_Estimate"]     <- pif(X = X, thetahat = thetahat, rr = rr, cft = cft, 
-                                   weights = weights, is_paf = is_paf,
-                                   check_exposure = check_exposure, check_rr = check_rr,
-                                   check_integrals = check_integrals)
+                                   method="empirical", weights = weights, Xvar = NA,
+                                   check_exposure = check_exposure, check_integrals = check_integrals,
+                                   check_rr = check_rr, is_paf = is_paf)
   .ci["Estimated_Variance"] <- pif.variance.linear(X = X, thetahat = thetahat, rr = rr, 
                                                    thetavar = .thetavar, cft = cft, 
-                                                   weights = weights, check_thetas = FALSE, 
+                                                   weights = weights, check_thetas = FALSE,
+                                                   check_cft = check_cft, check_exposure = FALSE,
                                                    nsim = nsim, is_paf = is_paf)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
   .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])
-  
-  # #Check ci < 1
-  # if (.ci["Upper_CI"] >= 1){
-  #   
-  #   #Transform the problem to 0 <= 1 - pif to apply bounded CIs
-  #   .transf_ci             <- 1 - .ci
-  #   names(.transf_ci)      <- c("Upper_CI", "Point_Estimate", "Lower_CI", "Estimated_Variance")
-  #   .transf_ci["Lower_CI"] <- (.transf_ci["Point_Estimate"]^2)/.transf_ci["Upper_CI"]           #Bound 1 - .ci below 
-  #   .ci["Upper_CI"]        <- 1 - .transf_ci["Lower_CI"]                                        #Transform back
-  #   
-  # }
   
   .ci["Upper_CI"] <- min(.ci["Upper_CI"], 1)
   

@@ -6,9 +6,10 @@
 #' from cross-sectional data. It creates point-estimates (\code{\link{pif}}, 
 #' \code{\link{paf}}), confidence intervals (\code{\link{pif.confidence}}, 
 #' \code{\link{paf.confidence}}),and estimates of variance. 
-#' In addition it generates plots for conducting sensitivity analysis. 
-#' This package was developed under funding by Bloomberg 
-#' Philanthropies. Please see the package's vignette for more information:
+#' In addition it generates plots for conducting sensitivity analysis (\code{\link{pif.sensitivity}}, 
+#' \code{\link{pif.heatmap}}, \code{\link{pif.plot}}). 
+#' This package was developed by the National Institute of Public Health of Mexico
+#' under funding by Bloomberg Philanthropies. Please see the package's vignette for more information:
 #' \code{browseVignettes("pifpaf")}.
 #' 
 #'

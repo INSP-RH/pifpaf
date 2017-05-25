@@ -138,12 +138,12 @@ pif.kernel <- function(X, thetahat, rr,
   #Check that the number of points in integer > 0
   .n <- max(2, ceiling(n))
   if(.n < 250){
-    warning("I suggest you should include more points in 'n' for better integration")
+    warning("For better integration include more points in 'n'.")
   }
   
   #Check that X has only one column
   if (ncol(.X) > 1){
-    stop("X has to be one-dimensional. For multidimensional estimation use empirical method")
+    stop("X has to be one-dimensional. For multidimensional estimation use empirical method.")
   }
   
   #Get the kernel density of X
@@ -155,14 +155,14 @@ pif.kernel <- function(X, thetahat, rr,
   densX <- as.matrix(.fX$x)
   densY <- as.vector(.fX$y)
   
-  #Integrate the expected values of the densities, Need to check
-  #that cft is defined for where the counterfactual happened
+  #Integrate the expected values of the densities.
+  #Check that cft is well defined 
   .prod1   <- as.matrix(rr(densX, thetahat))
   .naprod1 <- which(is.na(.prod1))
   
   #Eliminate potential na's
   if(length(.naprod1) > 0){
-    warning("Under this kernel density some values of rr are NA")
+    warning("Under this kernel density some Relative Risk values are NA")
     densX  <- densX[-.naprod1]
     densY  <- densY[-.naprod1]
     .prod1 <- .prod1[-.naprod1]
@@ -186,7 +186,7 @@ pif.kernel <- function(X, thetahat, rr,
     
     #Eliminate potential na's
     if(length(.naprod2) > 0){
-      warning("Under this kernel density some values of cft are NA")
+      warning("Under this kernel density some counterfactual values are NA")
       densX  <- densX[-.naprod2]
       densY  <- densY[-.naprod2]
       .prod2 <- .prod1[-.naprod2]

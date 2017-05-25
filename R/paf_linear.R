@@ -1,7 +1,7 @@
 #' @title Population Attributable Fraction with Linear Relative Risk Function
 #'   
 #' @description Function that calculates the Population Attributable Fraction
-#'   \code{\link{paf}} with linear relative risk function \code{rr} given by 
+#'   \code{\link{paf}} with linear Relative Risk function \code{rr} given by 
 #'   \deqn{
 #'   rr(X; \theta) = \theta_1 + \sum\limits_{i=1}^{n} \theta_{i+1} X_i.
 #'   }{
@@ -12,10 +12,10 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+#' @param thetahat  Asymptotically consistent or Fisher consistent estimator (\code{vector}) of \code{theta} for the Relative 
 #'   Risk function \code{rr}.
 #'   
-#'   **Optional**
+#'   \strong{**Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -65,7 +65,7 @@
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
-#' @note \code{"approximate"} method should be the last choice. In practice 
+#' @note The \code{"approximate"} method should be the last choice. In practice 
 #'   \code{"empirical"} should be preferred as convergence is faster than 
 #'   \code{"kernel"} for most functions. In addition, the scope of
 #'   \code{"kernel"} is limited as it does not work with multivariate exposure
@@ -163,7 +163,7 @@ paf.linear <- function(X, thetahat,
   
   #Estimate Population attributable fraction
   .paf <- paf(X = X, thetahat = thetahat,   rr = .rr,         
-              weights = weights, method  = method,
+              method  = method, weights = weights, 
               Xvar    = Xvar, deriv.method.args = deriv.method.args, 
               deriv.method = deriv.method, adjust = adjust, n = n,
               ktype  = ktype, bw     = bw,

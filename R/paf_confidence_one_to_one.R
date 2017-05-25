@@ -104,7 +104,12 @@ paf.confidence.one2one <- function(X, thetahat, rr, thetalow, thetaup,
                                    method = c("empirical","approximate"), Xvar = var(X),
                                    check_exposure = TRUE, check_rr = TRUE, 
                                    check_integrals = TRUE){
+  # Check theta values are correctly defined
   
+  if(check_thetas){
+  check.thetas(thetavar = NA, thetahat = thetahat, thetalow = thetalow, thetaup = thetaup,
+               method = "one2one")
+  }
   #Get method from vector
   .method <- as.vector(method)[1]
   
@@ -115,18 +120,21 @@ paf.confidence.one2one <- function(X, thetahat, rr, thetalow, thetaup,
   .confidence <- confidence/confidence_theta
     
   #Calculate the PIF with confidence intervals
-  .upper <- paf.confidence.inverse(X, thetahat = thetaup,  thetavar = .thetavar, rr = rr,
-                                   method = .method, weights = weights, confidence = .confidence,
-                                   nsim = 1, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
+  .upper <- paf.confidence.inverse(X, thetahat = thetaup, rr = rr, thetavar = .thetavar, 
+                                    weights = weights, method = .method,  nsim = 1,
+                                   confidence = .confidence,
+                                   deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                                    force.min = FALSE, check_thetas = check_thetas, Xvar = Xvar)
-  .lower <- paf.confidence.inverse(X, thetahat = thetalow,  thetavar = .thetavar, rr = rr,
-                                   method = .method, weights = weights, confidence = .confidence,
-                                   nsim = 1, deriv.method.args = deriv.method.args, deriv.method = deriv.method,
+  .lower <- paf.confidence.inverse(X, thetahat = thetalow, rr = rr, thetavar = .thetavar, 
+                                   weights = weights,  method = .method, nsim = 1,
+                                   confidence = .confidence,
+                                    deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                                    force.min = FALSE, check_thetas = FALSE, Xvar = Xvar)
-  .point <- paf(X, thetahat, rr = rr, weights = weights, method = .method, 
+  .point <- paf(X, thetahat, rr = rr,  method = .method,  weights = weights,
+                Xvar = Xvar,
+                deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                 check_exposure = check_exposure, check_rr = check_rr, 
-                check_integrals = check_integrals, Xvar = Xvar, 
-                deriv.method.args = deriv.method.args, deriv.method = deriv.method)
+                check_integrals = check_integrals)
   
   
   #Rename

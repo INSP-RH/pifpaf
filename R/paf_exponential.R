@@ -14,10 +14,10 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+#' @param thetahat  Asymptotically consistent or Fisher consistent estimator (\code{vector}) of \code{theta} for the Relative 
 #'   Risk function \code{rr}.
 #'   
-#'   **Optional**
+#'   \strong{**Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -150,7 +150,7 @@ paf.exponential <- function(X, thetahat,
   
   #Estimate Population attributable fraction
   .paf <- paf(X = .X, thetahat = thetahat,   rr = .rr,         
-              weights = weights, method  = method,
+              method  = method, weights = weights,
               Xvar    = Xvar, deriv.method.args = deriv.method.args, 
               deriv.method = deriv.method, adjust = adjust, n = n,
               ktype  = ktype, bw     = bw,

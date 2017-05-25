@@ -107,15 +107,17 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
   
   #Calculate the conditional expected value as a function of theta
   .logpifexp <- function(.theta){
-    .pif <- pif(X = X, thetahat = .theta, rr = rr, cft = cft, weights = weights,
-                method = "empirical", check_exposure = FALSE, check_rr = FALSE,
+    .pif <- pif(X = X, thetahat = .theta, rr = rr, cft = cft, method = "empirical", 
+                weights = weights, Xvar=NA,
+                check_exposure = FALSE, check_rr = FALSE,
                 check_integrals = FALSE, is_paf = is_paf)
     return(1 - .pif)
   }
   
   #Get inverse for multiplying
-  .inverse   <- 1 - pif(X = X, thetahat = thetahat, rr = rr, cft = cft, weights = weights,
-                        method = "empirical", check_exposure = FALSE, check_rr = FALSE,
+  .inverse   <- 1 - pif(X = X, thetahat = thetahat, rr = rr, cft = cft, method = "empirical",
+                        weights = weights, Xvar=NA,
+                         check_exposure = FALSE, check_rr = FALSE,
                         check_integrals = FALSE, is_paf = is_paf)
   
   
@@ -186,7 +188,7 @@ pif.confidence.loglinear <- function(X, thetahat, thetavar, rr,
   .cipif         <- 1 - c("Lower_CI" = .inverse*exp(.zqrt), 
                           "Point_Estimate" =  .inverse, 
                           "Upper_CI" = .inverse*exp(-.zqrt), 
-                          "Variance Estimate of log(pif)" = .logvarpif)
+                          "Variance_Estimate_log(PIF)" = .logvarpif)
   
   #Correct if .zqrt is infinite
   if (is.infinite(.zqrt)){.cipif["Lower_CI"] <- -Inf}

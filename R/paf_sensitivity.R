@@ -8,13 +8,14 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the
+#' @param thetahat  Asymptotically consistent or Fisher consistent estimator
+#'  (\code{vector}) of \code{theta} for the
 #'   Relative Risk function.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
-#'   **Optional**
+#'  \strong{**Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -168,9 +169,10 @@ paf.sensitivity <- function(X, thetahat, rr,
                             colors  = c("red", "deepskyblue", "gray75", "gray25"),
                             check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
-  pif.sensitivity(X = X, thetahat = thetahat, rr = rr, weights = weights,
-                  method = method, adjust = adjust, n = n, ktype = ktype,
-                  nsim = nsim, mremove = mremove, ylab = ylab, xlab = xlab,
+  pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft=NA, method = method,
+                  weights = weights, nsim = nsim, mremove = mremove,
+                   adjust = adjust, n = n, ktype = ktype, bw=bw,
+                  ylab = ylab, xlab = xlab,
                   legendtitle = legendtitle, title = title, colors = colors,
                   check_exposure = check_exposure, check_rr = check_rr,
                   check_integrals = check_integrals, is_paf = TRUE)

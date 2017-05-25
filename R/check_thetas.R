@@ -45,14 +45,14 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
            
            #Check that thetalow and thetaup exist
            if (is.na(thetalow) || is.na(thetaup)){
-             stop(paste0("You have not .correctly specified the bounds", 
+             stop(paste0("The bounds are not correctly specified", 
                          "of the interval of confidence of theta"))
            }
-          .thetalow <- as.matrix(thetalow)
-          .thetaup  <- as.matrix(thetaup)
-          .thetahat <- as.matrix(thetahat)
+          .thetalow <- as.vector(thetalow)
+          .thetaup  <- as.vector(thetaup)
+          .thetahat <- as.vector(thetahat)
            
-          if((dim(.thetahat)!=dim(.thetalow) || dim(.thetahat)!=dim(.thetaup))){
+          if((length(.thetahat)!=length(.thetalow) || length(.thetahat)!=length(.thetaup))){
             stop("Dimensions of thetahat, thetalow, and thetaup are not the same.")
           }
           
@@ -64,8 +64,8 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
                 .thetaup[.i] < .thetahat[.i]){
               .correct <- FALSE
               stop(paste0("Thetas do not comply the inequality: 'thetaup > thetahat >", 
-                          "thetalow'. Please check that you correctly specified the", 
-                          " interval of confidence of theta"))
+                          "thetalow. Verify theta's confidence interval is",
+                          "correctly specified."))
             }
             .i <- .i + 1
             
@@ -79,7 +79,7 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
              stop("Please specify variance of theta")
            }
            
-           if(length(thetahat)^2 != length(thetavar)){
+           if(length(thetahat) != nrow(as.matrix(thetavar))){
              stop("Covariance matrix dimensions must be nxn, where n is the length of thetahat")
            }
            
@@ -89,7 +89,7 @@ check.thetas <- function(thetavar, thetahat, thetalow, thetaup, method){
            }
             
            if (is.symmetric.matrix(as.matrix(thetavar)) == FALSE){
-             stop("Covariance matrix must be symetric")
+             stop("Covariance matrix must be symmetric")
            }
            
            if (is.positive.semi.definite(as.matrix(thetavar)) == FALSE){

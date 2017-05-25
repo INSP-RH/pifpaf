@@ -110,28 +110,18 @@ pif.confidence.approximate <- function(Xmean, Xvar, thetahat, thetavar, rr,
                                                is_paf = is_paf)
   
   .ci["Estimated_Variance"] <- 
-    pif.variance.approximate.linear(X = Xmean, Xvar = Xvar, thetahat = thetahat, 
-                                    thetavar = thetavar, rr = rr, cft = cft, 
+    pif.variance.approximate.linear(X = Xmean, thetahat = thetahat, rr = rr,  
+                                    thetavar = thetavar, Xvar = Xvar, cft = cft, 
                                     check_thetas = check_thetas, check_cft = check_cft, 
-                                    check_xvar = check_xvar, 
-                                    deriv.method.args = deriv.method.args, check_rr = FALSE, 
-                                    check_integrals = FALSE, check_exposure = FALSE,  
+                                    check_xvar = check_xvar, check_rr = FALSE, 
+                                    check_integrals = FALSE, check_exposure = FALSE,
+                                    deriv.method.args = deriv.method.args,   
                                     deriv.method = deriv.method, nsim = nsim, is_paf = is_paf)
   
   #Get lower and upper ci (asymptotically normal)
   .ci["Lower_CI"]           <- .ci["Point_Estimate"] - Z*sqrt(.ci["Estimated_Variance"])
   .ci["Upper_CI"]           <- .ci["Point_Estimate"] + Z*sqrt(.ci["Estimated_Variance"])
   
-  #Check ci < 1
-  # if (.ci["Upper_CI"] >= 1){
-  #   
-  #   #Transform the problem to 0 <= 1 - pif to apply bounded CIs
-  #   .transf_ci             <- 1 - .ci
-  #   names(.transf_ci)      <- c("Upper_CI", "Point_Estimate", "Lower_CI", "Estimated_Variance")
-  #   .transf_ci["Lower_CI"] <- (.transf_ci["Point_Estimate"]^2)/.transf_ci["Upper_CI"]           
-  #   .ci["Upper_CI"]        <- 1 - .transf_ci["Lower_CI"]                                        
-  #   
-  # }
   .ci["Upper_CI"]  <- min(.ci["Upper_CI"] , 1)
   
   return(.ci)

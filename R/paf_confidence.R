@@ -2,7 +2,7 @@
 #'   
 #' @description Function that estimates confidence intervals for the Population 
 #'   Attributable Fraction \code{\link{paf}} from a cross-sectional sample of 
-#'   the exposure \code{X} with a known Relative Risk function \code{rr} with 
+#'   the exposure \code{X} with a known Relative Risk function \code{rr} with meta-analytical
 #'   parameter \code{theta}, where the Population Attributable Fraction is given
 #'   by: \deqn{ PAF = 
 #'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]}. }{ PAF 
@@ -12,15 +12,15 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-#'   Risk function. \code{thetahat} should be asymptotically normal with mean 
-#'   \code{theta} and variance \code{var_of_theta}.
+#' @param thetahat  Asymptotically consistent of Fisher consistent estimator (\code{vector})
+#'  of \code{theta} for the Relative Risk function. \code{thetahat} should be 
+#'  asymptotically normal with mean \code{theta} and variance \code{var_of_theta}.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
-#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
 #'   
-#'   **Optional**
+#'  \strong{ **Optional**}
 #'   
 #' @param thetavar   Estimator of variance \code{var_of_theta} of asymptotic 
 #'   normality of \code{thetahat}.
@@ -115,8 +115,8 @@
 #'   
 #' @details The \code{confidence_method} estimates confidence intervals with
 #' different methods. A bootstrap approximation is conducted by 
-#' \code{"bootstrap"}. The Delta Method is applied to \code{\link{pif}}
-#' or \code{log(pif)} when choosing \code{"linear"} and \code{"loglinear"}
+#' \code{"bootstrap"}. The Delta Method is applied to \code{\link{paf}}
+#' or \code{log(paf)} when choosing \code{"linear"} and \code{"loglinear"}
 #' respectively. The \code{"inverse"} method estimates confidence intervals
 #' for the Relative Risk function \code{rr} and applies the transformation
 #' \code{1 - 1/rr}. Finally, \code{"one2one"} works with functions for which
@@ -352,15 +352,16 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = NA,
   switch (confidence_method,
             "inverse" ={
               if(any(is.na(thetavar))){stop("Please specify thetavar, variance of thetahat")}
-              paf.confidence.inverse(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, 
-                                     weights = weights, nsim = nsim, confidence = confidence,
+              paf.confidence.inverse(X = X, thetahat = thetahat, rr = rr, thetavar = thetavar, 
+                                     weights = weights, method = method,  
+                                     nsim = nsim, confidence = confidence,
                                      deriv.method.args = deriv.method.args, deriv.method = deriv.method, 
                                      force.min = force.min,  check_thetas = check_thetas,
-                                     method = method, Xvar = Xvar)
+                                     Xvar = Xvar)
             },
             "one2one" ={
               if(any(is.na(thetalow)) || any(is.na(thetaup))){stop("Please specify thetalow and thetaup bounds of thetahat's CI")}
-              paf.confidence.one2one(X = X, thetahat = thetahat, thetalow = thetalow, thetaup = thetaup, rr = rr, 
+              paf.confidence.one2one(X = X, thetahat = thetahat, rr = rr, thetalow = thetalow, thetaup = thetaup, 
                                      weights =  weights, confidence = confidence, confidence_theta = confidence_theta,
                                      check_thetas = check_thetas, deriv.method.args = deriv.method.args,
                                      deriv.method = deriv.method, method = method, Xvar = Xvar,
@@ -369,9 +370,9 @@ paf.confidence <- function(X, thetahat, rr,  thetavar = NA,
             },
             {
               if(any(is.na(thetavar))){stop("Please specify thetavar, variance of thetahat")}
-              pif.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = weights, 
-                            nsim    =  nsim, confidence = confidence,
-                            confidence_method = confidence_method, method  = method,
+              pif.confidence(X = X, thetahat = thetahat, rr = rr, thetavar = thetavar, 
+                            cft=NA, method  = method, confidence_method = confidence_method, 
+                            confidence = confidence, nsim    =  nsim, weights = weights, 
                             Xvar    = Xvar, deriv.method.args = deriv.method.args, 
                             deriv.method  = deriv.method, adjust = adjust, n = n,
                             ktype  = ktype,  bw = bw, check_exposure = check_exposure,

@@ -2,7 +2,7 @@
 #'   
 #' @description Function for estimating the Population Attributable Fraction 
 #'   \code{paf} from a cross-sectional sample of the exposure \code{X} with a 
-#'   known Relative Risk function \code{rr} with parameter \code{theta}, where 
+#'   known Relative Risk function \code{rr} with meta-analytical parameter  \code{theta}, where 
 #'   the Population Attributable Fraction is given by: \deqn{ PAF = 
 #'   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} .}{ PAF 
 #'   = mean(rr(X; theta) - 1)/mean(rr(X; theta)).}
@@ -11,14 +11,15 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+#' @param thetahat  Asymptotically consistent or Fisher consistent
+#'  estimator (\code{vector}) of \code{theta} for the Relative 
 #'   Risk function \code{rr}.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
 #'   
-#'   **Optional**
+#'   \strong{**Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -308,13 +309,13 @@ paf <- function(X, thetahat,   rr,
   
  
   #Estimation of PAF
-  .paf <- pif(X = X, thetahat = thetahat, rr = rr, 
-              weights = weights, method = method, 
+  .paf <- pif(X = X, thetahat = thetahat, rr = rr, cft=NA,
+              method = method, weights = weights, 
               Xvar = Xvar, deriv.method.args = deriv.method.args,
               deriv.method = deriv.method, adjust = adjust, n = n,
               ktype = ktype, bw = bw, 
-              check_exposure = check_exposure, check_rr = check_rr,
-              check_integrals = check_integrals, is_paf = TRUE)
+              check_exposure = check_exposure, check_integrals = check_integrals,
+              check_rr = check_rr,  is_paf = TRUE)
   
   return(.paf)
 

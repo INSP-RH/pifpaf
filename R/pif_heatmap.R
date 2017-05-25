@@ -13,15 +13,15 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+#' @param thetahat  Asymptotically consistent or Fisher consistent estimator (\code{vector}) of \code{theta} for the Relative 
 #'   Risk function.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #'   
-#'   **Optional**
+#'   \strong{**Optional**}
 #'   
-#' @param cft       Function \code{cft(X, a, b)} for counterfactual dependent on
+#' @param cft       \code{function} \code{cft(X, a, b)} for counterfactual dependent on
 #'   one dimensional parameters \code{a} and \code{b}. Default counterfactual is 
 #'   affine: \code{aX + b}.
 #'   
@@ -91,7 +91,7 @@
 #' @param ylab          \code{string} label for the Y-axis of the plot (corresponding
 #'   to "b").
 #'   
-#' @param colors       Colors of heatmap.
+#' @param colors       \code{vector} of colours for the heatmap.
 #'   
 #' @return plotpif      \code{\link[ggplot2]{ggplot}} object plotting a heatmap
 #'   with sensitivity analysis of the counterfactual.
@@ -245,12 +245,12 @@ pif.heatmap <-function(X, thetahat, rr,
     .cft_ab   <- function(X){cft(X, .M$a[i], .M$b[i])}
     
     .M$pif[i] <- pif(X = X, thetahat = thetahat, rr = rr, cft = .cft_ab,
-                  weights = weights, method = method, 
+                   method = method, weights = weights,
                   Xvar = Xvar, deriv.method.args = deriv.method.args,
                   deriv.method = deriv.method, adjust = adjust, n = n,
                   ktype = ktype, bw = bw, 
                   check_exposure = check_exposure, check_rr = check_rr,
-                  check_integrals = check_integrals)
+                  check_integrals = check_integrals, is_paf = FALSE)
   }
   
   #Create Heatmap

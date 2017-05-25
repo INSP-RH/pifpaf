@@ -3,7 +3,7 @@
 #'   
 #' @description Function that plots the \code{\link{pif}} under different values
 #'   of a univariate parameter \code{theta} of the relative risk function \code{rr} 
-#'   which depends on the exposure \code{X} and a \code{theta} parameter 
+#'   which depends on the exposure \code{X} and a  parameter \code{theta}
 #'   (\code{rr(X, theta)})
 #'   
 #' @param X         Random sample (\code{data.frame}) which includes exposure 
@@ -17,9 +17,9 @@
 #'   \code{rr}) for plot.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
-#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
-#'   **Optional**
+#'  \strong{**Optional**}
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
@@ -67,7 +67,7 @@
 #'   
 #' @param mpoints Number of points in plot.
 #'   
-#' @param colors \code{vector} Colors of plot.
+#' @param colors \code{vector} Colours of plot.
 #'   
 #' @param xlab \code{string} Label of x-axis in plot.
 #'   
@@ -75,15 +75,23 @@
 #'   
 #' @param title \code{string} Title of plot.
 #'   
-#' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
-#'   and relative risk's \code{rr} expected values are well defined for this 
-#'   scenario.
+#' @param check_thetas \code{boolean} Check that theta associated parameters are
+#'   correctly inputed for the model.
 #'   
 #' @param check_exposure  \code{boolean}  Check that exposure \code{X} is 
 #'   positive and numeric.
 #'   
-#' @param check_rr        \code{boolean} Check that Relative Risk function
-#'   \code{rr} equals \code{1} when evaluated at \code{0}.
+#' @param check_cft  \code{boolean}  Check that counterfactual function 
+#'   \code{cft} reduces exposure.
+#'   
+#' @param check_xvar \code{boolean} Check \code{Xvar} is covariance matrix.
+#'   
+#' @param check_integrals \code{boolean}  Check that counterfactual \code{cft} 
+#'   and relative risk's \code{rr} expected values are well defined for this 
+#'   scenario.
+#'   
+#' @param check_rr        \code{boolean} Check that Relative Risk function \code{rr} equals 
+#'   \code{1} when evaluated at \code{0}.
 #'   
 #' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}. This forces
 #'   the \code{pif} function ignore the inputed counterfactual and set it to the
@@ -156,6 +164,7 @@ pif.plot <- function(X, thetalow, thetaup, rr,
                      xlab = "Theta", ylab = "PIF",
                      title = "Potential Impact Fraction (PIF) under different values of theta",
                      check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+                     check_cft=TRUE, check_thetas=TRUE, check_xvar=TRUE,
                      is_paf = FALSE){
   
   #Check thetas are univariate
@@ -193,7 +202,9 @@ pif.plot <- function(X, thetalow, thetaup, rr,
                        nsim = nsim,
                        adjust = adjust, n = n, ktype  = ktype, 
                        bw     = bw, check_exposure = check_exposure, check_rr = check_rr, 
-                       check_integrals = check_integrals, is_paf = is_paf)[1:3] 
+                       check_cft = check_cft, check_xvar = check_xvar,
+                       check_integrals = check_integrals, check_thetas = check_thetas,
+                       is_paf = is_paf)[1:3] 
       
     }
     

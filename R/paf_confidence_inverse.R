@@ -5,9 +5,9 @@
 #' @param X         Random sample (\code{data.frame}) which includes exposure
 #'   and covariates.
 #' 
-#' @param thetahat  Estimative of \code{theta} for the Relative Risk function
+#' @param thetahat  Estimative of \code{theta} for the Relative Risk function.
 #' 
-#' @param thetavar   Estimator of variance of \code{thetahat}
+#' @param thetavar   Estimator of variance of \code{thetahat}.
 #' 
 #' @param rr        Function for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -104,7 +104,7 @@ paf.confidence.inverse <- function(X, thetahat, rr, thetavar,
   rr.CI <- switch (.method,
           empirical = {
             risk.ratio.confidence(X = X, thetahat = thetahat, 
-                                  thetavar = .thetavar, rr = rr, 
+                                  rr = rr, thetavar = .thetavar,
                                   weights =  weights, nsim = nsim, 
                                   confidence = confidence, check_thetas = check_thetas, 
                                   force.min = force.min)
@@ -112,11 +112,12 @@ paf.confidence.inverse <- function(X, thetahat, rr, thetavar,
           approximate = {
             .Xvar <- check.xvar(Xvar)
             risk.ratio.approximate.confidence(X = X, Xvar = .Xvar, thetahat = thetahat, 
-                                              thetavar = .thetavar, rr = rr, nsim = nsim, 
-                                              confidence = confidence, force.min = force.min,
-                                              check_thetas = check_thetas, 
+                                              rr = rr,  thetavar = .thetavar, nsim = nsim, 
+                                              confidence = confidence,
+                                              deriv.method.args = deriv.method.args,
                                               deriv.method = deriv.method,
-                                              deriv.method.args = deriv.method.args)
+                                              check_thetas = check_thetas, 
+                                              force.min = force.min)
           },
           stop("Incorrect method. Please specify 'approximate' or 'empirical'.")
   )

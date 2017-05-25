@@ -9,8 +9,8 @@
 #' X <- matrix(runif(500, 0,1))
 #' check.exposure(X)
 #' 
-#' @author Rodrigo Zepeda Tello \email{rzepeda17@gmail.com}
-#' @author Dalia Camacho García Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
+#' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #'   
 #' @seealso \code{\link{check.confidence}}, \code{\link{check.thetas}}, 
 #'   \code{\link{check.cft}}, \code{\link{check.xvar}}, 
@@ -40,7 +40,7 @@ check.exposure <- function(X){
       #Check that is positive numeric
       if(is.numeric(X[.i, .j]) & as.numeric(X[.i, .j]) >= 0){
         .j <- .j + 1
-      } else if (is.character(X[.i, .j]) || is.factor(X[.i, .j])){
+      } else if (is.character(X[.i, .j]) || is.factor(X[.i, .j]) || is.logical(X[.i, .j])){
         .j <- .j + 1
       } else {
         .bool <- FALSE

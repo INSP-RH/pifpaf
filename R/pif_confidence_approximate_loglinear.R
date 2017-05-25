@@ -19,7 +19,7 @@
 #'  The order of the parameters shound be \code{rr(X, theta)}.
 #'  
 #'  
-#'  **Optional**
+#' \strong{**Optional**}
 #'@param cft       Differentiable function \code{cft(X)} for counterfactual.
 #'  Leave empty for the Population Attributable Fraction \code{\link{paf}} where
 #'  counterfactual is 0 exposure.
@@ -124,7 +124,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
     
     #Calculate the RR
     .hrr   <- hessian(.rr_fun_x, .Xmean, method = .method, method.args = deriv.method.args)
-    .R0  <- .rr_fun_x(.Xmean)   + 0.5*sum(.hrr*.Xvar)
+    .R0    <- .rr_fun_x(.Xmean)   + 0.5*sum(.hrr*.Xvar)
     
     #Estimate counterfactual
     if (is_paf){
@@ -139,7 +139,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   
   #Inverse
   .pif      <- pif.approximate(X = .Xmean, Xvar = .Xvar, thetahat = thetahat, rr = rr, cft = cft,
-                               deriv.method = deriv.method, deriv.method.args = deriv.method.args,
+                                deriv.method.args = deriv.method.args, deriv.method = deriv.method,
                                check_exposure = check_exposure, check_rr = check_rr, 
                                check_integrals = check_integrals, is_paf = is_paf)
   .inverse  <- 1 - .pif
@@ -192,7 +192,7 @@ pif.confidence.approximate.loglinear <- function(Xmean, Xvar, thetahat, thetavar
   
   
   #Compute the pif intervals
-  .cipif         <- 1-c("Lower" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper" = .inverse*exp(-.zqrt), "Estimated Variance of log(pif)" = .logvarpif)
+  .cipif         <- 1-c("Lower_CI" = .inverse*exp(.zqrt), "Point_Estimate" =  .inverse, "Upper_CI" = .inverse*exp(-.zqrt), "Estimated_Variance_log(PIF)" = .logvarpif)
   
   #Return variance
   return(.cipif)

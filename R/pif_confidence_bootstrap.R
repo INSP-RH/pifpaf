@@ -127,7 +127,7 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
   .X       <- as.data.frame(X)
   
   #Get original pif
-  .pif     <- pif(X = .X, thetahat = thetahat, rr = rr, cft = cft, weights = weights, method = method, 
+  .pif     <- pif(X = .X, thetahat = thetahat, rr = rr, cft = cft, method = method, weights = weights, 
                   adjust = adjust, n = n, ktype = ktype, bw = bw,
                   check_exposure = check_exposure, check_rr = check_rr, check_integrals = check_integrals,
                   is_paf = is_paf) 
@@ -152,7 +152,7 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
     
     #Get pif
     .bpif[i] <- pif(X = .Xboost, thetahat = .newtheta[i,], rr = rr, cft = cft, 
-                    weights = .wboost, method = method, 
+                    method = method, weights = .wboost,  Xvar = NA,
                     adjust = adjust, n = n, ktype = ktype, bw = bw, 
                     check_exposure = FALSE, check_rr = FALSE,   #Set FALSE to avoid recalculating 
                     check_integrals = FALSE, is_paf = is_paf)                             
@@ -171,18 +171,6 @@ pif.confidence.bootstrap <- function(X, thetahat, thetavar, rr,
   #Create vector of ci
   .ci <- c("Lower_CI" = 2*.pif - .quantiles[1], "Point_Estimate"     = .pif, 
           "Upper_CI" =  2*.pif - .quantiles[2], "Estimated_Variance" = .variance)
-  
-  #Check upper limit < 1 as 1 is a limit case
-  #from: THE LOWER CONFIDENCE LIMIT FOR THE MEAN OF POSITIVE RANDOM VARIABLES
-  # if (.ci["Upper_CI"] >= 1){
-  #   
-  #   #Transform the problem to 0 <= 1 - pif to apply bounded CIs
-  #   .transf_ci             <- 1 - .ci
-  #   names(.transf_ci)      <- c("Upper_CI", "Point_Estimate", "Lower_CI", "Estimated_Variance")
-  #   .transf_ci["Lower_CI"] <- (.transf_ci["Point_Estimate"]^2)/.transf_ci["Upper_CI"]           
-  #   .ci["Upper_CI"]        <- 1 - .transf_ci["Lower_CI"]                                        
-  #   
-  # }
   
   .ci["Upper_CI"] <- min(.ci["Upper_CI"], 1)
   

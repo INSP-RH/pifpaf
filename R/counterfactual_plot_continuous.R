@@ -6,19 +6,19 @@
 #'   
 #' @param X      Univariate \code{vector} continuous exposure levels.
 #'   
-#' @param cft    Counterfactual function of the exposure \code{cft(X)}
+#' @param cft    Counterfactual function of the exposure \code{cft(X)}.
 #'   
-#'   **Optional**
+#'\strong{**Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
 #' @param dnames    String vector indicating the names of the distributions for 
-#'   the legend
+#'   the legend.
 #'   
 #' @param ktype    \code{kernel} type:  \code{"gaussian"}, 
 #'   \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 #'   \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
-#'   method). Additional information on kernels in \code{\link[stats]{density}}
+#'   method). Additional information on kernels in \code{\link[stats]{density}}.
 #'   
 #' @param bw        Smoothing bandwith parameter from density from
 #'   \code{\link[stats]{density}}. Default \code{"SJ"}.
@@ -29,27 +29,27 @@
 #' @param n   Number of equally spaced points at which the density is to be
 #'   estimated (see \code{\link[stats]{density}}).
 #'   
-#' @param check_exposure  Check that exposure \code{X} is positive and numeric
+#' @param check_exposure  Check that exposure \code{X} is positive and numeric.
 #'   
-#' @param title     String with plot title
+#' @param title         String with plot title.
 #'   
-#' @param legendtitle   String title for the legend of plot
+#' @param legendtitle   String title for the legend of plot.
 #'   
 #' @param xlab          String label for the X-axis of the plot (corresponding 
-#'   to "a")
+#'   to "a").
 #'   
 #' @param ylab          String label for the Y-axis of the plot (corresponding 
-#'   to "b")
+#'   to "b").
 #'   
-#' @param colors        String vector with colors for plots
+#' @param colors        String vector with colors for plots.
 #'   
-#' @param fill          Colour the densities? Default \code{TRUE}
+#' @param fill          Boolean that indicates whether there is interior colouring. Default \code{TRUE}.
 #'   
 #' @param fill_limits   Vector. Limits of subset of the exposure \code{X} such
 #'   that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.
 #'   
 #' @return cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
-#'   from actual to counterfactual distribution
+#'   from actual to counterfactual distribution.
 #'   
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}

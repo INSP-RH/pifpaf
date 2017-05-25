@@ -10,7 +10,7 @@
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual.
 #'   
-#'   **Optional**
+#'  \bold{ **Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -54,7 +54,7 @@
 #' @param x_axis_order  String vector of names in X-axis for 
 #' plot (\code{"discrete"} case).
 #'   
-#' @param fill          Color the densities? Default \code{TRUE}.
+#' @param fill           Boolean that indicates whether there is interior colouring. Default \code{TRUE}.
 #'   
 #' @param fill_limits   Vector with lower and upper bounds of a subset of the 
 #' exposure \code{X} such that only  the \code{X}s satisfying 

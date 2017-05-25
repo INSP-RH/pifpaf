@@ -2,7 +2,7 @@
 #'   Relative Risk's parameter theta
 #'   
 #' @description Function that plots the \code{\link{paf}} under different values
-#'   of a univariate parameter \code{theta} of the relative risk function \code{rr} 
+#'   of a univariate parameter \code{theta} of the Relative Risk function \code{rr} 
 #'   which depends on the exposure \code{X} and a \code{theta} parameter 
 #'   (\code{rr(X, theta)})
 #'   
@@ -19,7 +19,7 @@
 #' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
-#'   **Optional**
+#'  \strong{ **Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
@@ -138,11 +138,11 @@ paf.plot <- function(X, thetalow, thetaup, rr,
                      title = "Population Attributable Fraction (PAF) under different values of theta",
                      check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE){
   
-  pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, weights = weights,
-           method = method, adjust = adjust, n = n, nsim = nsim,
-           mpoints = mpoints, Xvar = Xvar,
+  pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, 
+           cft=NA,  method = method, confidence_method = confidence_method,
+           confidence = confidence,  nsim = nsim, weights = weights, mpoints = mpoints,
+           adjust = adjust, n = n, Xvar = Xvar,
            deriv.method.args = deriv.method.args, deriv.method = deriv.method,
-           confidence = confidence, confidence_method = confidence_method,
            ktype = ktype, bw = bw, colors = colors, xlab = xlab, ylab = ylab,
            title = title, check_exposure = check_exposure, check_rr = check_rr,
            check_integrals = check_integrals, is_paf = TRUE)

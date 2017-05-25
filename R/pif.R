@@ -13,14 +13,15 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+#' @param thetahat  Asymptotically consistent or Fisher consistent
+#'  estimator (\code{vector}) of \code{theta} for the Relative 
 #'   Risk function.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
-#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
 #'   
-#'   **Optional**
+#'  \strong{**Optional**}
 #'   
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
@@ -396,8 +397,9 @@ pif <- function(X, thetahat, rr,
          }, 
          kernel      = {
            .pif <- pif.kernel(X = X, thetahat = thetahat, rr = rr, cft = cft, 
-                              weights = weights, ktype = ktype, bw = bw, 
-                              adjust = adjust, n = n, check_exposure = check_exposure,
+                              weights = weights, adjust = adjust, n = n,
+                              ktype = ktype, bw = bw, 
+                              check_exposure = check_exposure,
                               check_rr = check_rr, check_integrals = check_integrals,
                               is_paf = is_paf)
          }, 

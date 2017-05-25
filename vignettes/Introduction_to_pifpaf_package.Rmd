@@ -50,6 +50,8 @@ We remark that in both discrete and continuous cases, when the counterfactual is
 \end{cases}
 \end{equation}
 
+<!--Although the PIF has been widely used, the selection process for a distribution of the exposure values in the continuous case tends to be unclear. This can lead to a number of issues and miscalculations as has been discussed elsewhere .  -->
+
 In this document we present the ``pifpaf`` package which allows the estimation of both PIF and PAF when using information from cross-sectional data. This document is structured as follows:
 
 1. We present a ["quick start"](#quick-start) guide if you really cannot resist the urge of using the package.
@@ -63,7 +65,7 @@ The basic ingredients for using the package are:
 
 1. A Relative Risk function of the exposure $RR(X;\theta)$ which might depends on a parameter $\theta$.
 2. A sample $X_{(n)}$ of $n$ exposure values (or if it is not available, at least estimated mean $m$ and variance $s^2$ of the exposure). 
-3. A Fisher consistent or asymptotically consistent, asymptotically normal estimator $\hat{\theta}$ of $\theta$. 
+3. A consistent and asymptotically normal estimator $\hat{\theta}$ of $\theta$. 
 4. A function $\textrm{cft}$ that transforms the observed exposure into that of a counterfactual scenario.
 
 If you have those ingredients you are ready to start with our examples which include: [a complete sample of the exposure with continuous Relative Risks](#continuous-rr-example-ozone-exposure), [a complete sample of the exposure with categorical Relative Risks](#discrete-rr-example-tobacco-consumption), [only mean and variance of exposure with continuous Relative Risks](#incomplete-data-continuous-rr-example-systolic-blood-pressure), and [only mean and variance of exposure with categorical Relative Risks](#incomplete-data-categorical-rr-example-body-mass-index). 
@@ -136,6 +138,7 @@ We can also conduct several sensitivity analysis:
 1. To see how the PAF changes as $\theta$ changes between $0$ and $1/\pi$ (notice that it is nonlinear).
 
 ```{r, fig.width=7, fig.height=4}
+
 paf.plot(X = ozone_exposure, thetalow = 0, thetaup = 1/pi, rr = rr, weights = sampling_weights)
 ```
 
@@ -277,11 +280,11 @@ counterfactual.plot(tobacco_consumption, cft)
 
 A sensitivity analysis to evaluate both PAF and PIF's robustness is available:
 ```{r, fig.width=7, fig.height=4}
-paf.sensitivity(tobacco_consumption, thetahat, rr)
+paf.sensitivity(tobacco_consumption, thetahat=thetahat, rr, nsim = 20)
 ```
 
 ```{r, fig.width=7, fig.height=4}
-pif.sensitivity(tobacco_consumption, thetahat, rr, cft = cft)
+pif.sensitivity(tobacco_consumption, thetahat=thetahat, rr=rr, cft = cft, nsim = 20)
 ```
 
 
@@ -421,11 +424,11 @@ then:
 \begin{equation}\label{pafestimate}
 \widehat{\textrm{PIF}} = 1 - \dfrac{\hat{\mu}_n^{\textrm{cft}}(\hat{\theta})}{\hat{\mu}_n^{\textrm{obs}}(\hat{\theta})}, \qquad \textrm{and} \qquad \widehat{\textrm{PAF}} = 1 - \dfrac{1}{\hat{\mu}_n^{\textrm{obs}}(\hat{\theta})} 
 \end{equation}
-If  $\hat{\theta}$ is Fisher consistent, these are consistent estimators of the PIF and the PAF respectively. Furthermore if the Relative Risk $RR$ is either convex, concave or Lipschitz continuous as a function of $\theta$ and $\hat{\theta}$ is asymptotically consistent, the estimators have asymptotic consistency. 
+are Fisher-consistent estimators of the PIF and the PAF if $\hat{\theta}$ is Fisher-consistent. Furthermore if the Relative Risk $RR$ is either convex, concave or Lipschitz continuous as a function of $\theta$ and $\hat{\theta}$ is (asymptotically) consistent the estimators have asymptotic consistency. 
 
 ### Kernel Based Potential Impact Fraction
 
-Define the Relative Risk $RR:\mathcal{X} \times \Theta \to I \subset (0,\infty)$ (the additional hypotheses used for the [empirical method](#the-empirical-potential-impact-fraction) are not necessary).  Let $\hat{f}$ denote a kernel density obtained from the random sample of $X\in\mathcal{X}\subseteq\mathbb{R}^p$. Let $\hat{\theta} \in \Theta \subset \mathbb{R}^q$ be an estimator of  $\theta$. We define the functions:
+Define the Relative Risk $RR:\mathcal{X} \times \Theta \to I \subset (0,\infty)$ (the additional hypotheses used for the [empirical method](#the-empirical-potential-impact-fraction) are not necessary).  Let $\hat{f}$ denote a kernel density obtained from the random sample of $X\in\mathcal{X}\subseteq\mathbb{R}^p$. Let $\hat{\theta} \in \Theta \subset \mathbb{R}^q$ be a consistent estimator of  $\theta$. We define the functions:
 
 \begin{equation}
 \hat{\nu}_n^{\textrm{obs}}(\theta) = \int\limits_{\mathbb{R}^p}  RR( x; \theta)\hat{f}(x)dx, \quad \textrm{and} \quad \hat{\nu}_n^{\textrm{cft}}(\theta) = \int\limits_{\mathbb{R}^p}  RR\big( \textrm{cft}(x); \theta\big)\hat{f}(x)dx,
@@ -435,7 +438,7 @@ then:
 \begin{equation}
 \widehat{\textrm{PIF}} = 1 - \frac{\hat{\nu}_n^{\textrm{cft}}(\hat{\theta})}{\hat{\nu}_n^{\textrm{obs}}(\hat{\theta})}
 \end{equation}
-is a Fisher consistent estimator of the Potential Impact Fraction ($\textrm{PIF}$) if $\hat{\theta}$ is Fisher consistent. Furthermore if the Relative Risk $RR$ is either convex, concave or Lipschitz continuous as a function of $\theta$ and $\hat{\theta}$ is asymptotically consistent, the estimators have asymptotic consistency. 
+is a consistent estimator of the Potential Impact Fraction ($\textrm{PIF}$).
 
 ### Approximate Empirical Potential Impact Fraction
 
@@ -445,7 +448,7 @@ Sometimes researchers do not have a random sample of the exposure $X$; neverthel
 \widehat{\textrm{PIF}}= 1-\frac{RR\big(\textrm{cft}(m),\theta\big) + \frac{1}{2}\sum_{i=1}^n\sum_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(\textrm{cft}(X),\theta\big)}{\partial X_i \partial X_j}\Big|_m}{RR(m;\hat{\theta})+\frac{1}{2} \sum_{i=1}^n\sum_{j=1}^n \textrm{Cov}(X_i,X_j)\frac{\partial^2 RR\big(X,\theta\big)}{\partial X_i \partial X_j}\Big|_m}.
 \end{equation}
 
-The approximate method solely requires the sample mean $m$ and variance $s^2$, not the whole sample. If a random sample is available, the other methods should be preferred.  
+The approximate method solely requires the sample mean $m$ and variance $s^2$, not the whole sample. If the sample is available, the other methods should be preferred.  
 
 ### Methods in code
 
@@ -474,7 +477,7 @@ Note that for the approximate method the correct input is mean and variance of X
 
 
 ### Confidence Intervals
-The ``"bootstrap"`` confidence method is the recommended method to calculate confidence intervals while using the kernel and empirical point estimate. However this method cannot be used for the approximate point estimate, since only mean and variance are available. Therefore other methods such as the `"linear"` and `"loglinear"`  were developed to calculate the confidence interval of the PIF. The `"inverse"` and `"one2one"` methods can be used for some cases of the PAF resulting in additional precision.  All, but the `one2one` method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal with mean $\theta$ and variance $\sigma_{\theta}^2$ where $\hat{\sigma}_{\theta}^2$ is an estimator of $\sigma_{\theta}^2$. The following table shows the methods to estimate confidence intervals and when each of the methods can be used. 
+The ``"bootstrap"`` confidence method is the recommended method to calculate confidence intervals while using the kernel and empirical point estimate. However this method cannot be used for the approximate point estimate, since only mean and variance are available. Therefore other methods such as the ``"linear"´ and ``"loglinear"``  were developed to calculate the confidence interval of the PIF. The ``"inverse"`` and ``"one2one"`` methods can be used for some cases of the PAF resulting in additional precision.  All, but the one to one method, consider $\hat{\theta}$ to be a consistent estimator of $\theta$ such that it is asymptotically normal with mean $\theta$ and variance $\sigma_{\theta}^2$ where $\hat{\sigma}_{\theta}^2$ is an estimator of $\sigma_{\theta}^2$. The following table shows the methods to estimate confidence intervals and when each of the methods can be used. 
 
 
 |Confidence Interval |Point Estimate|PAF or PIF   |Extra Assumptions|
@@ -502,20 +505,20 @@ To get the confidence intervals of the PIF we  calculate the variance of PIF (or
 Further explanation of each of the methods is given below.
 
 ####Bootstrap
-The `bootstrap` consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each re-sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\hat{\sigma}^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is estimated with the selected method (`empirical` or `kernel`). From the $\widehat{\textrm{PIF}}_j$s a confidence interval for $\textrm{PIF}$ is calculated using the pivotal method  @wasserman2006nonparametric.
+Bootstrap consists on resampling with replacement several times from a given random sample. In this case from the random sample of exposure values $X_1,X_2,\cdots X_n$.  For each re-sample $X^{j}=X_1^{j}, X_2^j, \cdots, X_n^{j}$ a value $\theta_j$ is simulated from a normal distribution with mean $\hat{\theta}$ and variance $\hat{\sigma}^2_{\theta}$. For each $X^j$ and $\theta_j$, $\widehat{\textrm{PIF}}_j$ is estimated with the selected method (empirical or kernel). From the $\widehat{\textrm{PIF}}_j$s a confidence interval for $\textrm{PIF}$ is calculated using the pivotal method  @wasserman2006nonparametric.
 
 
 ####Linear
-The `linear` method considers Taylor's first order approximation (linearization) of $\widehat{\textrm{PIF}}$ and the variance for the $\widehat{\textrm{PIF}}$ is calculated as the variance of the linearization. This approach is better known as the Delta Method @casella2002statistical. 
+The linear method considers Taylor's first order approximation (linearization) of $\widehat{\textrm{PIF}}$ and the variance for the $\widehat{\textrm{PIF}}$ is calculated as the variance of the linearization. This approach is better known as the Delta Method @casella2002statistical. 
 
 ####Loglinear
-The `loglinear` method uses the $(1-\alpha)\times 100\%$ confidence interval for $\textrm{log}(1-\textrm{PIF})$. The transformation $1-e^{y}$ (a one to one function) ensures that the confidence interval is at least  $(1-\alpha)\times 100\%$  @bar1999confidence.
+The loglinear method uses the $(1-\alpha)\times 100\%$ confidence interval for $\textrm{log}(1-\textrm{PIF})$. The transformation $1-e^{y}$ (a one to one function) ensures that the confidence interval is at least  $(1-\alpha)\times 100\%$  @bar1999confidence.
 
 #### Inverse
-The `inverse` method can be used only for confidence intervals of the $\textrm{PAF}$. The confidence interval ($\textrm{IC}_{RR}$) for $E[RR(X,\theta)]$  is calculated and then transformed to a confidence interval of $\textrm{PAF}$ by $1-1/\textrm{IC}_{RR}$. Once again (as in the loglinear case) the transformation $1-1/x$ is injective and thus the transform confidence interval of  $1 - 1/\textrm{IC}_{RR}$ is at least  $(1-\alpha)$ for the $\textrm{PAF}$ @bar1999confidence.
+The inverse method can be used only for confidence intervals of the $\textrm{PAF}$. The confidence interval ($\textrm{IC}_{RR}$) for $E[RR(X,\theta)]$  is calculated and then transformed to a confidence interval of $\textrm{PAF}$ by $1-1/\textrm{IC}_{RR}$. Once again (as in the loglinear case) the transformation $1-1/x$ is injective and thus the transform confidence interval of  $1 - 1/\textrm{IC}_{RR}$ is at least  $(1-\alpha)$ for the $\textrm{PAF}$ @bar1999confidence.
 
 #### One to one
-The `one2one` method is similar to the inverse method, since the confidence interval $\textrm{IC}_{RR}$ is calculated. The difference lies on how uncertainty on $\theta$ is calculated. The inverse method uses simulations of $\theta$, while the one to one method considers the upper and lower bounds of a $1-\beta$ confidence interval of $\theta$ to calculate a $1-\alpha$ confidence interval $\textrm{IC}_{RR}$, where $\alpha>\beta$. This method can only be used if $E[RR(X;\theta)]$ is injective in $\theta$ @bar1999confidence.
+The one to one method is similar to the inverse method, since the confidence interval $\textrm{IC}_{RR}$ is calculated. The difference lies on how uncertainty on $\theta$ is calculated. The inverse method uses simulations of $\theta$, while the one to one method considers the upper and lower bounds of a $1-\beta$ confidence interval of $\theta$ to calculate a $1-\alpha$ confidence interval $\textrm{IC}_{RR}$, where $\alpha>\beta$. This method can only be used if $E[RR(X;\theta)]$ is injective in $\theta$ @bar1999confidence.
 
 #### Extra option: ``force.min``
 For the inverse and one to one confidence intervals the option `force.min` is available. This option guarantees that the lower bound of the confidence intervals of the expected relative risk takes values greater or equal to one. This option is not recommended, as in most cases there is uncertainty on whether the relative risk can be less than 1 (albeit with "small" probability).  However this option can be useful when one is absolutely certain the relative risk can't be less than one.
@@ -532,7 +535,7 @@ This section is concerned with more advanced options of the `pifpaf` package fun
 
 |Method |Exposure|Relative Risk |$\theta$ Estimator|
 |------------|:------------------------:|:-------------------------------------:|:----------------------------:|
-|Kernel      |Continuous              |Continuous (One dimensional in `pifpaf` package)|Asymptotically consistent|
+|Kernel      |Continuous              |Continuous (One dimensional in `pifpaf` package)|Asymptotically consistent|
 |Empirical   |Continuous or Discrete  |Convex, Concave, or Lipschitz|Asymptotically consistent|
 |Empirical   |Continuous or Discrete  |Any|Fisher consistent|
 |Approximate |Only mean and variance  |Twice differentiable & Convex, Concave, or Lipschitz |Asymptotically consistent|
@@ -660,8 +663,7 @@ paf(Xmean, thetahat, rr, Xvar = Xvar, method = "approximate", deriv.method = "Ri
 ### Deciding on the confidence interval 
 
 By default, confidence intervals for the [empirical](#the-empirical-potential-impact-fraction) and [kernel](#kernel-based-potential-impact-fraction) methods are [bootstrap](#bootstrap); for the [approximate](#approximate-empirical-potential-impact-fraction) method default is [loglinear](#loglinear). When calculating confidence intervals for the Population Attributable Fraction additional methods are available: `"one2one"` and `"inverse"`. 
-
-### Force min
+#### Force min
 
 The `force.min` option of `"inverse"` confidence method forces the Population Attributable Fraction's interval to be > 0. This option is not recommended as it artificially reduces the uncertainty around estimates. 
 
@@ -695,7 +697,7 @@ pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft)
 Methods can be specified as in [``pif``](#methods-in-code):
 
 ```{r fig.width=7, fig.height=4}
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, method = "kernel", n = 100, adjust = 2, ktype = "triangular", confidence_method = "bootstrap", confidence = 99)
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, method = "kernel", n = 1000, adjust = 2, ktype = "triangular", confidence_method = "bootstrap", confidence = 99)
 ```
 
 Plot options include color and label titles:

@@ -1,6 +1,6 @@
 #' @title Check Integrals
 #' 
-#' @description Function for checking that the integrals of \code{\link{pif}} make sense.
+#' @description Function for checking that the integrals of \code{\link{pif}} are nonnegative.
 #' 
 #' @param meancft Mean of relative risk \code{rr} with counterfactual
 #' 

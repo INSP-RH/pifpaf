@@ -14,18 +14,18 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-#'   Risk function. \code{thetahat} should be asymptotically normal with mean 
-#'   \code{theta} and variance \code{var_of_theta}.
+#' @param thetahat  Asymptotically consistent or Fisher consistent estimator
+#'  (\code{vector}) of \code{theta} for the Relative 
+#'   Risk function. \code{thetahat} should be asymptotically normal \code{(N(theta, var_of_theta))}
+#'   with mean  \code{theta} and estimated variance \code{var_of_theta}.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
 #'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #'   
-#' @param thetavar   Estimator of variance \code{var_of_theta} of asymptotic 
-#'   normality of \code{thetahat}.
+#' @param thetavar   Estimator of variance \code{var_of_theta}.
 #' 
 #' 
-#' **Optional**
+#' \strong{**Optional**}
 #' 
 #' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
@@ -385,7 +385,7 @@ pif.confidence <- function(X, thetahat, rr, thetavar,
   switch (method,
           "kernel"      = {
             pif.confidence.bootstrap(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
-                                     method = "kernel", nboost = nsim, adjust = adjust, confidence = confidence,
+                                     method = "kernel", nboost = nsim, n=n, adjust = adjust, confidence = confidence,
                                      ktype = ktype, bw = bw, check_exposure = check_exposure, check_rr = check_rr,
                                      check_integrals = check_integrals, check_thetas = check_thetas, is_paf = is_paf)
           },
@@ -412,14 +412,15 @@ pif.confidence <- function(X, thetahat, rr, thetavar,
           {
             switch (confidence_method,
                     "linear"    = {
-                      pif.confidence.linear(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights, 
-                                            confidence = confidence, check_thetas = check_thetas, is_paf = is_paf,
+                      pif.confidence.linear(X = X, thetahat = thetahat, rr = rr, thetavar = thetavar,  cft = cft, weights = weights, 
+                                            confidence = confidence, nsim=nsim, check_thetas = check_thetas,
                                             check_exposure = check_exposure, check_rr = check_rr,
-                                            check_integrals = check_integrals)
+                                            check_integrals = check_integrals,  is_paf = is_paf)
                     },
                     "loglinear" = {
                       pif.confidence.loglinear(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = weights,
-                                               nsim = nsim, check_thetas = check_thetas, check_exposure = check_exposure, 
+                                               nsim = nsim, confidence=confidence, check_thetas = check_thetas, 
+                                               check_exposure = check_exposure, 
                                                check_cft = check_cft, is_paf = is_paf)
                     },
                     {

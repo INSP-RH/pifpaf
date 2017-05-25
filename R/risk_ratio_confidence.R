@@ -167,7 +167,7 @@ risk.ratio.confidence <- function(X, thetahat, rr, thetavar,
   #Calculate the conditional expected value as a function of theta
   .Risk  <- function(.theta){
     .paf <- paf(X = X, thetahat = .theta, rr = rr, weights = weights, 
-                method = "empirical", check_exposure = FALSE,
+                Xvar = NA, method = "empirical", check_exposure = FALSE,
                 check_rr = FALSE, check_integrals = FALSE)
     return( 1/(1-.paf) )
   }

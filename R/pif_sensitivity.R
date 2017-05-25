@@ -8,16 +8,17 @@
 #'   and covariates or sample \code{mean} if \code{"approximate"} method is 
 #'   selected.
 #'   
-#' @param thetahat  Consistent estimator (\code{vector}) of \code{theta} for the
+#' @param thetahat  Asymptotically consistent or Fisher consistent estimator
+#'  (\code{vector}) of \code{theta} for the
 #'   Relative Risk function.
 #'   
 #' @param rr        \code{function} for Relative Risk which uses parameter 
-#'   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+#'   \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 #'   
 #'   
-#'   **Optional**
+#'   \strong{**Optional**}
 #'   
-#' @param cft       Function \code{cft(X)} for counterfactual. Leave empty for 
+#' @param cft       \code{function} \code{cft(X)} for counterfactual. Leave empty for 
 #'   the Population Attributable Fraction \code{\link{paf}} where 
 #'   counterfactual is that of a theoretical minimum risk exposure 
 #'   \code{X0} such that \code{rr(X0,theta) = 1}.
@@ -68,7 +69,7 @@
 #'   
 #' @param ylab          \code{string} label for the Y-axis of the plot.
 #'   
-#' @param colors        \code{string} vector with colors for plots.
+#' @param colors        \code{string} vector with colours for plots.
 #'   
 #' @param is_paf    Boolean forcing evaluation of \code{\link{paf}}. This forces
 #'   the \code{\link{pif}} function ignore the inputed counterfactual and set it to the
@@ -127,7 +128,7 @@
 #'                  title = "Sensitivity Analysis for example 1 using kernel")
 #'                  
 #' 
-#' #Example 4: Plot counterfactual with categorical risks
+#' #Example 3: Plot counterfactual with categorical risks
 #' #------------------------------------------------------------------
 #' set.seed(18427)
 #' X        <- data.frame(Exposure = 
@@ -159,8 +160,8 @@
 #'    which_over  <- which(X == "Overweight")
 #'    
 #'    #Reduce per.over % of overweight and per.obese % of obese
-#'    X[sample(which_obese, length(which_obese)*0.5)] <- "Normal"
-#'    X[sample(which_over,  length(which_over)*0.5)]  <- "Normal"
+#'    X[sample(which_obese, floor(length(which_obese)*0.5)),1] <- "Normal"
+#'    X[sample(which_over,  floor(length(which_over)*0.5)),1]  <- "Normal"
 #'    
 #'    return(X)
 #' }
@@ -258,7 +259,7 @@ pif.sensitivity <- function(X, thetahat, rr,
       
       #Estimate pif and save it matrix
       .pifdata[.i,.j] <- pif(X = .newX, thetahat = thetahat, rr = rr, cft = cft,
-                             weights = .newW, method = method, adjust = adjust, n = n,
+                             method = method, weights = .newW, Xvar = NA, adjust = adjust, n = n,
                              ktype = ktype, bw = bw,check_exposure = check_exposure, 
                              check_rr = check_rr, check_integrals = check_integrals,
                              is_paf = is_paf)

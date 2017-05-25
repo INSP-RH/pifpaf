@@ -100,8 +100,9 @@ pif.variance.linear <- function(X, thetahat, rr, thetavar,
   #Get the conditional expected pif
   .pifexp <- function(theta){
     pif(X = .X, thetahat = theta, rr = rr, cft = cft, weights = weights,
-        method = "empirical",  check_exposure = FALSE, 
-        check_rr = FALSE, check_integrals = FALSE, is_paf = is_paf)
+        Xvar = NA, method = "empirical",  check_exposure = FALSE,
+        check_integrals = FALSE,
+        check_rr = FALSE,  is_paf = is_paf)
   }
   
   #Get the conditional variance of pif

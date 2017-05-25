@@ -116,11 +116,12 @@ risk.ratio.approximate.confidence <- function(X, Xvar, thetahat, rr, thetavar,
   
   #Calculate the conditional expected value as a function of theta
   .Risk  <- function(.theta){
-    .paf  <- pif.approximate(X =  .X, Xvar = .Xvar, thetahat = .theta, rr = rr, 
-                             check_rr = FALSE, check_integrals = FALSE, 
+    .paf  <- pif.approximate(X =  .X, Xvar = .Xvar, thetahat = .theta, rr = rr,
+                             cft=NA, deriv.method = deriv.method,
                              deriv.method.args = deriv.method.args,
-                             deriv.method = deriv.method,
-                             check_exposure = FALSE, is_paf = TRUE)
+                             check_exposure = FALSE, 
+                             check_rr = FALSE, check_integrals = FALSE, 
+                             is_paf = TRUE)
     return( 1/(1-.paf))
   }
   
@@ -130,7 +131,8 @@ risk.ratio.approximate.confidence <- function(X, Xvar, thetahat, rr, thetavar,
       rr(X,.theta)
     }
     
-    .dR0   <- as.matrix(grad(rr.fun.x, .X))
+    .dR0   <- as.matrix(grad(rr.fun.x, .X, method = deriv.method[1],
+                             method.args = deriv.method.args))
     .var  <- t(.dR0)%*%.Xvar%*%(.dR0)
     return(.var)
   }

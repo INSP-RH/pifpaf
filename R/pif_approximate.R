@@ -18,7 +18,7 @@
 #'@param rr        \code{function} for Relative Risk which uses parameter 
 #'  \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 #'  
-#'  **Optional**
+#' \strong{**Optional**}
 #'  
 #'@param cft       Twice differentiable function \code{cft(X)} for
 #'  counterfactual. Leave empty for the Population Attributable Fraction
@@ -156,8 +156,8 @@ pif.approximate <- function(X, Xvar, thetahat, rr,
   if (is.na(.mucft)){ stop("Hessian might not be defined for those values of rr and cft")}
   
   #Check that Hessian approximation didn't change sign of RR
-  if (.mux   <= 0){ stop("Hessian cannot approximate numerically rr(X, theta) correctly.") }
-  if (.mucft <= 0){ stop("Hessian cannot approximate numerically rr(cft(X),theta) correctly.") }
+  if (.mux   <= 0){ warning("Hessian cannot approximate numerically rr(X, theta) correctly.") }
+  if (.mucft <= 0){ warning("Hessian cannot approximate numerically rr(cft(X),theta) correctly.") }
   
   #Check that integrals make sense
   if(check_integrals){ check.integrals(.mux, .mucft) }

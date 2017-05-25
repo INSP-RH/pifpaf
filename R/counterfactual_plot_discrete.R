@@ -1,36 +1,36 @@
 #' @title Create a plot of the distribution of exposure under counterfactual
-#'   scenario for discrete exposure
+#'   scenario for discrete exposure.
 #'   
 #' @description Function that creates a plot of the distribution of exposure
-#'   \code{X} under counterfactual scenario \code{cft} for discrete exposures
+#'   \code{X} under counterfactual scenario \code{cft} for discrete exposures.
 #' 
 #' @param X      One dimensional \code{vector} with exposure levels.
 #'   
-#' @param cft    Counterfactual function of the exposure \code{cft(X)}
+#' @param cft    Counterfactual function of the exposure \code{cft(X)}.
 #'   
-#'   **Optional**
+#'   \bold{**Optional**}
 #'   
 #' @param weights   Normalized survey \code{weights} for the sample \code{X}.
 #'   
 #' @param dnames    String vector indicating the names of the distributions for
-#'   the legend
+#'   the legend.
 #'   
-#' @param title     String with plot title
+#' @param title     String with plot title.
 #'   
-#' @param legendtitle   String title for the legend of plot
+#' @param legendtitle   String title for the legend of plot.
 #'   
 #' @param xlab          String label for the X-axis of the plot (corresponding 
-#'   to "a")
+#'   to "a").
 #'   
 #' @param ylab          String label for the Y-axis of the plot (corresponding 
-#'   to "b")
+#'   to "b").
 #'   
-#' @param colors        String vector with colors for plots
+#' @param colors        String vector with colors for plots.
 #' 
-#' @param x_axis_order  Order of names in xaxis for plot
+#' @param x_axis_order  Order of names in xaxis for plot.
 #'   
 #' @return cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift from actual to
-#'   counterfactual distribution
+#'   counterfactual distribution.
 #'   
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}

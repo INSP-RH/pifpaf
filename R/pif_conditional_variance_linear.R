@@ -77,7 +77,7 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
                                             is_paf  = FALSE){
 
     
-    #Check if expected value is finite in this computer
+    #Check if expected value is finite 
     infinite <- FALSE
   
     #Set as counterfactual
@@ -129,7 +129,7 @@ pif.conditional.variance.linear <- function(X, thetahat, rr,
     if (!infinite){
       .Var       <- (1/.RO)^2*((.RC/.RO)^2*.varRO+.varRC-2*(.RC/.RO)*.covRORC)  
     } else {
-      .Var       <-Inf
+      .Var       <- Inf
     }
     
     return(.Var)
