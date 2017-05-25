@@ -89,14 +89,13 @@ pif.variance.approximate.linear(Xmean, theta, rr, thetavar, Xvar,
 cft = function(X){cbind(0.5*X[,1],0.4*X[,2])}, check_integrals = FALSE)
 }
 }
+\seealso{
+\code{\link{pif.variance.linear}} for \code{\link{pif}} variance and 
+ \code{\link{pif.confidence}} for confidence intervals of \code{\link{pif}}
+}
 \author{
 Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
 Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
-\seealso{
-\code{\link{pif.variance.linear}} for \code{\link{pif}} variance and 
- \code{\link{pif.confidence}} for confidence intervals of \code{\link{pif}}
-}
 \keyword{internal}
-

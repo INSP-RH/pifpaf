@@ -15,10 +15,10 @@ paf.linear(X, thetahat, method = "empirical",
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+\item{thetahat}{Asymptotically consistent or Fisher consistent estimator (\code{vector}) of \code{theta} for the Relative 
 Risk function \code{rr}.
 
-**Optional**}
+\strong{**Optional**}}
 
 \item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
 \code{"approximate"}. For details on estimation methods see 
@@ -68,7 +68,7 @@ paf      Estimate of Population Attributable Fraction with linear
 }
 \description{
 Function that calculates the Population Attributable Fraction
-  \code{\link{paf}} with linear relative risk function \code{rr} given by 
+  \code{\link{paf}} with linear Relative Risk function \code{rr} given by 
   \deqn{
   rr(X; \theta) = \theta_1 + \sum\limits_{i=1}^{n} \theta_{i+1} X_i.
   }{
@@ -76,7 +76,7 @@ Function that calculates the Population Attributable Fraction
   }
 }
 \note{
-\code{"approximate"} method should be the last choice. In practice 
+The \code{"approximate"} method should be the last choice. In practice 
   \code{"empirical"} should be preferred as convergence is faster than 
   \code{"kernel"} for most functions. In addition, the scope of
   \code{"kernel"} is limited as it does not work with multivariate exposure
@@ -121,11 +121,6 @@ theta <- c(1, 0.3,0.1, 0.4)
 paf.linear(matX,theta) #Polynomial risk: 1 + 0.3*X + 0.1*X^2 + 0.4*X^3
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -143,4 +138,8 @@ See \code{\link{paf}} for Population Attributable Fraction (with
   
   For more information on kernels see \code{\link[stats]{density}}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

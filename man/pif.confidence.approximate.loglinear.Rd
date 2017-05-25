@@ -22,10 +22,10 @@ Risk function \code{rr}}
 \item{thetavar}{Estimator of variance of \code{thetahat}}
 
 \item{rr}{Function for Relative Risk which uses parameter \code{theta}.
-The order of the parameters shound be \code{rr(X, theta)}.
-
-
-**Optional**}
+ The order of the parameters shound be \code{rr(X, theta)}.
+ 
+ 
+\strong{**Optional**}}
 
 \item{cft}{Differentiable function \code{cft(X)} for counterfactual.
 Leave empty for the Population Attributable Fraction \code{\link{paf}} where
@@ -93,4 +93,3 @@ Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \keyword{internal}
-

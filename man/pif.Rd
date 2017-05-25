@@ -15,14 +15,15 @@ pif(X, thetahat, rr, cft = NA, method = "empirical",
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function.}
+\item{thetahat}{Asymptotically consistent or Fisher consistent
+estimator (\code{vector}) of \code{theta} for the Relative 
+ Risk function.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-
-
-**Optional**}
+ \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
+ 
+ 
+\strong{**Optional**}}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
 the Population Attributable Fraction \code{\link{paf}} where 
@@ -358,11 +359,6 @@ cft <- function(X){
 pif(X, thetahat, rr, cft)
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -377,4 +373,8 @@ See \code{\link{pif.confidence}} for confidence interval estimation,
   Sensitivity analysis plots can be done with \code{\link{pif.plot}}, 
   \code{\link{pif.sensitivity}}, and \code{\link{pif.heatmap}}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

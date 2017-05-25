@@ -15,14 +15,15 @@ paf(X, thetahat, rr, method = "empirical",
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function \code{rr}.}
+\item{thetahat}{Asymptotically consistent or Fisher consistent
+estimator (\code{vector}) of \code{theta} for the Relative 
+ Risk function \code{rr}.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
 \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 
 
-**Optional**}
+\strong{**Optional**}}
 
 \item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
 \code{"approximate"}. For details on estimation methods see 
@@ -72,7 +73,7 @@ paf      Estimate of Population Attributable Fraction.
 \description{
 Function for estimating the Population Attributable Fraction 
   \code{paf} from a cross-sectional sample of the exposure \code{X} with a 
-  known Relative Risk function \code{rr} with parameter \code{theta}, where 
+  known Relative Risk function \code{rr} with meta-analytical parameter  \code{theta}, where 
   the Population Attributable Fraction is given by: \deqn{ PAF = 
   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]} .}{ PAF 
   = mean(rr(X; theta) - 1)/mean(rr(X; theta)).}
@@ -286,11 +287,6 @@ paf(X, thetahat, rr)
 
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -309,4 +305,8 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   Sensitivity analysis plots can be done with \code{\link{paf.plot}}, and 
   \code{\link{paf.sensitivity}}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

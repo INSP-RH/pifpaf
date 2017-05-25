@@ -18,9 +18,9 @@ counterfactual.plot.continuous(X, cft, weights = rep(1/nrow(as.matrix(X)),
 \arguments{
 \item{X}{Univariate \code{vector} continuous exposure levels.}
 
-\item{cft}{Counterfactual function of the exposure \code{cft(X)}
-
-**Optional**}
+\item{cft}{Counterfactual function of the exposure \code{cft(X)}.
+  
+\strong{**Optional**}}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
@@ -33,36 +33,36 @@ estimated (see \code{\link[stats]{density}}).}
 \item{ktype}{\code{kernel} type:  \code{"gaussian"}, 
 \code{"epanechnikov"}, \code{"rectangular"}, \code{"triangular"}, 
 \code{"biweight"}, \code{"cosine"}, \code{"optcosine"} (for \code{kernel} 
-method). Additional information on kernels in \code{\link[stats]{density}}}
+method). Additional information on kernels in \code{\link[stats]{density}}.}
 
 \item{bw}{Smoothing bandwith parameter from density from
 \code{\link[stats]{density}}. Default \code{"SJ"}.}
 
-\item{title}{String with plot title}
+\item{title}{String with plot title.}
 
 \item{dnames}{String vector indicating the names of the distributions for 
-the legend}
+the legend.}
 
-\item{legendtitle}{String title for the legend of plot}
+\item{legendtitle}{String title for the legend of plot.}
 
 \item{xlab}{String label for the X-axis of the plot (corresponding 
-to "a")}
+to "a").}
 
 \item{ylab}{String label for the Y-axis of the plot (corresponding 
-to "b")}
+to "b").}
 
 \item{fill_limits}{Vector. Limits of subset of the exposure \code{X} such
 that only \code{fill_limits[1] < X < fill_limits[2]} are filled with color.}
 
-\item{fill}{Colour the densities? Default \code{TRUE}}
+\item{fill}{Boolean that indicates whether there is interior colouring. Default \code{TRUE}.}
 
-\item{colors}{String vector with colors for plots}
+\item{colors}{String vector with colors for plots.}
 
-\item{check_exposure}{Check that exposure \code{X} is positive and numeric}
+\item{check_exposure}{Check that exposure \code{X} is positive and numeric.}
 }
 \value{
 cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift
-  from actual to counterfactual distribution
+  from actual to counterfactual distribution.
 }
 \description{
 Function that creates a plot of the distribution of exposure
@@ -114,11 +114,6 @@ fill_limits = c(23, Inf))
 counterfactual.plot.continuous(X, cft, ktype = "epanechnikov", bw = "nrd0", fill = FALSE)   
   
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -133,5 +128,9 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   \code{\link{pif.plot}} for a plot of potential impact fraction as a 
   function of the relative risk's parameter \code{theta}.
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

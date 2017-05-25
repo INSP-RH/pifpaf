@@ -25,15 +25,14 @@ Function for checking that the theta parameters are correctly
   specified according to chosen \code{pif.confidence} and
   \code{paf.confidence} \code{confidence_method}.
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{check.confidence}}, \code{\link{check.xvar}}, 
   \code{\link{check.cft}}, \code{\link{check.rr}}, 
   \code{\link{check.exposure}}, \code{\link{check.integrals}}
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

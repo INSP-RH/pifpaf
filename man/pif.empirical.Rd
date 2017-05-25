@@ -85,11 +85,6 @@ cft  <- function(X){
 pif.empirical(X, thetahat, rr, cft) 
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{pif}} which is a wrapper for all pif methods 
  (\code{\link{pif.empirical}}, \code{\link{pif.approximate}}, 
@@ -98,5 +93,9 @@ Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
  For estimation of the Population Attributable Fraction see
  \code{\link{paf}}.
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

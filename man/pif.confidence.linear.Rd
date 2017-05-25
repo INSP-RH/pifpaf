@@ -8,7 +8,8 @@ using Delta Method}
 pif.confidence.linear(X, thetahat, rr, thetavar, cft = NA,
   weights = rep(1/nrow(as.matrix(X)), nrow(as.matrix(X))), confidence = 95,
   nsim = 1000, check_thetas = TRUE, check_exposure = TRUE,
-  check_rr = TRUE, check_integrals = TRUE, is_paf = FALSE)
+  check_cft = TRUE, check_rr = TRUE, check_integrals = TRUE,
+  is_paf = FALSE)
 }
 \arguments{
 \item{X}{Random sample (\code{data.frame}) which includes exposure and
@@ -54,7 +55,7 @@ to the potential impact fraction.
 \dontrun{
 #Example with risk given by HR (PAF)
 set.seed(18427)
-X <- rnorm(100,3,.5)
+X <- as.data.frame(rnorm(100,3,.5))
 thetahat <- 0.12
 thetavar <- 0.1
 pif.confidence.linear(X, thetahat, function(X, theta){exp(theta*X)}, 
@@ -69,7 +70,7 @@ pif.confidence.linear(X, thetahat, function(X, theta){exp(theta*X)},
 set.seed(18427)
 X1 <- rnorm(100, 3,.5)
 X2 <- rnorm(100,3,.5)
-X  <- as.matrix(cbind(X1,X2))
+X  <- as.data.frame(as.matrix(cbind(X1,X2)))
 thetahat <- c(0.1, 0.03)
 thetavar <- matrix(c(0.1, 0, 0, 0.05), byrow = TRUE, nrow = 2)
 rr       <- function(X, theta){
@@ -87,4 +88,3 @@ Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \keyword{internal}
-

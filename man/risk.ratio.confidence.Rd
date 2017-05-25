@@ -142,11 +142,6 @@ rr <- function(X, theta){
 risk.ratio.confidence(data.frame(X), thetahat, rr, thetavar)
 }
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Sherif, Y. .s. (1989). The lower confidence limit for the mean of
   positive random variables. Microelectronics Reliability, 29(2), 151-152.
@@ -155,5 +150,9 @@ Sherif, Y. .s. (1989). The lower confidence limit for the mean of
 \link{risk.ratio.approximate.confidence} for a method when only
   \code{mean(X)} and \code{var(X)} are known.
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

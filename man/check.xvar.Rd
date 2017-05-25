@@ -23,15 +23,14 @@ Xvar <- 0.2
 check.xvar(Xvar)
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{check.confidence}}, \code{\link{check.thetas}}, 
   \code{\link{check.cft}}, \code{\link{check.rr}}, 
   \code{\link{check.exposure}}, \code{\link{check.integrals}}
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

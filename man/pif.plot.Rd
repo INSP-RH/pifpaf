@@ -13,6 +13,7 @@ pif.plot(X, thetalow, thetaup, rr, cft = NA, method = "empirical",
   colors = c("deepskyblue", "gray25"), xlab = "Theta", ylab = "PIF",
   title = "Potential Impact Fraction (PIF) under different values of theta",
   check_exposure = TRUE, check_rr = TRUE, check_integrals = TRUE,
+  check_cft = TRUE, check_thetas = TRUE, check_xvar = TRUE,
   is_paf = FALSE)
 }
 \arguments{
@@ -27,9 +28,9 @@ selected.}
 \code{rr}) for plot.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-
-**Optional**}
+ \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
+ 
+\strong{**Optional**}}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
 the Population Attributable Fraction \code{\link{paf}} where 
@@ -77,7 +78,7 @@ method). Additional information on kernels in \code{\link[stats]{density}}.}
 \code{"kernel"} method) from \code{\link[stats]{density}}. Default 
 \code{"SJ"}.}
 
-\item{colors}{\code{vector} Colors of plot.}
+\item{colors}{\code{vector} Colours of plot.}
 
 \item{xlab}{\code{string} Label of x-axis in plot.}
 
@@ -88,12 +89,20 @@ method). Additional information on kernels in \code{\link[stats]{density}}.}
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
 positive and numeric.}
 
-\item{check_rr}{\code{boolean} Check that Relative Risk function
-\code{rr} equals \code{1} when evaluated at \code{0}.}
+\item{check_rr}{\code{boolean} Check that Relative Risk function \code{rr} equals 
+\code{1} when evaluated at \code{0}.}
 
 \item{check_integrals}{\code{boolean}  Check that counterfactual \code{cft} 
 and relative risk's \code{rr} expected values are well defined for this 
 scenario.}
+
+\item{check_cft}{\code{boolean}  Check that counterfactual function 
+\code{cft} reduces exposure.}
+
+\item{check_thetas}{\code{boolean} Check that theta associated parameters are
+correctly inputed for the model.}
+
+\item{check_xvar}{\code{boolean} Check \code{Xvar} is covariance matrix.}
 
 \item{is_paf}{Boolean forcing evaluation of \code{\link{paf}}. This forces
 the \code{pif} function ignore the inputed counterfactual and set it to the
@@ -106,7 +115,7 @@ pif.plot       \code{\link[ggplot2]{ggplot}} object with plot of
 \description{
 Function that plots the \code{\link{pif}} under different values
   of a univariate parameter \code{theta} of the relative risk function \code{rr} 
-  which depends on the exposure \code{X} and a \code{theta} parameter 
+  which depends on the exposure \code{X} and a  parameter \code{theta}
   (\code{rr(X, theta)})
 }
 \examples{
@@ -141,11 +150,6 @@ cft = function(X){sqrt(X)}, method = "approximate", Xvar = Xvar)
 }
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 See \code{\link{pif}} for Potential Impact Fraction estimation with
   confidence intervals \code{\link{pif.confidence}}.
@@ -153,4 +157,8 @@ See \code{\link{pif}} for Potential Impact Fraction estimation with
 See \code{\link{paf.plot}} for same plot with 
 Population Attributable Fraction \code{\link{paf}}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

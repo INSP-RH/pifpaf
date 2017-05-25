@@ -26,9 +26,9 @@ selected.}
 \code{rr}) for plot.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters should be \code{rr(X, theta)}.
-
-**Optional**}
+ \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
+ 
+\strong{ **Optional**}}
 
 \item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
 \code{"approximate"}. For details on estimation methods see 
@@ -96,7 +96,7 @@ paf.plot       \code{\link[ggplot2]{ggplot}} object with plot of
 }
 \description{
 Function that plots the \code{\link{paf}} under different values
-  of a univariate parameter \code{theta} of the relative risk function \code{rr} 
+  of a univariate parameter \code{theta} of the Relative Risk function \code{rr} 
   which depends on the exposure \code{X} and a \code{theta} parameter 
   (\code{rr(X, theta)})
 }
@@ -122,11 +122,6 @@ method = "approximate", Xvar = Xvar, title = "Approximate method example")
 }
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 See \code{\link{paf}} for Population Attributable Fraction estimation 
   with confidence intervals \code{\link{paf.confidence}}.
@@ -134,4 +129,8 @@ See \code{\link{paf}} for Population Attributable Fraction estimation
 See \code{\link{pif.plot}} for same plot with Potential Impact Fraction 
   \code{\link{pif}}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

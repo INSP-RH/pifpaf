@@ -3,7 +3,7 @@
 \name{counterfactual.plot.discrete}
 \alias{counterfactual.plot.discrete}
 \title{Create a plot of the distribution of exposure under counterfactual
-  scenario for discrete exposure}
+  scenario for discrete exposure.}
 \usage{
 counterfactual.plot.discrete(X, cft, weights = rep(1/nrow(as.matrix(X)),
   nrow(as.matrix(X))),
@@ -15,36 +15,36 @@ counterfactual.plot.discrete(X, cft, weights = rep(1/nrow(as.matrix(X)),
 \arguments{
 \item{X}{One dimensional \code{vector} with exposure levels.}
 
-\item{cft}{Counterfactual function of the exposure \code{cft(X)}
+\item{cft}{Counterfactual function of the exposure \code{cft(X)}.
 
-**Optional**}
+\bold{**Optional**}}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
-\item{title}{String with plot title}
+\item{title}{String with plot title.}
 
 \item{dnames}{String vector indicating the names of the distributions for
-the legend}
+the legend.}
 
-\item{legendtitle}{String title for the legend of plot}
+\item{legendtitle}{String title for the legend of plot.}
 
 \item{xlab}{String label for the X-axis of the plot (corresponding 
-to "a")}
+to "a").}
 
 \item{ylab}{String label for the Y-axis of the plot (corresponding 
-to "b")}
+to "b").}
 
-\item{colors}{String vector with colors for plots}
+\item{colors}{String vector with colors for plots.}
 
-\item{x_axis_order}{Order of names in xaxis for plot}
+\item{x_axis_order}{Order of names in xaxis for plot.}
 }
 \value{
 cft_plot   \code{\link[ggplot2]{ggplot}} object plotting the shift from actual to
-  counterfactual distribution
+  counterfactual distribution.
 }
 \description{
 Function that creates a plot of the distribution of exposure
-  \code{X} under counterfactual scenario \code{cft} for discrete exposures
+  \code{X} under counterfactual scenario \code{cft} for discrete exposures.
 }
 \examples{
 
@@ -106,11 +106,6 @@ cft <- function(X){
 counterfactual.plot.discrete(X, cft, x_axis_order = c("Underweight","Normal","Obese","Overweight")) 
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -125,5 +120,9 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   \code{\link{pif.plot}} for a plot of potential impact fraction as a 
   function of the relative risk's parameter \code{theta}.
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

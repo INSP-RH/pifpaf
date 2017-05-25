@@ -16,10 +16,10 @@ paf.exponential(X, thetahat, method = "empirical",
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+\item{thetahat}{Asymptotically consistent or Fisher consistent estimator (\code{vector}) of \code{theta} for the Relative 
 Risk function \code{rr}.
 
-**Optional**}
+\strong{**Optional**}}
 
 \item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
 \code{"approximate"}. For details on estimation methods see 
@@ -108,11 +108,6 @@ theta <- c(0.3,0.1)
 paf.exponential(X,theta) #Exponential risk given exp(0.3*X1 + 0.1*X2)
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -130,4 +125,8 @@ See \code{\link{paf}} for Population Attributable Fraction (with
   
   For more information on kernels see \code{\link[stats]{density}}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

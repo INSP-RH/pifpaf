@@ -67,15 +67,14 @@ cft <- function(X){0.5*X}
 pif.conditional.variance.linear(X, thetahat, rr, cft) 
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{pif.variance.linear} for \code{pif} variance without
  conditioning on \code{theta}  and \code{pif.variance.loglinear} for variance
  of \code{log(pif)}
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

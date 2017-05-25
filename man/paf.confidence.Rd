@@ -18,15 +18,15 @@ paf.confidence(X, thetahat, rr, thetavar = NA, thetalow = NA,
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function. \code{thetahat} should be asymptotically normal with mean 
-\code{theta} and variance \code{var_of_theta}.}
+\item{thetahat}{Asymptotically consistent of Fisher consistent estimator (\code{vector})
+of \code{theta} for the Relative Risk function. \code{thetahat} should be 
+asymptotically normal with mean \code{theta} and variance \code{var_of_theta}.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-
-
-**Optional**}
+ \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
+ 
+ 
+\strong{ **Optional**}}
 
 \item{thetavar}{Estimator of variance \code{var_of_theta} of asymptotic 
 normality of \code{thetahat}.}
@@ -114,7 +114,7 @@ pafvec Vector with lower (\code{"Lower_CI"}), and upper
 \description{
 Function that estimates confidence intervals for the Population 
   Attributable Fraction \code{\link{paf}} from a cross-sectional sample of 
-  the exposure \code{X} with a known Relative Risk function \code{rr} with 
+  the exposure \code{X} with a known Relative Risk function \code{rr} with meta-analytical
   parameter \code{theta}, where the Population Attributable Fraction is given
   by: \deqn{ PAF = 
   \frac{E_X\left[rr(X;\theta)\right]-1}{E_X\left[rr(X;\theta)\right]}. }{ PAF 
@@ -123,8 +123,8 @@ Function that estimates confidence intervals for the Population
 \details{
 The \code{confidence_method} estimates confidence intervals with
 different methods. A bootstrap approximation is conducted by 
-\code{"bootstrap"}. The Delta Method is applied to \code{\link{pif}}
-or \code{log(pif)} when choosing \code{"linear"} and \code{"loglinear"}
+\code{"bootstrap"}. The Delta Method is applied to \code{\link{paf}}
+or \code{log(paf)} when choosing \code{"linear"} and \code{"loglinear"}
 respectively. The \code{"inverse"} method estimates confidence intervals
 for the Relative Risk function \code{rr} and applies the transformation
 \code{1 - 1/rr}. Finally, \code{"one2one"} works with functions for which
@@ -334,11 +334,6 @@ rr <- function(X, theta){
 paf.confidence(X, thetahat, rr, thetavar)
 }
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{pif.confidence}} for confidence interval estimation of
   \code{\link{pif}}, and  \code{\link{paf}} for only point estimates.
@@ -346,4 +341,8 @@ Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
   Sensitivity analysis plots can be done with \code{\link{paf.plot}}, and 
   \code{\link{paf.sensitivity}}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

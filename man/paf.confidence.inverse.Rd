@@ -14,7 +14,7 @@ paf.confidence.inverse(X, thetahat, rr, thetavar,
 \item{X}{Random sample (\code{data.frame}) which includes exposure
 and covariates.}
 
-\item{thetahat}{Estimative of \code{theta} for the Relative Risk function}
+\item{thetahat}{Estimative of \code{theta} for the Relative Risk function.}
 
 \item{rr}{Function for Relative Risk which uses parameter 
   \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
@@ -22,7 +22,7 @@ and covariates.}
 
 **Optional**}
 
-\item{thetavar}{Estimator of variance of \code{thetahat}}
+\item{thetavar}{Estimator of variance of \code{thetahat}.}
 
 \item{weights}{Survey \code{weights} for the random sample \code{X}.}
 
@@ -100,4 +100,3 @@ Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 }
 \keyword{internal}
-

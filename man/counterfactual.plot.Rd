@@ -20,8 +20,8 @@ counterfactual.plot(X, cft, weights = rep(1/nrow(as.matrix(X)),
 exposure.}
 
 \item{cft}{Function \code{cft(X)} for counterfactual.
-
-**Optional**}
+ 
+\bold{ **Optional**}}
 
 \item{weights}{Normalized survey \code{weights} for the sample \code{X}.}
 
@@ -67,7 +67,7 @@ exposure \code{X} such that only  the \code{X}s satisfying
 \code{fill_limits[1]} < \code{X} < \code{fill_limits[2]} are
 filled with color.}
 
-\item{fill}{Color the densities? Default \code{TRUE}.}
+\item{fill}{Boolean that indicates whether there is interior colouring. Default \code{TRUE}.}
 
 \item{check_exposure}{Check exposure \code{X} is positive and numeric (if
 \code{"continuous"}).}
@@ -190,11 +190,6 @@ counterfactual.plot(X, cft, ktype = "epanechnikov", bw = "nrd0")
 } 
   
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., & 
   Murray, C. J. (2004). \emph{Estimating attributable burden of disease from 
@@ -208,4 +203,8 @@ Vander Hoorn, S., Ezzati, M., Rodgers, A., Lopez, A. D., &
   \code{\link{pif.plot}} for a plot of \code{pif} as a function of the relative
   risk's  parameter \code{theta}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

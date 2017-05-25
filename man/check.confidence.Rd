@@ -24,15 +24,14 @@ confidence <- 95
 check.confidence(confidence)
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{check.thetas}}, \code{\link{check.xvar}}, 
   \code{\link{check.cft}}, \code{\link{check.rr}},
   \code{\link{check.exposure}}, \code{\link{check.integrals}}
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

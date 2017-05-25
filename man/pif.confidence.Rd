@@ -17,18 +17,18 @@ pif.confidence(X, thetahat, rr, thetavar, cft = NA, method = "empirical",
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
-Risk function. \code{thetahat} should be asymptotically normal with mean 
-\code{theta} and variance \code{var_of_theta}.}
+\item{thetahat}{Asymptotically consistent or Fisher consistent estimator
+(\code{vector}) of \code{theta} for the Relative 
+ Risk function. \code{thetahat} should be asymptotically normal \code{(N(theta, var_of_theta))}
+ with mean  \code{theta} and estimated variance \code{var_of_theta}.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
 \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.}
 
-\item{thetavar}{Estimator of variance \code{var_of_theta} of asymptotic 
-  normality of \code{thetahat}.
+\item{thetavar}{Estimator of variance \code{var_of_theta}.
 
 
-**Optional**}
+\strong{**Optional**}}
 
 \item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
 the Population Attributable Fraction \code{\link{paf}} where 
@@ -363,11 +363,6 @@ cft <- function(X){
 pif.confidence(X, thetahat, rr, thetavar, cft)
 }
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 See \code{\link{paf.confidence}} for confidence interval estimation of
   \code{\link{paf}}, and  \code{\link{pif}} for only point estimate.
@@ -375,4 +370,8 @@ See \code{\link{paf.confidence}} for confidence interval estimation of
   Sensitivity analysis plots can be done with \code{\link{paf.plot}}, and 
   \code{\link{paf.sensitivity}}
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

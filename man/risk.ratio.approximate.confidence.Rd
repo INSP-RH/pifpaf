@@ -89,11 +89,6 @@ risk.ratio.approximate.confidence(X, Xvar, thetahat, rr, thetavar)
 }
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \references{
 Sherif, Y. .s. (1989). The lower confidence limit for the mean of 
  positive random variables. Microelectronics Reliability, 29(2), 151-152.
@@ -102,5 +97,9 @@ Sherif, Y. .s. (1989). The lower confidence limit for the mean of
 \link{risk.ratio.confidence} for a method when there is a sample of 
  the exposure.
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

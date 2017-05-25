@@ -20,16 +20,17 @@ pif.sensitivity(X, thetahat, rr, cft = NA, method = "empirical",
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the
-Relative Risk function.}
+\item{thetahat}{Asymptotically consistent or Fisher consistent estimator
+(\code{vector}) of \code{theta} for the
+ Relative Risk function.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+\code{theta}. The order of the parameters should be \code{rr(X, theta)}.
 
 
-**Optional**}
+\strong{**Optional**}}
 
-\item{cft}{Function \code{cft(X)} for counterfactual. Leave empty for 
+\item{cft}{\code{function} \code{cft(X)} for counterfactual. Leave empty for 
 the Population Attributable Fraction \code{\link{paf}} where 
 counterfactual is that of a theoretical minimum risk exposure 
 \code{X0} such that \code{rr(X0,theta) = 1}.}
@@ -70,7 +71,7 @@ method). Additional information on kernels in \code{\link[stats]{density}}.}
 
 \item{title}{\code{string} title of plot.}
 
-\item{colors}{\code{string} vector with colors for plots.}
+\item{colors}{\code{string} vector with colours for plots.}
 
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
 positive and numeric.}
@@ -136,7 +137,7 @@ pif.sensitivity(X, theta, rr = rr, cft = cft,
                  title = "Sensitivity Analysis for example 1 using kernel")
                  
 
-#Example 4: Plot counterfactual with categorical risks
+#Example 3: Plot counterfactual with categorical risks
 #------------------------------------------------------------------
 set.seed(18427)
 X        <- data.frame(Exposure = 
@@ -168,8 +169,8 @@ cft <- function(X){
    which_over  <- which(X == "Overweight")
    
    #Reduce per.over \% of overweight and per.obese \% of obese
-   X[sample(which_obese, length(which_obese)*0.5)] <- "Normal"
-   X[sample(which_over,  length(which_over)*0.5)]  <- "Normal"
+   X[sample(which_obese, floor(length(which_obese)*0.5)),1] <- "Normal"
+   X[sample(which_over,  floor(length(which_over)*0.5)),1]  <- "Normal"
    
    return(X)
 }
@@ -188,15 +189,14 @@ pifplot
 }
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 See \code{\link{pif}} for Potential Impact Fraction estimation, 
   \code{\link{pif.heatmap}} for sensitivity analysis of counterfactual, 
   \code{\link{pif.plot}} for a plot of Potential Impact Fraction as a
   function of the relative risk's parameter \code{theta}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

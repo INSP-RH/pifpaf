@@ -20,15 +20,15 @@ pif.heatmap(X, thetahat, rr, cft = function(X, a, b) {     a * X + b },
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the Relative 
+\item{thetahat}{Asymptotically consistent or Fisher consistent estimator (\code{vector}) of \code{theta} for the Relative 
 Risk function.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
 \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
 
-**Optional**}
+\strong{**Optional**}}
 
-\item{cft}{Function \code{cft(X, a, b)} for counterfactual dependent on
+\item{cft}{\code{function} \code{cft(X, a, b)} for counterfactual dependent on
 one dimensional parameters \code{a} and \code{b}. Default counterfactual is 
 affine: \code{aX + b}.}
 
@@ -88,7 +88,7 @@ to "a").}
 \item{ylab}{\code{string} label for the Y-axis of the plot (corresponding
 to "b").}
 
-\item{colors}{Colors of heatmap.}
+\item{colors}{\code{vector} of colours for the heatmap.}
 
 \item{check_exposure}{\code{boolean}  Check that exposure \code{X} is 
 positive and numeric.}
@@ -213,15 +213,14 @@ pif.heatmap(X, thetahat = thetahat, rr = rr, cft = cft, mina = 0, minb = 0, maxa
             check_exposure = FALSE, check_rr = FALSE)
 }
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 See \code{\link{pif}} for Potential Impact Fraction estimation,
   \code{\link{pif.sensitivity}} for sensitivity analysis of the convergence
  process,  \code{\link{pif.plot}} for a plot of Potential Impact
   Fraction as a function of the relative risk's parameter \code{theta}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

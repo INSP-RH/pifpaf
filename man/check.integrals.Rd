@@ -15,7 +15,7 @@ check.integrals(meanrr, meancft)
 bool   \code{TRUE} if as desired
 }
 \description{
-Function for checking that the integrals of \code{\link{pif}} make sense.
+Function for checking that the integrals of \code{\link{pif}} are nonnegative.
 }
 \examples{
 check.integrals(1,0)
@@ -26,15 +26,14 @@ check.integrals(1,-1)
 }
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{check.confidence}}, \code{\link{check.thetas}}, 
   \code{\link{check.cft}}, \code{\link{check.xvar}}, 
   \code{\link{check.rr}}, \code{\link{check.exposure}}
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

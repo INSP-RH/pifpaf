@@ -42,14 +42,13 @@ paf.combine(c(pafmen, pafwomen), c(0.45, 0.55))
 
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{paf}} for Population Attributable Fraction estimation, 
   \code{\link{pif}} for Potential Impact Fraction estimation, and 
   \code{\link{pif.combine}} for combining several PIF.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

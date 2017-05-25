@@ -20,13 +20,14 @@ paf.sensitivity(X, thetahat, rr, method = "empirical",
 and covariates or sample \code{mean} if \code{"approximate"} method is 
 selected.}
 
-\item{thetahat}{Consistent estimator (\code{vector}) of \code{theta} for the
-Relative Risk function.}
+\item{thetahat}{Asymptotically consistent or Fisher consistent estimator
+(\code{vector}) of \code{theta} for the
+ Relative Risk function.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters should be \code{rr(X, theta)}.
-
-**Optional**}
+ \code{theta}. The order of the parameters should be \code{rr(X, theta)}.
+ 
+\strong{**Optional**}}
 
 \item{method}{Either \code{"empirical"} (default), \code{"kernel"} or 
 \code{"approximate"}. For details on estimation methods see 
@@ -160,14 +161,13 @@ pafplot
 }
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{paf}} for Population Attributable Fraction estimation, 
   \code{\link{paf.plot}} for a plot of Population Attributable Fraction as a 
   function of the relative risk's parameter \code{theta}.
 }
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}

@@ -20,9 +20,9 @@ many columns as covariates}
 Risk function.}
 
 \item{rr}{\code{function} for Relative Risk which uses parameter 
-\code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
-
-**Optional**}
+ \code{theta}. The order of the parameters shound be \code{rr(X, theta)}.
+ 
+\strong{**Optional**}}
 
 \item{cft}{Twice differentiable function \code{cft(X)} for
 counterfactual. Leave empty for the Population Attributable Fraction
@@ -100,11 +100,6 @@ cft      <- function(X){cbind(sqrt(X[,1] + 0.2*X[,2]), X[,1])}
 pif.approximate(Xmean, Xvar, thetahat, rr, cft)
 
 }
-\author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
-Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
-}
 \seealso{
 \code{\link{pif}} which is a wrapper for all pif methods 
  (\code{\link{pif.empirical}}, \code{\link{pif.approximate}}, 
@@ -113,5 +108,9 @@ Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
  For estimation of the Population Attributable Fraction see
  \code{\link{paf}}.
 }
-\keyword{internal}
+\author{
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 
+Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+}
+\keyword{internal}

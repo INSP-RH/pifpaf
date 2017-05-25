@@ -1,31 +1,16 @@
 Package: pifpaf
-Title: Potential Impact Fraction and Population Attributable Fraction for Cross-
-    Sectional Data
-Version: 0.9.0
-Authors@R: c(person("Rodrigo", "Zepeda-Tello", email = "rzepeda17@gmail.com", role = c("aut", "cre")), person("Dalia", "Camacho-García-Formentí", email = "daliaf172@gmail.com", role = c("aut")), person("Tonatiuh","Barrientos-Gutiérrez", role = c("ctb")), person("Ana","Basto-Abreu", role = c("ctb")), person("Ariela","Braverman-Bronstein", role = c("ctb")), person("Dèsirée","Vidaña-Pérez", role = c("ctb")), person("Frederick","Cudhea", role = c("ctb")))
-Description: The pifpaf package uses a generalized method to estimate the
-    Potential Impact Fraction (PIF) and the Population Attributable Fraction (PAF)
-    from cross-sectional data. It creates point-estimates, confidence intervals, and
-    estimates of variance. In addition it generates plots for conducting sensitivity
-    analysis. This package was developed under funding by Bloomberg Philanthropies.
-Depends:
-    R (>= 3.2.3)
+Title: Potential Impact Fraction and Population Attributable Fraction for Cross-Sectional Data
+Version: 1.0.0
+Authors@R: c(person("Rodrigo", "Zepeda-Tello", email = "rzepeda17@gmail.com", role = c("aut", "cre")), person("Dalia", "Camacho-García-Formentí", email = "daliaf172@gmail.com", role = c("aut")), person("Tonatiuh","Barrientos-Gutiérrez", role = c("ctb")), person("Ana","Basto-Abreu", role = c("ctb")), person("Ariela","Braverman-Bronstein", role = c("ctb")), person("Dèsirée","Vidaña-Pérez", role = c("ctb")), person("Frederick","Cudhea", role = c("ctb")), person("Instituto Nacional de Salud Pública", role=c("cph")))
+Description: The pifpaf package uses a generalized method to estimate the Potential Impact Fraction (PIF) and the Population Attributable Fraction (PAF) from cross-sectional data. It creates point-estimates, confidence intervals, and estimates of variance. In addition it generates plots for conducting sensitivity analysis. This package was developed under funding by Bloomberg Philanthropies.
+Depends: R (>= 3.4.0)
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 Type: Package
-Suggests:
-    testthat,
-    knitr,
-    rmarkdown
+Date: 2017-05-23
+Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 LazyLoad: yes
-Imports:
-    ggplot2,
-    matrixcalc,
-    MASS,
-    sfsmisc,
-    stats,
-    gridExtra,
-    numDeriv
-RoxygenNote: 5.0.1
+Imports: ggplot2, matrixcalc, MASS, sfsmisc, stats, gridExtra, numDeriv
+RoxygenNote: 6.0.1
