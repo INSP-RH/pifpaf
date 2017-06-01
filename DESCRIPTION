@@ -2,7 +2,7 @@ Package: pifpaf
 Title: Potential Impact Fraction and Population Attributable Fraction for Cross-Sectional Data
 Version: 1.0.0
 Authors@R: c(person("Rodrigo", "Zepeda-Tello", email = "rzepeda17@gmail.com", role = c("aut", "cre")), person("Dalia", "Camacho-García-Formentí", email = "daliaf172@gmail.com", role = c("aut")), person("Tonatiuh","Barrientos-Gutiérrez", role = c("ctb")), person("Ana","Basto-Abreu", role = c("ctb")), person("Ariela","Braverman-Bronstein", role = c("ctb")), person("Dèsirée","Vidaña-Pérez", role = c("ctb")), person("Frederick","Cudhea", role = c("ctb")), person("Instituto Nacional de Salud Pública", role=c("cph")))
-Description: The pifpaf package uses a generalized method to estimate the Potential Impact Fraction (PIF) and the Population Attributable Fraction (PAF) from cross-sectional data. It creates point-estimates, confidence intervals, and estimates of variance. In addition it generates plots for conducting sensitivity analysis. This package was developed under funding by Bloomberg Philanthropies.
+Description: Uses a generalized method to estimate the Potential Impact Fraction (PIF) and the Population Attributable Fraction (PAF) from cross-sectional data. It creates point-estimates, confidence intervals, and estimates of variance. In addition it generates plots for conducting sensitivity analysis. The estimation method corresponds to  Zepeda-Tello,  Camacho-García-Formentí, et al. 2017. 'Nonparametric Methods to Estimate the Potential Impact Fraction from Cross-sectional Data'. Unpublished manuscript. This package was developed under funding by Bloomberg Philanthropies.
 Depends: R (>= 3.4.0)
 License: GPL-3 | file LICENSE
 Encoding: UTF-8

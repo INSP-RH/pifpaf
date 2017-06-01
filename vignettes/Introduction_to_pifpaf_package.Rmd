@@ -120,17 +120,17 @@ pif(X = ozone_exposure, thetahat = thetahat, rr = rr, cft = cft, weights = sampl
 No study is complete without confidence intervals. Let's calculate the confidence intervals for both PAF and PIF: 
 
 ```{r }
-paf.confidence(X = ozone_exposure, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = sampling_weights)
+paf.confidence(X = ozone_exposure, thetahat = thetahat, thetavar = thetavar, rr = rr, weights = sampling_weights, nsim = 200)
 ```
     
 ```{r}
-pif.confidence(X = ozone_exposure, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = sampling_weights)
+pif.confidence(X = ozone_exposure, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, weights = sampling_weights, nsim = 200)
 ```     
 
 Several plots are available to enrich our study. We can plot the effect of the counterfactual:
 
 ```{r, fig.width=7, fig.height=4}
-counterfactual.plot(X = ozone_exposure, cft = cft, weights = sampling_weights)
+counterfactual.plot(X = ozone_exposure, cft = cft, weights = sampling_weights, n=250)
 ```
 
 We can also conduct several sensitivity analysis: 
@@ -139,24 +139,24 @@ We can also conduct several sensitivity analysis:
 
 ```{r, fig.width=7, fig.height=4}
 
-paf.plot(X = ozone_exposure, thetalow = 0, thetaup = 1/pi, rr = rr, weights = sampling_weights)
+paf.plot(X = ozone_exposure, thetalow = 0, thetaup = 1/pi, rr = rr, weights = sampling_weights, mpoints = 25, nsim = 15)
 ```
 
 The same plot is available for the PIF:
 ```{r, fig.width=7, fig.height=4}
-pif.plot(X = ozone_exposure, thetalow = 0, thetaup = 1/pi, rr = rr, cft = cft, weights = sampling_weights)
+pif.plot(X = ozone_exposure, thetalow = 0, thetaup = 1/pi, rr = rr, cft = cft, weights = sampling_weights, mpoints = 25, nsim = 15)
 ```
 
 2. To evaluate the robustness of the PAF (*i.e.* would it change much for a different sample?).
 
 ```{r, fig.width=7, fig.height=4}
-paf.sensitivity(X = ozone_exposure, thetahat = thetahat, rr = rr, weights = sampling_weights)
+paf.sensitivity(X = ozone_exposure, thetahat = thetahat, rr = rr, weights = sampling_weights, nsim = 10, mremove = 20)
 ```
 
 The same can be done for the PIF:
 
 ```{r, fig.width=7, fig.height=4}
-pif.sensitivity(X = ozone_exposure, thetahat = thetahat, rr = rr, weights = sampling_weights)
+pif.sensitivity(X = ozone_exposure, thetahat = thetahat, rr = rr, weights = sampling_weights, nsim = 10, mremove = 20)
 ```
 
 3. To conduct a sensitivity analysis on how the PIF changes as the parameters of the counterfactual change. Notice that in order to use this function we need to specify in the definition of counterfactual the parameters involved (maximum 2):
@@ -170,7 +170,7 @@ We can also specify the range at which we will change the counterfactual's param
 
 ```{r, fig.width=7, fig.height=4}
 #Do the sensitivity analysis
-pif.heatmap(X = ozone_exposure, thetahat = thetahat, rr = rr, cft = cft_sensitivity, mina = 0.5, maxa = 0.75, minb = 0, maxb = 1, weights = sampling_weights)
+pif.heatmap(X = ozone_exposure, thetahat = thetahat, rr = rr, cft = cft_sensitivity, mina = 0.5, maxa = 0.75, minb = 0, maxb = 1, weights = sampling_weights, nmesh = 5)
 ```
 
 ### Discrete RR example: Tobacco consumption
@@ -263,12 +263,12 @@ thetavar <- diag(c(0.119, 0.041, 0.001, 0.093))
 
 The confidence interval for the PAF is:
 ```{r}
-paf.confidence(X = tobacco_consumption, thetahat = thetahat, thetavar = thetavar, rr = rr,  confidence_method = "bootstrap")
+paf.confidence(X = tobacco_consumption, thetahat = thetahat, thetavar = thetavar, rr = rr,  confidence_method = "bootstrap", nsim = 200)
 ```
 
 The confidence interval for the Potential Impact Fraction is given by:
 ```{r}
-pif.confidence(X = tobacco_consumption, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, confidence_method = "bootstrap")
+pif.confidence(X = tobacco_consumption, thetahat = thetahat, thetavar = thetavar, rr = rr, cft = cft, confidence_method = "bootstrap", nsim = 200)
 ```
 
 We remark that ``"bootstrap"`` is the only ``confidence_method`` designed for categorical relative risks. 
@@ -280,11 +280,13 @@ counterfactual.plot(tobacco_consumption, cft)
 
 A sensitivity analysis to evaluate both PAF and PIF's robustness is available:
 ```{r, fig.width=7, fig.height=4}
-paf.sensitivity(tobacco_consumption, thetahat=thetahat, rr, nsim = 20)
+paf.sensitivity(tobacco_consumption, thetahat=thetahat, rr, 
+                nsim = 10, mremove = 20)
 ```
 
 ```{r, fig.width=7, fig.height=4}
-pif.sensitivity(tobacco_consumption, thetahat=thetahat, rr=rr, cft = cft, nsim = 20)
+pif.sensitivity(tobacco_consumption, thetahat=thetahat, rr=rr, cft = cft,
+                nsim = 10, mremove = 20)
 ```
 
 
@@ -331,7 +333,7 @@ paf(X = afr_mean, thetahat = thetahat, rr = rr, method = "approximate", Xvar = a
 We can also compute confidence intervals:
 
 ```{r}
-paf.confidence(X = afr_mean, thetahat = thetahat,  thetavar = thetavar, rr = rr, method = "approximate", Xvar = afr_var, check_rr = FALSE)
+paf.confidence(X = afr_mean, thetahat = thetahat,  thetavar = thetavar, rr = rr, method = "approximate", Xvar = afr_var, check_rr = FALSE, nsim = 200)
 ```
 
 A counterfactual of reducing the overall SBP in 5 mmHg is given by:
@@ -347,16 +349,16 @@ pif(X = afr_mean, thetahat = thetahat, rr = rr, cft = cft, method = "approximate
 
 with confidence interval:
 ```{r}
-pif.confidence(X = afr_mean, thetahat = thetahat, rr = rr, cft = cft, method = "approximate", Xvar = afr_var, check_rr = FALSE, thetavar = thetavar)
+pif.confidence(X = afr_mean, thetahat = thetahat, rr = rr, cft = cft, method = "approximate", Xvar = afr_var, check_rr = FALSE, thetavar = thetavar, nsim = 200)
 ```
 
 We can plot how PAF (and PIF) estimates change as functions of $\theta$:
 ```{r, fig.width=7, fig.height=4}
-paf.plot(X = afr_mean, thetalow = 0, thetaup = 1, rr = rr, method = "approximate", Xvar = afr_var,  check_rr = FALSE)
+paf.plot(X = afr_mean, thetalow = 0, thetaup = 1, rr = rr, method = "approximate", Xvar = afr_var,  check_rr = FALSE, mpoints = 25, nsim = 15)
 ```
 
 ```{r, fig.width=7, fig.height=4}
-pif.plot(X = afr_mean, thetalow = 0, thetaup = 1, rr = rr, cft = cft, method = "approximate", Xvar = afr_var,  check_rr = FALSE)
+pif.plot(X = afr_mean, thetalow = 0, thetaup = 1, rr = rr, cft = cft, method = "approximate", Xvar = afr_var,  check_rr = FALSE, mpoints = 25, nsim = 15)
 ```
 
 ### Incomplete data Categorical RR example: Body Mass Index
@@ -619,17 +621,17 @@ rr       <- function(X, theta){theta*X + 1}
 cft      <- function(X){X/2}
 
 #Rectangular kernel
-pif.confidence(X, thetahat, rr, cft = cft, method = "kernel", ktype = "gaussian", thetavar = thetavar)
+pif.confidence(X, thetahat, rr, cft = cft, method = "kernel", ktype = "gaussian", thetavar = thetavar, nsim = 200)
 
 #Gaussian kernel
-pif.confidence(X, thetahat, rr, cft = cft, method = "kernel", ktype = "rectangular", thetavar = thetavar)
+pif.confidence(X, thetahat, rr, cft = cft, method = "kernel", ktype = "rectangular", thetavar = thetavar, nsim = 200)
 
 ```
 
 Additional kernel options include bandwith, adjustment, and number of interpolation points. These options are taken directly from the ``density`` function. 
 
 ```{r}
-pif.confidence(X, thetahat, rr, cft = cft, method = "kernel", ktype = "rectangular", bw = "nrd", adjust = 2, n = 1000, thetavar = thetavar)
+pif.confidence(X, thetahat, rr, cft = cft, method = "kernel", ktype = "rectangular", bw = "nrd", adjust = 2, n = 1000, thetavar = thetavar, nsim = 150)
 ```
 
 
@@ -669,11 +671,11 @@ The `force.min` option of `"inverse"` confidence method forces the Population At
 
 ```{r}
 X <- as.data.frame(rnorm(100))
-paf.confidence(X, 0.12, rr = function(X, theta){exp(theta*X)}, thetavar = 0.1, check_exposure = F, confidence_method = "inverse",force.min = FALSE)
+paf.confidence(X, 0.12, rr = function(X, theta){exp(theta*X)}, thetavar = 0.1, check_exposure = F, confidence_method = "inverse",force.min = FALSE, nsim = 200)
 ```
 
 ```{r}
-paf.confidence(X, 0.12, rr = function(X, theta){exp(theta*X)}, thetavar = 0.1, check_exposure = F, confidence_method = "inverse", force.min = TRUE)
+paf.confidence(X, 0.12, rr = function(X, theta){exp(theta*X)}, thetavar = 0.1, check_exposure = F, confidence_method = "inverse", force.min = TRUE, nsim = 200)
 ```
 
 However, there might be cases for which such a confidence interval makes sense. 
@@ -691,24 +693,26 @@ rr       <- function(X, theta){theta*X^2 + 1}
 cft      <- function(X){X/1.2}
 thetalow <- 0
 thetaup  <- 5
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft)
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, mpoints = 25, nsim = 15)
 ```
 
 Methods can be specified as in [``pif``](#methods-in-code):
 
 ```{r fig.width=7, fig.height=4}
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, method = "kernel", n = 1000, adjust = 2, ktype = "triangular", confidence_method = "bootstrap", confidence = 99)
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, method = "kernel", n = 1000, adjust = 2, ktype = "triangular", confidence_method = "bootstrap", confidence = 99,
+         mpoints = 25, nsim = 15)
 ```
 
 Plot options include color and label titles:
 ```{r fig.width=7, fig.height=4}
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, colors = rainbow(2), xlab = "Exposure to hideous things.", ylab = "PIF PIF PIF!", title = "This analyisis is the best")
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, colors = rainbow(2), xlab = "Exposure to hideous things.", ylab = "PIF PIF PIF!", title = "This analyisis is the best", mpoints = 25, nsim = 15)
 ```
 
 ``pif.plot`` is a `ggplot` object and thus one can work with it as one:
 ```{r fig.width=7, fig.height=4}
 #require(ggplot2)
-pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, colors = rainbow(2)) + theme_dark()
+pif.plot(X = X, thetalow = thetalow, thetaup = thetaup, rr = rr, cft = cft, colors = rainbow(2),
+         mpoints = 25, nsim = 15) + theme_dark()
 ```
 
 ####Sensitivity Analysis
@@ -739,13 +743,13 @@ cft      <- function(X){
 }
 
 #Sensitivity analysis takes some time. 
-pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft = cft)
+pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft = cft, mremove = 18, nsim = 10)
 ```
 
 The default sensitivity analysis removes `mremove` elements from the sample `X` and re-calculates the `pif` with them `nsim` times. It is possible to modify those parameters:
 
 ```{r fig.width=7, fig.height=4}
-pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft = cft, nsim = 20, mremove = 50)
+pif.sensitivity(X = X, thetahat = thetahat, rr = rr, cft = cft, nsim = 10, mremove = 18)
 ```
 
 Plot options can also be modified. Furthermore, they are also `ggplot` objects!
@@ -755,7 +759,7 @@ pif.sensitivity(X = X, thetahat = thetahat, rr = rr,
                 legendtitle = "This is legendary",
                 title = "This feels entitled", xlab = "A boring X axis",
                 ylab = "A not so boring Y axis",
-                nsim = 20, mremove = 50, colors = cm.colors(4)) +
+                nsim = 10, mremove = 18, colors = cm.colors(4)) +
   theme(axis.line = element_line(colour = "purple"))
 ```
 
@@ -770,7 +774,7 @@ X        <- as.data.frame(runif(100, 0, 2*pi) + 1)
 rr       <- function(X, theta){return(abs(X*cos(X + thetahat) + 2))}
 thetahat <- pi
 pif.heatmap(X = X, thetahat = thetahat, rr = rr, 
-            check_rr = FALSE, check_integrals = FALSE)
+            check_rr = FALSE, check_integrals = FALSE, nmesh = 5)
 ```
 
 Other counterfactual scenarios can be represented. 
@@ -783,7 +787,7 @@ minb <- -3
 maxb <- -1
 pif.heatmap(X = X, thetahat = thetahat, rr = rr, mina = mina, 
             maxa = maxa, minb = minb, maxb = maxb, check_rr = FALSE, 
-            check_integrals = FALSE)
+            check_integrals = FALSE, nmesh = 5)
 ```
 
 Not only affine counterfactuals can be shown in the heatmap. You can define your own counterfactual! For example $sin(aX + b)$:
@@ -796,7 +800,7 @@ cft <- function(X, a, b){sin(a*X+b)}
 #Counterfactual
 pif.heatmap(X=X, thetahat = thetahat, rr = rr, 
             mina = mina, maxa = maxa, minb = minb, maxb = maxb,
-            cft = cft, check_rr = FALSE, check_integrals = FALSE,  title = "PIF with counterfactual sin(aX+b)")
+            cft = cft, check_rr = FALSE, check_integrals = FALSE,  title = "PIF with counterfactual sin(aX+b)", nmesh = 5)
 ```
 
 We can also analyze how the counterfactual changes solely as a function of $a$. For that purpose, set ``minb`` and ``maxb`` to the same value
@@ -808,7 +812,7 @@ cft <- function(X, a, b){sin(a*X+b)}
 #Counterfactual
 pif.heatmap(X=X, thetahat = thetahat, rr = rr, 
             mina = mina, maxa = maxa, minb = 2, maxb = 2,
-            cft = cft, check_rr = FALSE, check_integrals = FALSE, title = "PIF with counterfactual sin(aX+2)")
+            cft = cft, check_rr = FALSE, check_integrals = FALSE, title = "PIF with counterfactual sin(aX+2)", nmesh = 5)
 ```
 
 The title (`title`), axis names (`xlab`, `ylab`), colors (`colors`), and number of squares in grid (`nmesh`) can also be changed: 
@@ -970,14 +974,14 @@ Confidence intervals might also be undefined in those cases:
 
 ```{r, warning=FALSE}
 paf.confidence(as.data.frame(rlnorm(100, 23, 12)), 1, rr = function(X, theta){exp(theta*X)}, 
-               thetavar = 0.2, confidence_method = "inverse")
+               thetavar = 0.2, confidence_method = "inverse", nsim = 50)
 ```
 
 or might be useless:
 
 ```{r, warning=FALSE}
 paf.confidence(as.data.frame(rlnorm(100, 23, 12)), 1, rr = function(X, theta){exp(theta*X)}, 
-               thetavar = 0.2,confidence_method = "linear")
+               thetavar = 0.2,confidence_method = "linear", nsim = 30)
 ```
 
 
