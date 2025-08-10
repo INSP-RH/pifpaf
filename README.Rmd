@@ -68,6 +68,9 @@ paf.confidence(X = X, thetahat = thetahat, thetavar = thetavar, rr = rr,
 
 The previous examples consider a random sample of exposure values is available, however we developed a method for estimating the PAF when only mean and variance of the exposure values are known. 
 
+>**NOTE** THE APPROXIMATE METHOD HAS NOW BEEN DEPRECATED. YOU CAN FIND A NEWER VERSION WITH
+AN IMPROVED WAY TO ESTIMATE THE INTERVALS IN THE [`deltapif`](https://github.com/RodrigoZepeda/deltapif) PACKAGE
+
 ```{r}
 Xmean <- data.frame(mean(X[,"Exposure"]))
 Xvar  <- var(X)

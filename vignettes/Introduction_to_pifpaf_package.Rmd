@@ -321,6 +321,9 @@ rr       <- function(X, theta){ theta*(X - 115)^2/121 + 1}
 
 In this case, only mean and standard deviation information is available for each region. Terrible calamity! However the ``pifpaf`` package is prepared for such cases and the ``"approximate"`` method is in order. For example, let's calculate the Population Attributable Fraction for the ``"Afr E"`` region:
 
+>**NOTE** THE APPROXIMATE METHOD HAS NOW BEEN DEPRECATED. YOU CAN FIND A NEWER VERSION WITH
+AN IMPROVED WAY TO ESTIMATE THE INTERVALS IN THE [`deltapif`](https://github.com/RodrigoZepeda/deltapif) PACKAGE
+
 ```{r}
 #Get mean and variance
 afr_mean <- as.data.frame(subset(sbp, Region == "Afr E")$SBP_mean)
